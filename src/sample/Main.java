@@ -12,6 +12,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+/**
+ * agregue un comentario!
+ */
+
 public class Main extends Application implements EventHandler<ActionEvent> {
 
     private int width,height;
