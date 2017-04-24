@@ -2,6 +2,9 @@ package sample;
 
 import java.util.ArrayList;
 
+/**
+ * It represents a non-deterministic finite automata.
+ */
 public class Afnd {
     private String alfabeto;
     private Nodo estadoInicial;
