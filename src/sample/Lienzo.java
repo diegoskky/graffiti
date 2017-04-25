@@ -28,6 +28,7 @@ import java.util.GregorianCalendar;
             }
         }
         StackPane pane= (StackPane) this.getNode(0,0);
+
         ;
 
     }
