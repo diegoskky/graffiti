@@ -6,6 +6,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -21,44 +23,112 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable{
     private @FXML Button addNodeBtn;
     private @FXML Group groupPaint;
+    private @FXML Button addTransicionBtn;
+    private Circle previous=null;
+    private Line lineToConect,line=null;
     private double orgSceneX,orgSceneY;
+    private boolean inn,addNodeActivate,addTransicionActivate= false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.addNodeBtn.setGraphic(new Circle(10,Color.BLACK));
-        this.addNodeBtn.setOnDragDetected(new EventHandler<MouseEvent>(){
-            public void handle(MouseEvent event){
-                System.out.println("drag Detected");
-                Dragboard db = addNodeBtn.startDragAndDrop(TransferMode.ANY);
-                ClipboardContent content = new ClipboardContent();
-                content.putString(addNodeBtn.getText());
-                db.setContent(content);
-                event.consume();
-            }
-        });
-        this.groupPaint.setVisible(true);
-        this.groupPaint.setStyle("-fx-background-color: black");
+        Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
+        circle.setStroke(Color.BLACK);
+        this.addNodeBtn.setGraphic(circle);
 
-        this.groupPaint.setOnDragEntered(new EventHandler<DragEvent>() {
-            public void handle(DragEvent event) {
-                System.out.println("drag Entered");
+
+        line=new Line(0,0,35,35);
+        line.setStroke(Color.BLACK);
+        line.setStrokeWidth(3);
+        line.setStrokeLineCap(StrokeLineCap.ROUND);
+        line.getStrokeDashArray().setAll(5.0, 5.0);
+        this.addTransicionBtn.setGraphic(line);
+
+        this.addNodeBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                addTransicionActivate=false;
+                line.setStartY(0);
+                line.setStroke(Color.BLACK);
+                previous= null;
+                if(addNodeActivate){
+                    addNodeActivate=false;
+                    circle.setFill(Color.LIGHTGRAY);
+                } else {
+                    addNodeActivate=true;
+                    circle.setFill(Color.WHITE);
+                }
             }
         });
-        this.groupPaint.setOnDragOver(new EventHandler<DragEvent>() {
+
+        this.addTransicionBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(DragEvent event) {
-                System.out.println("drag over");
+            public void handle(MouseEvent event) {
+                addNodeActivate=false;
+                previous=null;
+                circle.setFill(Color.LIGHTGRAY);
+                if(addTransicionActivate){
+                    addTransicionActivate=false;
+                    line.setStartY(0);
+                    line.setStroke(Color.BLACK);
+                }else{
+                    addTransicionActivate=true;
+                    line.setStartY(35);
+                    line.setStroke(Color.GRAY);
+
+                }
             }
         });
 
-        this.groupPaint.getChildren().add(this.createCircle(100,10,20));
+        this.groupPaint.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(addNodeActivate && !inn) { // falta agregar restricciones
+                    groupPaint.getChildren().add(createCircle(event.getX(), event.getY()));
+                    addNodeActivate= false;
+                    circle.setFill(Color.LIGHTGRAY);
+                    event.consume();
+                }
+            }
+        });
 
 
     }
-    private Circle createCircle(double x, double y, double radio) {
-        Circle circle = new Circle(x, y, radio,Color.GRAY);
+    private Circle createCircle(double x, double y) {
+        Circle circle = new Circle(x, y, 30,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
         circle.setCursor(Cursor.HAND);
+        circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                circle.setFill(Color.WHITE);
+                inn=true;
+                event.consume();
+            }
+        });
+        circle.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                circle.setFill(Color.LIGHTGRAY);
+                inn=false;
+                event.consume();
+            }
+        });
+
+        circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(previous==null&&addTransicionActivate){
+                    previous=circle;
+                }else if(previous!=null&&addTransicionActivate&&previous!=circle){
+                    lineToConect= connect(previous,circle);
+                    groupPaint.getChildren().add(lineToConect);
+                    addTransicionActivate=false;
+                    line.setStartY(0);
+                    line.setStroke(Color.BLACK);
+                    previous.toFront();
+                    circle.toFront();
+                }
+            }
+        });
 
         circle.setOnMousePressed((t) -> {
             orgSceneX = t.getSceneX();
@@ -95,7 +165,6 @@ public class Controller implements Initializable{
         line.setStrokeWidth(1);
         line.setStrokeLineCap(StrokeLineCap.BUTT);
         line.getStrokeDashArray().setAll(1.0, 4.0);
-
         return line;
     }
 }
