@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <StackPane id="root" alignment="center" prefHeight="600.0" prefWidth="800.0" style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
@@ -42,7 +43,10 @@
                      </padding></HBox>
                   <ScrollPane minWidth="-Infinity" prefHeight="500.0" prefWidth="470.0">
                      <content>
-                        <Group fx:id="groupPaint" />
+                        <Group fx:id="groupPaint" autoSizeChildren="false">
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f4f4f4" height="497.0" stroke="#f4f4f4" strokeType="INSIDE" width="468.0" />
+                           </children></Group>
                      </content></ScrollPane>
                </children></VBox>
             <VBox id="panelLateralDer" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="180.0" style="-fx-border-color: black;">

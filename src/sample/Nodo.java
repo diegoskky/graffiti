@@ -1,8 +1,10 @@
 package sample;
 
+import javafx.scene.shape.Circle;
+
 import java.util.ArrayList;
 
-public class Nodo {
+public class Nodo extends Circle {
     private char estado;
     private boolean esFinal;
     private ArrayList<Transicion> transiciones;
