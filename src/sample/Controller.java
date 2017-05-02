@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.effect.Effect;
@@ -81,8 +82,9 @@ public class Controller implements Initializable{
         this.groupPaint.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(addNodeActivate && !inn) { // falta agregar restricciones
-                    groupPaint.getChildren().add(createCircle(event.getX(), event.getY()));
+                Circle temp_circle= createCircle(event.getX(), event.getY());
+                if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
+                    groupPaint.getChildren().add(temp_circle);
                     addNodeActivate= false;
                     circle.setFill(Color.LIGHTGRAY);
                     event.consume();
@@ -133,21 +135,21 @@ public class Controller implements Initializable{
         circle.setOnMousePressed((t) -> {
             orgSceneX = t.getSceneX();
             orgSceneY = t.getSceneY();
-
             Circle c = (Circle) (t.getSource());
             c.toFront();
         });
+
         circle.setOnMouseDragged((t) -> {
             double offsetX = t.getSceneX() - orgSceneX;
             double offsetY = t.getSceneY() - orgSceneY;
 
-            Circle c = (Circle) (t.getSource());
+                Circle c = (Circle) (t.getSource());
 
-            c.setCenterX(c.getCenterX() + offsetX);
-            c.setCenterY(c.getCenterY() + offsetY);
+                c.setCenterX(c.getCenterX() + offsetX);
+                c.setCenterY(c.getCenterY() + offsetY);
 
-            orgSceneX = t.getSceneX();
-            orgSceneY = t.getSceneY();
+                orgSceneX = t.getSceneX();
+                orgSceneY = t.getSceneY();
         });
         return circle;
     }
@@ -162,9 +164,23 @@ public class Controller implements Initializable{
         line.endXProperty().bind(c2.centerXProperty());
         line.endYProperty().bind(c2.centerYProperty());
 
-        line.setStrokeWidth(1);
-        line.setStrokeLineCap(StrokeLineCap.BUTT);
-        line.getStrokeDashArray().setAll(1.0, 4.0);
+        line.setStrokeWidth(3);
+        line.setStroke(Color.GRAY);
+        line.setStrokeLineCap(StrokeLineCap.SQUARE);
+        line.getStrokeDashArray().setAll(5.0, 5.0);
         return line;
+    }
+
+    private boolean detectCollitionsCircles(Circle innCircle){
+        Circle temp_circle= null;
+        for (Node temp_node: groupPaint.getChildren()) {
+            if(temp_node instanceof Circle){
+                temp_circle= ((Circle)temp_node);
+                if(temp_circle!=innCircle&&temp_circle.getBoundsInParent().intersects(innCircle.getBoundsInParent())){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
