@@ -27,7 +27,7 @@ public class Controller implements Initializable{
     private @FXML Button addTransicionBtn;
     private Circle previous=null;
     private Line lineToConect,line=null;
-    private double orgSceneX,orgSceneY;
+    private double orgSceneX,orgSceneY,previousX,previousY;
     private boolean inn,addNodeActivate,addTransicionActivate= false;
 
     @Override
@@ -133,6 +133,7 @@ public class Controller implements Initializable{
         });
 
         circle.setOnMousePressed((t) -> {
+            System.out.println("pressed");
             orgSceneX = t.getSceneX();
             orgSceneY = t.getSceneY();
             Circle c = (Circle) (t.getSource());
