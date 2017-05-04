@@ -172,6 +172,7 @@ public class Controller implements Initializable{
         return line;
     }
 
+
     private boolean detectCollitionsCircles(Circle innCircle){
         Circle temp_circle= null;
         for (Node temp_node: groupPaint.getChildren()) {
