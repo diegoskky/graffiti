@@ -9,7 +9,7 @@ import java.util.ArrayList;
  *
  */
 public class Nodo extends Circle {
-    private String estado; //  todo
+    private String estado;
     private boolean esFinal;
     private boolean esInitial;//posiblemente necesario;
     private ArrayList<Transicion> transiciones;

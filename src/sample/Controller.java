@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,9 +24,12 @@ import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
+    private @FXML TextField readLanguageTextField;
+    private @FXML Label alphabetLabel;
     private @FXML Button addNodeBtn;
     private @FXML Group groupPaint;
     private @FXML Button addTransicionBtn;
@@ -38,7 +43,6 @@ public class Controller implements Initializable{
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
         this.addNodeBtn.setGraphic(circle);
-
 
         line=new Line(0,0,35,35);
         line.setStroke(Color.BLACK);
@@ -96,7 +100,24 @@ public class Controller implements Initializable{
         });
 
 
+
+        /**
+         * Reads dynamically from the language text box.
+         */
+        this.readLanguageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+
+                this.alphabetLabel.textProperty().setValue(newValue);
+
+
+            //System.out.println(newValue.trim().toCharArray()); try the language in the console
+        });
+
+
     }
+
+
+
+
     private Nodo createCircle(double x, double y) {
         Nodo circle = new Nodo(x, y);
         circle.setStroke(Color.BLACK);
@@ -202,4 +223,7 @@ public class Controller implements Initializable{
         scene.snapshot(img);
         return img ;
     }
+
+
+
 }
