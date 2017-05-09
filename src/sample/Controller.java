@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
+    private Afnd afnd;
     private @FXML Button addNodeBtn;
     private @FXML Group groupPaint;
     private @FXML Button addTransicionBtn;
@@ -32,11 +33,12 @@ public class Controller implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        afnd = new Afnd();
+
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
         this.addNodeBtn.setGraphic(circle);
-
-
         line=new Line(0,0,35,35);
         line.setStroke(Color.BLACK);
         line.setStrokeWidth(3);
@@ -94,8 +96,17 @@ public class Controller implements Initializable{
 
 
     }
+
     private Circle createCircle(double x, double y) {
+
+
         Circle circle = new Circle(x, y, 30,Color.LIGHTGRAY);
+
+        Nodo node = new Nodo(); // todo
+        this.afnd.addEstado(node); // todo
+
+        this.afnd.matrizTransiciones();
+
         circle.setStroke(Color.BLACK);
         circle.setCursor(Cursor.HAND);
         circle.setOnMouseEntered(new EventHandler<MouseEvent>() {

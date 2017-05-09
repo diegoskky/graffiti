@@ -1,16 +1,20 @@
 package sample;
 
-/**
- * Created by Omar Francisco on 21-04-2017.
- */
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 
 /**
  * Demonstrates a drag-and-drop feature.
@@ -24,15 +28,18 @@ public class DragAndDrop extends Application {
         Scene scene = new Scene(root, 400, 200);
         scene.setFill(Color.LIGHTGREEN);
 
-        final Text source = new Text(50, 100, "DRAG ME");
+        //final Image source = new Image("resources/save.png");
+
+        final Text source = new Text(250, 100, "DROP HERE");
         source.setScaleX(2.0);
         source.setScaleY(2.0);
+
 
         final Text target = new Text(250, 100, "DROP HERE");
         target.setScaleX(2.0);
         target.setScaleY(2.0);
 
-        source.setOnDragDetected(new EventHandler <MouseEvent>() {
+        source.setOnDragDetected(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 /* drag was detected, start drag-and-drop gesture*/
                 System.out.println("onDragDetected");
@@ -40,10 +47,13 @@ public class DragAndDrop extends Application {
                 /* allow any transfer mode */
                 Dragboard db = source.startDragAndDrop(TransferMode.ANY);
 
-                /* put a string on dragboard */
+
+                /* put an image on dragboard */
                 ClipboardContent content = new ClipboardContent();
-                content.putString(source.getText());
+                //content.putImage(source);
                 db.setContent(content);
+
+                //db.setDragView(source);
 
                 event.consume();
             }
