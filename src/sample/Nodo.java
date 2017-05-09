@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
@@ -7,9 +8,19 @@ import java.util.ArrayList;
 public class Nodo extends Circle {
     private char estado;
     private boolean esFinal;
+    private boolean esInitial;//posiblemente necesario;
     private ArrayList<Transicion> transiciones;
 
+
     public Nodo(){
+        this.estado = ' ';
+        this.esFinal = false;
+        this.esInitial= false;
+        this.transiciones = new ArrayList<>();
+    }
+
+    public Nodo(double x, double y){
+        super(x, y, 30, Color.LIGHTGRAY);
         this.estado = ' ';
         this.esFinal = false;
         this.transiciones = new ArrayList<>();
@@ -61,4 +72,11 @@ public class Nodo extends Circle {
         return transiciones.get(getIndiceTransicion(aux)).getEstadoLlegada();
     }
 
+    public boolean isEsInitial() {
+        return esInitial;
+    }
+
+    public void setEsInitial(boolean esInitial) {
+        this.esInitial = esInitial;
+    }
 }
