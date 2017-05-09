@@ -20,7 +20,7 @@ public class Afnd {
         return estadoInicial;
     }
 
-    public void setEstadoInicial(Nodo estadoInicial) {
+    public void setEstadoInicial(Nodo estadoInicial) {//agregar
         this.estadoInicial = estadoInicial;
     }
 

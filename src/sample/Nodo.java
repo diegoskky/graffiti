@@ -5,15 +5,18 @@ import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class Nodo extends Circle {
-    private String estado;
+    private String estado; //  todo
     private boolean esFinal;
     private boolean esInitial;//posiblemente necesario;
     private ArrayList<Transicion> transiciones;
 
 
     public Nodo(){
-        this.estado = " ";
+        this.estado = " ";//posiblemente malo
         this.esFinal = false;
         this.esInitial= false;
         this.transiciones = new ArrayList<>();
@@ -21,7 +24,7 @@ public class Nodo extends Circle {
 
     public Nodo(double x, double y){
         super(x, y, 30, Color.LIGHTGRAY);
-        this.estado = ' ';
+        this.estado = null;
         this.esFinal = false;
         this.transiciones = new ArrayList<>();
     }
