@@ -6,14 +6,14 @@ import javafx.scene.shape.Circle;
 import java.util.ArrayList;
 
 public class Nodo extends Circle {
-    private char estado;
+    private String estado;
     private boolean esFinal;
     private boolean esInitial;//posiblemente necesario;
     private ArrayList<Transicion> transiciones;
 
 
     public Nodo(){
-        this.estado = ' ';
+        this.estado = " ";
         this.esFinal = false;
         this.esInitial= false;
         this.transiciones = new ArrayList<>();
@@ -26,11 +26,11 @@ public class Nodo extends Circle {
         this.transiciones = new ArrayList<>();
     }
 
-    public char getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(char estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 
@@ -66,6 +66,10 @@ public class Nodo extends Circle {
             }
         }
         return -1;
+    }
+
+    public ArrayList<Transicion> getTransiciones(){
+        return transiciones;
     }
 
     public Nodo getEstadoLlegada(char aux){

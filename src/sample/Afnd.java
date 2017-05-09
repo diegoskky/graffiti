@@ -69,4 +69,24 @@ public class Afnd {
         }
         return false;
     }
+
+    public void matrizTransiciones(){
+        ArrayList<Transicion> lista = new ArrayList<>();
+        lista = estadoInicial.getTransiciones();
+        System.out.print(estadoInicial.getEstado()+": ");
+        for(Transicion i : lista){
+            System.out.print(i.getEstadoLlegada().getEstado()+"; ");
+        }
+        System.out.println();
+        for(Nodo j : estados){
+            lista = j.getTransiciones();
+            System.out.print(j.getEstado()+": ");
+            for(Transicion k : lista){
+                System.out.print(k.getEstadoLlegada().getEstado()+"; ");
+            }
+            System.out.println();
+        }
+    }
+
+
 }
