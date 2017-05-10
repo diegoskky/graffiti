@@ -88,5 +88,40 @@ public class Afnd {
         }
     }
 
+    public boolean existeFinal(){
+        for(Nodo i : estados){
+            if(i.getEsFinal()){
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public boolean comprobarAutomata(){
+        ArrayList<String> visitados = new ArrayList<>();
+        ArrayList<Nodo> cola = new ArrayList<>();
+        Nodo revisando = new Nodo();
+
+        if(estadoInicial != null && existeFinal()){
+            cola.add(estadoInicial);
+            visitados.add(estadoInicial.getEstado());
+
+            while(!cola.isEmpty()){
+                revisando = cola.get(0);
+                cola.remove(0);
+                if(revisando.getEsFinal()){
+                    return true;
+                }
+
+                for(Transicion i : revisando.getTransiciones()){
+                    if(!visitados.contains(i.getEstadoLlegada().getEstado())){
+                        visitados.add(i.getEstadoLlegada().getEstado());
+                        cola.add(i.getEstadoLlegada());
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 }
