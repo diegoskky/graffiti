@@ -1,16 +1,21 @@
 package sample;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -19,13 +24,16 @@ import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
+    private @FXML TextField readLanguageTextField;
+    private @FXML Label alphabetLabel;
     private @FXML Button addNodeBtn;
     private @FXML Group groupPaint;
     private @FXML Button addTransicionBtn;
-    private Circle previous=null;
+    private Nodo previous=null;
     private Line lineToConect,line=null;
     private double orgSceneX,orgSceneY,previousX,previousY;
     private boolean inn,addNodeActivate,addTransicionActivate= false;
@@ -35,7 +43,6 @@ public class Controller implements Initializable{
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
         this.addNodeBtn.setGraphic(circle);
-
 
         line=new Line(0,0,35,35);
         line.setStroke(Color.BLACK);
@@ -82,7 +89,7 @@ public class Controller implements Initializable{
         this.groupPaint.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                Circle temp_circle= createCircle(event.getX(), event.getY());
+                Nodo temp_circle= createCircle(event.getX(), event.getY());
                 if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
                     groupPaint.getChildren().add(temp_circle);
                     addNodeActivate= false;
@@ -93,9 +100,26 @@ public class Controller implements Initializable{
         });
 
 
+
+        /**
+         * Reads dynamically from the language text box.
+         */
+        this.readLanguageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+
+                this.alphabetLabel.textProperty().setValue(newValue);
+
+
+            //System.out.println(newValue.trim().toCharArray()); try the language in the console
+        });
+
+
     }
-    private Circle createCircle(double x, double y) {
-        Circle circle = new Circle(x, y, 30,Color.LIGHTGRAY);
+
+
+
+
+    private Nodo createCircle(double x, double y) {
+        Nodo circle = new Nodo(x, y);
         circle.setStroke(Color.BLACK);
         circle.setCursor(Cursor.HAND);
         circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -136,7 +160,7 @@ public class Controller implements Initializable{
             System.out.println("pressed");
             orgSceneX = t.getSceneX();
             orgSceneY = t.getSceneY();
-            Circle c = (Circle) (t.getSource());
+            Nodo c = (Nodo) (t.getSource());
             c.toFront();
         });
 
@@ -144,7 +168,7 @@ public class Controller implements Initializable{
             double offsetX = t.getSceneX() - orgSceneX;
             double offsetY = t.getSceneY() - orgSceneY;
 
-                Circle c = (Circle) (t.getSource());
+                Nodo c = (Nodo) (t.getSource());
 
                 c.setCenterX(c.getCenterX() + offsetX);
                 c.setCenterY(c.getCenterY() + offsetY);
@@ -156,7 +180,7 @@ public class Controller implements Initializable{
     }
 
 
-    private Line connect(Circle c1, Circle c2) {
+    private Line connect(Nodo c1, Nodo c2) {
         Line line = new Line();
 
         line.startXProperty().bind(c1.centerXProperty());
@@ -173,11 +197,11 @@ public class Controller implements Initializable{
     }
 
 
-    private boolean detectCollitionsCircles(Circle innCircle){
-        Circle temp_circle= null;
+    private boolean detectCollitionsCircles(Nodo innCircle){
+        Nodo temp_circle= null;
         for (Node temp_node: groupPaint.getChildren()) {
-            if(temp_node instanceof Circle){
-                temp_circle= ((Circle)temp_node);
+            if(temp_node instanceof Nodo){
+                temp_circle= ((Nodo)temp_node);
                 if(temp_circle!=innCircle&&temp_circle.getBoundsInParent().intersects(innCircle.getBoundsInParent())){
                     return true;
                 }
@@ -185,4 +209,21 @@ public class Controller implements Initializable{
         }
         return false;
     }
+
+
+    private Image textToImage(String text) {
+        Label label = new Label(text);
+        label.setMinSize(125, 125);
+        label.setMaxSize(125, 125);
+        label.setPrefSize(125, 125);
+        label.setStyle("-fx-background-color: transparent; -fx-text-fill:black;");
+        label.setWrapText(true);
+        Scene scene = new Scene(new Group(label));
+        WritableImage img = new WritableImage(125, 125) ;
+        scene.snapshot(img);
+        return img ;
+    }
+
+
+
 }

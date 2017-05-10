@@ -16,11 +16,17 @@ public class Afnd {
         this.estadoInicial = new Nodo();
     }
 
+    public Afnd() {
+        //this.alfabeto = alfabeto;
+        this.estados = new ArrayList<>();
+        this.estadoInicial = new Nodo();
+    }
+
     public Nodo getEstadoInicial() {
         return estadoInicial;
     }
 
-    public void setEstadoInicial(Nodo estadoInicial) {
+    public void setEstadoInicial(Nodo estadoInicial) {//agregar
         this.estadoInicial = estadoInicial;
     }
 
@@ -70,6 +76,9 @@ public class Afnd {
         return false;
     }
 
+    /**
+     * Muerstra los nodos y sus transiciones por consola.
+     */
     public void matrizTransiciones(){
         ArrayList<Transicion> lista = new ArrayList<>();
         lista = estadoInicial.getTransiciones();

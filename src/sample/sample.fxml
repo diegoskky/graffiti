@@ -66,10 +66,11 @@
                   </VBox>
                   <VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="118.0" spacing="10.0">
                      <children>
+                        <Label fx:id="alphabetLabel" text="Alfabeto" />
                         <HBox alignment="CENTER" prefHeight="67.0" prefWidth="178.0" spacing="5.0">
                            <children>
                               <Label text="Σ =" />
-                              <TextField id="inLenguajeTF" fx:id="inLenguajeTF" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="131.0" promptText="ingrese lenguaje..." />
+                              <TextField id="inLenguajeTF" fx:id="readLanguageTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="131.0" promptText="Ingrese Alfabeto..." />
                            </children>
                         </HBox>
                         <ScrollPane prefHeight="431.0" prefWidth="178.0">
