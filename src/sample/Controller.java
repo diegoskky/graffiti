@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,8 +27,6 @@ public class Controller implements Initializable{
     private @FXML ToggleButton addNode;
     private @FXML ToggleButton addTransition;
     private @FXML ToggleButton addFinal; // todo
-    private @FXML Button addInitialNodeBtn;
-    private @FXML Button addNodeBtn;
     private @FXML Group groupPaint;
 
     private Nodo previous=null;
@@ -38,6 +38,7 @@ public class Controller implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.afnd= new Afnd();
+
 
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
@@ -106,7 +107,8 @@ public class Controller implements Initializable{
         this.readLanguageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
 
                 //this.alphabetLabel.textProperty().setValue(newValue);
-                this.afnd.setAlfabeto(newValue);
+
+            this.afnd.setAlfabeto(newValue); // Asigna el alfabeto del textbox al AFND.
 
             //System.out.println(this.afnd.getAlfabeto());
 
