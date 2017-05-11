@@ -49,6 +49,12 @@ public class Afnd {
         return false;
     }
 
+    /**
+     * Funcion que consume una palabra y verifica si es valida
+     * segun el lenguaje descrito por el automata
+     * @param palabra String con la palabra a verificar
+     * @return true si la palabra es valida
+     */
     public boolean comprobarPalabra(String palabra){
         char letra;
         String aux = palabra;
@@ -105,6 +111,10 @@ public class Afnd {
         }
     }
 
+    /**
+     * Funcion usada para saber si existe algun nodo final o no
+     * @return true si es que existe
+     */
     public boolean existeFinal(){
         for(Nodo i : estados){
             if(i.getEsFinal()){
@@ -114,6 +124,10 @@ public class Afnd {
         return false;
     }
 
+    /**
+     * Funcion que comprueba la integridad del automata
+     * @return retorna true si es que esta correcto
+     */
     public boolean comprobarAutomata(){
         ArrayList<String> visitados = new ArrayList<>();
         ArrayList<Nodo> cola = new ArrayList<>();

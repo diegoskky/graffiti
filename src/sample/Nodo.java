@@ -57,7 +57,7 @@ public class Nodo extends Circle {
 
     public boolean comprobarTransicion(char aux){
         for(Transicion i : transiciones){
-            if(aux == i.getTransicion()){
+            if(i.getTransiciones().contains(aux)){
                 return true;
             }
         }
@@ -70,7 +70,7 @@ public class Nodo extends Circle {
 
     public int getIndiceTransicion(char aux){
         for(int i = 0; i < transiciones.size(); i++){
-            if(aux == transiciones.get(i).getTransicion()){
+            if(transiciones.get(i).getTransiciones().contains(aux)){
                 return i;
             }
         }
