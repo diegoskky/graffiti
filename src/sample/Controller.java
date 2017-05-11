@@ -7,31 +7,33 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.effect.Effect;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.StrokeLineCap;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
+    private @FXML TextField readLanguageTextField;
+    private @FXML ToggleButton addStartNode; // todo
+    private @FXML ToggleButton addNode;
+    private @FXML ToggleButton addTransition;
+    private @FXML ToggleButton addFinal; // todo
     private @FXML Button addInitialNodeBtn;
     private @FXML Button addNodeBtn;
     private @FXML Group groupPaint;
-    private @FXML Button addTransicionBtn;
+
     private Nodo previous=null;
     private Line lineToConect,line=null;
     private Afnd afnd;
     private double orgSceneX,orgSceneY,previousX,previousY;
-    private boolean inn,addNodeActivate,addTransicionActivate,addInitialNodeActivate,addFinalNodeActivate= false;
+    private boolean inn,addNodeActivate,addTransicionActivate= false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -39,46 +41,18 @@ public class Controller implements Initializable{
 
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
-        this.addNodeBtn.setGraphic(circle);
-
-        Circle circleInitial= new Circle(30,25,20,Color.LIGHTGRAY);
-        circleInitial.setStroke(Color.BLACK);
-        Polygon poly= new Polygon(new double[]{(double)(circleInitial.getCenterX()-30),(double)(circleInitial.getCenterY()+10),
-                (double)(circleInitial.getCenterX()-20),(double)(circleInitial.getCenterY()),(double)(circleInitial.getCenterX()-30),(double)(circleInitial.getCenterY()-10)});
-        Pane graficInitialNode= new Pane();
-        graficInitialNode.getChildren().addAll(circleInitial,poly);
-        this.addInitialNodeBtn.setGraphic(graficInitialNode);
+        this.addNode.setGraphic(circle);
 
         line=new Line(0,0,35,35);
         line.setStroke(Color.BLACK);
         line.setStrokeWidth(3);
         line.setStrokeLineCap(StrokeLineCap.ROUND);
         line.getStrokeDashArray().setAll(5.0, 5.0);
-        this.addTransicionBtn.setGraphic(line);
+        this.addTransition.setGraphic(line);
 
-        this.addInitialNodeBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        this.addNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 addTransicionActivate=false;
-                addNodeActivate=false;
-                circle.setFill(Color.LIGHTGRAY);
-                line.setStartY(0);
-                line.setStroke(Color.BLACK);
-                previous= null;
-                if(addInitialNodeActivate){
-                    addInitialNodeActivate=false;
-                    circleInitial.setFill(Color.LIGHTGRAY);
-                } else {
-                    addInitialNodeActivate=true;
-                    circleInitial.setFill(Color.WHITE);
-                }
-            }
-        });
-
-        this.addNodeBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                addTransicionActivate=false;
-                addInitialNodeActivate=false;
-                addFinalNodeActivate= false;
                 line.setStartY(0);
                 line.setStroke(Color.BLACK);
                 previous= null;
@@ -92,13 +66,10 @@ public class Controller implements Initializable{
             }
         });
 
-        this.addTransicionBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        this.addTransition.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 addNodeActivate=false;
-                addInitialNodeActivate=false;
-                addFinalNodeActivate=false;
-                circleInitial.setFill(Color.LIGHTGRAY);
                 previous=null;
                 circle.setFill(Color.LIGHTGRAY);
                 if(addTransicionActivate){
@@ -123,28 +94,43 @@ public class Controller implements Initializable{
                     addNodeActivate= false;
                     circle.setFill(Color.LIGHTGRAY);
                     event.consume();
-                } else if(addInitialNodeActivate &&!inn &&!detectCollitionsCircles(temp_circle)){
-                    if(afnd.getEstadoInicial()==null) {
-                        temp_circle.setEsInitial(true);
-                        afnd.setEstadoInicial(temp_circle);
-                        groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
-                        addInitialNodeActivate = false;
-                        circleInitial.setFill(Color.LIGHTGRAY);
-                        event.consume();
-                    } else {
-                        System.out.println("Ya existe un nodo inicial, no puede agregar otro!!");
-                        addInitialNodeActivate = false;
-                        circleInitial.setFill(Color.LIGHTGRAY);
-                    }
-                } else if(addFinalNodeActivate&&!inn &&!detectCollitionsCircles(temp_circle)){
-                    temp_circle.setEsFinal(true);
-                    event.consume();
                 }
             }
         });
 
 
+
+        /**
+         * Reads dynamically from the language text box.
+         */
+        this.readLanguageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+
+                //this.alphabetLabel.textProperty().setValue(newValue);
+                this.afnd.setAlfabeto(newValue);
+
+            //System.out.println(this.afnd.getAlfabeto());
+
+
+            //System.out.println(newValue.trim().toCharArray()); try the language in the console
+        });
+
+
     }
+
+    private void invalidDraw() {
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Operación Invalida");
+        alert.setHeaderText("No es posible dibujar el nodo indicado.");
+        alert.setContentText(null);
+
+        alert.showAndWait();
+
+
+    }
+
+
+
     private Nodo createCircle(double x, double y, boolean esInicial, boolean esFinal) {
         Nodo circle = new Nodo(x, y);
         circle.setStroke(Color.BLACK);
@@ -171,7 +157,7 @@ public class Controller implements Initializable{
             public void handle(MouseEvent event) {
                 if(previous==null&&addTransicionActivate){
                     previous=circle;
-                }else if(previous!=null&&addTransicionActivate&&previous!=circle){// aqui sabemos que queremos conectar dos nodos.
+                }else if(previous!=null&&addTransicionActivate&&previous!=circle){
                     lineToConect= connect(previous,circle);
                     groupPaint.getChildren().add(lineToConect);
                     addTransicionActivate=false;
@@ -180,7 +166,6 @@ public class Controller implements Initializable{
                     previous.toFront();
                     circle.toFront();
                 }
-                event.consume();
             }
         });
 
@@ -196,15 +181,13 @@ public class Controller implements Initializable{
             double offsetX = t.getSceneX() - orgSceneX;
             double offsetY = t.getSceneY() - orgSceneY;
 
-            Nodo c = (Nodo) (t.getSource());
-            c.setCenterX(c.getCenterX() + offsetX);
-            c.setCenterY(c.getCenterY() + offsetY);
-            if(c.isEsInitial()) {
-                c.getForInitial().getPoints().setAll(new Double[]{(double)(c.getCenterX() + offsetX -40),(double)(c.getCenterY() + offsetY +10),
-                (double)(c.getCenterX() + offsetX -30),(double)(c.getCenterY() + offsetY ),(double)(c.getCenterX() + offsetX-40), (double)(c.getCenterY() + offsetY-10)});
-            }
-            orgSceneX = t.getSceneX();
-            orgSceneY = t.getSceneY();
+                Nodo c = (Nodo) (t.getSource());
+
+                c.setCenterX(c.getCenterX() + offsetX);
+                c.setCenterY(c.getCenterY() + offsetY);
+
+                orgSceneX = t.getSceneX();
+                orgSceneY = t.getSceneY();
         });
         return circle;
     }
@@ -253,4 +236,7 @@ public class Controller implements Initializable{
         scene.snapshot(img);
         return img ;
     }
+
+
+
 }
