@@ -22,6 +22,14 @@ public class Afnd {
         this.estadoInicial = new Nodo();
     }
 
+    public String getAlfabeto() {
+        return alfabeto;
+    }
+
+    public void setAlfabeto(String alfabeto) {
+        this.alfabeto = alfabeto;
+    }
+
     public Nodo getEstadoInicial() {
         return estadoInicial;
     }

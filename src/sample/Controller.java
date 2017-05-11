@@ -21,20 +21,25 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
     private @FXML TextField readLanguageTextField;
-    private @FXML Label alphabetLabel;
-    private @FXML ToggleButton addStartNode;
+    private @FXML ToggleButton addStartNode; // todo
     private @FXML ToggleButton addNode;
     private @FXML ToggleButton addTransition;
-    private @FXML ToggleButton addFinal;
+    private @FXML ToggleButton addFinal; // todo
     private @FXML Group groupPaint;
 
     private Nodo previous=null;
     private Line lineToConect,line=null;
+
+    private Afnd afnd;
+
     private double orgSceneX,orgSceneY,previousX,previousY;
     private boolean inn,addNodeActivate,addTransicionActivate= false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        afnd = new Afnd();
+
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
         this.addNode.setGraphic(circle);
@@ -85,13 +90,21 @@ public class Controller implements Initializable{
             @Override
             public void handle(MouseEvent event) {
                 Nodo temp_circle= createCircle(event.getX(), event.getY());
+
                 if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
                     groupPaint.getChildren().add(temp_circle);
+                    afnd.addEstado(temp_circle); // Agrega el nuevo Nodo al AFND.
+                    afnd.matrizTransiciones(); // prueba imprimiendo la matriz
                     addNodeActivate= false;
                     circle.setFill(Color.LIGHTGRAY);
                     event.consume();
                 }
+
+                //invalidDraw();
+
             }
+
+
         });
 
 
@@ -101,7 +114,10 @@ public class Controller implements Initializable{
          */
         this.readLanguageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
 
-                this.alphabetLabel.textProperty().setValue(newValue);
+                //this.alphabetLabel.textProperty().setValue(newValue);
+                this.afnd.setAlfabeto(newValue);
+
+            //System.out.println(this.afnd.getAlfabeto());
 
 
             //System.out.println(newValue.trim().toCharArray()); try the language in the console
@@ -110,7 +126,17 @@ public class Controller implements Initializable{
 
     }
 
+    private void invalidDraw() {
 
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Operación Invalida");
+        alert.setHeaderText("No es posible dibujar el nodo indicado.");
+        alert.setContentText(null);
+
+        alert.showAndWait();
+
+
+    }
 
 
     private Nodo createCircle(double x, double y) {
