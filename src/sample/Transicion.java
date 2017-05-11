@@ -1,20 +1,24 @@
+
 package sample;
 
+import java.util.ArrayList;
+
+
 public class Transicion {
-    private char transicion;
+    private ArrayList<Character> transiciones;
     private Nodo estadoLlegada;
 
     public Transicion(Nodo llegada){
-        this.transicion = ' ';
+        this.transiciones = new ArrayList<>();
         this.estadoLlegada = llegada;
     }
 
-    public char getTransicion(){
-        return transicion;
+    public ArrayList<Character> getTransiciones(){
+        return transiciones;
     }
 
-    public void setTransicion(char transicion){
-        this.transicion = transicion;
+    public void addTransicion(char transicion){
+        transiciones.add(transicion);
     }
 
     public Nodo getEstadoLlegada(){
