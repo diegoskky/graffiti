@@ -1,6 +1,5 @@
 package sample;
 
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,31 +7,27 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.effect.Effect;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
     private @FXML TextField readLanguageTextField;
     private @FXML Label alphabetLabel;
-    private @FXML Button addNodeBtn;
+    private @FXML ToggleButton addStartNode;
+    private @FXML ToggleButton addNode;
+    private @FXML ToggleButton addTransition;
+    private @FXML ToggleButton addFinal;
     private @FXML Group groupPaint;
-    private @FXML Button addTransicionBtn;
+
     private Nodo previous=null;
     private Line lineToConect,line=null;
     private double orgSceneX,orgSceneY,previousX,previousY;
@@ -42,16 +37,16 @@ public class Controller implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
-        this.addNodeBtn.setGraphic(circle);
+        this.addNode.setGraphic(circle);
 
         line=new Line(0,0,35,35);
         line.setStroke(Color.BLACK);
         line.setStrokeWidth(3);
         line.setStrokeLineCap(StrokeLineCap.ROUND);
         line.getStrokeDashArray().setAll(5.0, 5.0);
-        this.addTransicionBtn.setGraphic(line);
+        this.addTransition.setGraphic(line);
 
-        this.addNodeBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        this.addNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 addTransicionActivate=false;
                 line.setStartY(0);
@@ -67,7 +62,7 @@ public class Controller implements Initializable{
             }
         });
 
-        this.addTransicionBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        this.addTransition.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 addNodeActivate=false;
