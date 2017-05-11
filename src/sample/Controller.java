@@ -25,20 +25,19 @@ public class Controller implements Initializable{
     private @FXML ToggleButton addNode;
     private @FXML ToggleButton addTransition;
     private @FXML ToggleButton addFinal; // todo
+    private @FXML Button addInitialNodeBtn;
+    private @FXML Button addNodeBtn;
     private @FXML Group groupPaint;
 
     private Nodo previous=null;
     private Line lineToConect,line=null;
-
     private Afnd afnd;
-
     private double orgSceneX,orgSceneY,previousX,previousY;
     private boolean inn,addNodeActivate,addTransicionActivate= false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        afnd = new Afnd();
+        this.afnd= new Afnd();
 
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
@@ -89,22 +88,14 @@ public class Controller implements Initializable{
         this.groupPaint.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                Nodo temp_circle= createCircle(event.getX(), event.getY());
-
+                Nodo temp_circle= createCircle(event.getX(), event.getY(),false,false);
                 if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
-                    groupPaint.getChildren().add(temp_circle);
-                    afnd.addEstado(temp_circle); // Agrega el nuevo Nodo al AFND.
-                    afnd.matrizTransiciones(); // prueba imprimiendo la matriz
+                    groupPaint.getChildren().addAll(temp_circle);
                     addNodeActivate= false;
                     circle.setFill(Color.LIGHTGRAY);
                     event.consume();
                 }
-
-                //invalidDraw();
-
             }
-
-
         });
 
 
@@ -140,6 +131,7 @@ public class Controller implements Initializable{
 
 
     private Nodo createCircle(double x, double y) {
+    private Nodo createCircle(double x, double y, boolean esInicial, boolean esFinal) {
         Nodo circle = new Nodo(x, y);
         circle.setStroke(Color.BLACK);
         circle.setCursor(Cursor.HAND);
