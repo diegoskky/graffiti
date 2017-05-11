@@ -130,7 +130,7 @@ public class Controller implements Initializable{
     }
 
 
-    private Nodo createCircle(double x, double y) {
+
     private Nodo createCircle(double x, double y, boolean esInicial, boolean esFinal) {
         Nodo circle = new Nodo(x, y);
         circle.setStroke(Color.BLACK);

@@ -2,6 +2,7 @@ package sample;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 
 import java.util.ArrayList;
 
@@ -25,10 +26,10 @@ public class Nodo extends Circle {
     public Nodo(double x, double y){
         super(x, y, 30, Color.LIGHTGRAY);
         this.estado = super.getId();
-        this.forFinal= new Polygon();
-        this.forInitial= new Polygon(new double[]{(double)(x-40),(double)(y+10),(double)(x-30),(double)(y),(double)(x-40),(double)(y-10)});
-        this.forInitial.setVisible(true);
-        this.forInitial.setFill(Color.BLACK);
+        //this.forFinal= new Polygon();
+        //this.forInitial= new Polygon(new double[]{(double)(x-40),(double)(y+10),(double)(x-30),(double)(y),(double)(x-40),(double)(y-10)});
+        //this.forInitial.setVisible(true);
+        //this.forInitial.setFill(Color.BLACK);
         this.estado = null;
         this.esFinal = false;
         this.transiciones = new ArrayList<>();
