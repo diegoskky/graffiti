@@ -20,9 +20,10 @@
          <children>
             <VBox id="panelBotonesIzq" alignment="TOP_CENTER" minWidth="-Infinity" prefHeight="600.0" prefWidth="150.0" spacing="10.0" style="-fx-border-color: black;">
                <children>
-                  <Button id="addNodeBtn" fx:id="addNodeBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="148.0" text="addNode" />
+                  <Button fx:id="addInitialNodeBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="148.0" text="nodeInitial" />
+                  <Button id="addNodeBtn" fx:id="addNodeBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="148.0" text="node" />
+                  <Button id="addFinalNodeBtn" fx:id="addFinalNodeBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="148.0" text="finalNode" />
                   <Button id="transicionBtn" fx:id="addTransicionBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="148.0" text="Transicion" />
-                  <Button id="addFinalNodeBtn" fx:id="addFinalNodeBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="148.0" text="addFinalNode" />
                </children>
                <padding>
                   <Insets top="150.0" />
@@ -69,7 +70,7 @@
                         <HBox alignment="CENTER" prefHeight="67.0" prefWidth="178.0" spacing="5.0">
                            <children>
                               <Label text="Σ =" />
-                              <TextField id="inLenguajeTF" fx:id="inLenguajeTF" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="131.0" promptText="ingrese lenguaje..." />
+                              <TextField id="inLenguajeTF" fx:id="inLenguajeTF" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="131.0" promptText="ingrese alfabeto..." />
                            </children>
                         </HBox>
                         <ScrollPane prefHeight="431.0" prefWidth="178.0">

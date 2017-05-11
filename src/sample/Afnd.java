@@ -13,13 +13,13 @@ public class Afnd {
     public Afnd(String alfabeto){
         this.alfabeto = alfabeto;
         this.estados = new ArrayList<>();
-        this.estadoInicial = new Nodo();
+        this.estadoInicial = null;
     }
 
     public Afnd() {
         //this.alfabeto = alfabeto;
         this.estados = new ArrayList<>();
-        this.estadoInicial = new Nodo();
+        this.estadoInicial = null;
     }
 
     public Nodo getEstadoInicial() {
@@ -50,7 +50,7 @@ public class Afnd {
         aux = aux.substring(1);
 
         if(comprobarAlfabeto(letra)){
-            if(estadoInicial.comprobarTransicion(letra)){
+            if(estadoInicial!=null&&estadoInicial.comprobarTransicion(letra)){
                 estadoInicial.getIndiceTransicion(letra);
                 estadoActual = estadoInicial.getEstadoLlegada(letra);
                 System.out.println("esta aqui: "+estadoActual.getEstado());

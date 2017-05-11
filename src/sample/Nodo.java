@@ -2,6 +2,8 @@ package sample;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+
 
 import java.util.ArrayList;
 
@@ -9,13 +11,15 @@ import java.util.ArrayList;
  *
  */
 public class Nodo extends Circle {
-    private String estado; //  todo
+    private String estado;
     private boolean esFinal;
     private boolean esInitial;//posiblemente necesario;
+    private Polygon forInitial,forFinal;
     private ArrayList<Transicion> transiciones;
 
 
     public Nodo(){
+
         this.estado = " ";//posiblemente malo
         this.esFinal = false;
         this.esInitial= false;
@@ -24,6 +28,10 @@ public class Nodo extends Circle {
 
     public Nodo(double x, double y){
         super(x, y, 30, Color.LIGHTGRAY);
+        this.forFinal= new Polygon();
+        this.forInitial= new Polygon(new double[]{(double)(x-40),(double)(y+10),(double)(x-30),(double)(y),(double)(x-40),(double)(y-10)});
+        this.forInitial.setVisible(true);
+        this.forInitial.setFill(Color.BLACK);
         this.estado = null;
         this.esFinal = false;
         this.transiciones = new ArrayList<>();
@@ -85,5 +93,25 @@ public class Nodo extends Circle {
 
     public void setEsInitial(boolean esInitial) {
         this.esInitial = esInitial;
+    }
+
+    public Polygon getForInitial() {
+        return forInitial;
+    }
+
+    public void setForInitial(Polygon forInitial) {
+        this.forInitial = forInitial;
+    }
+
+    public boolean isEsFinal() {
+        return esFinal;
+    }
+
+    public Polygon getForFinal() {
+        return forFinal;
+    }
+
+    public void setForFinal(Polygon forFinal) {
+        this.forFinal = forFinal;
     }
 }
