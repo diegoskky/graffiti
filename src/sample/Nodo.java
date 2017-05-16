@@ -13,6 +13,7 @@ public class Nodo extends Circle {
     private String estado;
     private boolean esFinal;
     private boolean esInitial;//posiblemente necesario;
+    private Polygon forInitial;
     private ArrayList<Transicion> transiciones;
 
 
@@ -27,8 +28,8 @@ public class Nodo extends Circle {
         super(x, y, 30, Color.LIGHTGRAY);
         this.estado = super.getId();
         //this.forFinal= new Polygon();
-        //this.forInitial= new Polygon(new double[]{(double)(x-40),(double)(y+10),(double)(x-30),(double)(y),(double)(x-40),(double)(y-10)});
-        //this.forInitial.setVisible(true);
+        forInitial= new Polygon(new double[]{(double)(x-40),(double)(y+10),(double)(x-30),(double)(y),(double)(x-40),(double)(y-10)});
+        forInitial.setVisible(true);
         //this.forInitial.setFill(Color.BLACK);
         this.estado = null;
         this.esFinal = false;
@@ -91,5 +92,13 @@ public class Nodo extends Circle {
 
     public void setEsInitial(boolean esInitial) {
         this.esInitial = esInitial;
+    }
+
+    public Polygon getForInitial() {
+        return forInitial;
+    }
+
+    public void setForInitial(Polygon forInitial) {
+        this.forInitial = forInitial;
     }
 }

@@ -11,9 +11,11 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -28,32 +30,81 @@ public class Controller implements Initializable{
     private @FXML ToggleButton addTransition;
     private @FXML ToggleButton addFinal; // todo
     private @FXML Group groupPaint;
+    private @FXML TreeView treeView;
 
     private Nodo previous=null;
     private Line lineToConect,line=null;
     private Afnd afnd;
     private double orgSceneX,orgSceneY,previousX,previousY;
-    private boolean inn,addNodeActivate,addTransicionActivate= false;
+    private boolean inn,addNodeActivate,addTransicionActivate,addInitialNodeActivate,addFinalNodeActivate=false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.afnd= new Afnd();
 
-
-        Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
+        Circle circle= new Circle(0,0,10,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
         this.addNode.setGraphic(circle);
 
-        line=new Line(0,0,35,35);
+        Circle circleInitial= new Circle(15,10,10,Color.LIGHTGRAY);
+        circleInitial.setStroke(Color.BLACK);
+        Polygon poly= new Polygon(new double[]{(double)(circleInitial.getCenterX()-15),(double)(circleInitial.getCenterY()+5),
+                (double)(circleInitial.getCenterX()-10),(double)(circleInitial.getCenterY()),(double)(circleInitial.getCenterX()-15),(double)(circleInitial.getCenterY()-5)});
+        Pane graficInitialNode= new Pane();
+        graficInitialNode.getChildren().addAll(circleInitial,poly);
+        this.addStartNode.setGraphic(graficInitialNode);
+
+        Circle circleFinal= new Circle(0,0,10,Color.LIGHTGRAY);
+        circleFinal.setStroke(Color.BLACK);
+        circleFinal.setStrokeWidth(3);
+        this.addFinal.setGraphic(circleFinal);
+
+        line=new Line(0,0,15,15);
         line.setStroke(Color.BLACK);
-        line.setStrokeWidth(3);
+        line.setStrokeWidth(2);
         line.setStrokeLineCap(StrokeLineCap.ROUND);
         line.getStrokeDashArray().setAll(5.0, 5.0);
         this.addTransition.setGraphic(line);
 
+        this.addStartNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                addNodeActivate=false;
+                addNode.setSelected(false);
+                circle.setFill(Color.LIGHTGRAY);
+
+                addFinal.setSelected(false);
+                addFinalNodeActivate=false;
+                circleFinal.setFill(Color.LIGHTGRAY);
+
+                addTransition.setSelected(false);
+                addTransicionActivate=false;
+                line.setStartY(0);
+                line.setStroke(Color.BLACK);
+                previous= null;
+                if(addInitialNodeActivate){
+                    addStartNode.setSelected(false);
+                    addInitialNodeActivate=false;
+                    circleInitial.setFill(Color.LIGHTGRAY);
+                } else {
+                    addStartNode.setSelected(true);
+                    addInitialNodeActivate=true;
+                    circleInitial.setFill(Color.WHITE);
+                }
+            }
+        });
+
         this.addNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
+                addInitialNodeActivate=false;
+                addStartNode.setSelected(false);
+                circleInitial.setFill(Color.LIGHTGRAY);
+
+                addFinal.setSelected(false);
+                addFinalNodeActivate=false;
+                circleFinal.setFill(Color.LIGHTGRAY);
+
                 addTransicionActivate=false;
+                addTransition.setSelected(false);
                 line.setStartY(0);
                 line.setStroke(Color.BLACK);
                 previous= null;
@@ -67,19 +118,53 @@ public class Controller implements Initializable{
             }
         });
 
+        this.addFinal.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                addInitialNodeActivate=false;
+                addStartNode.setSelected(false);
+                circleInitial.setFill(Color.LIGHTGRAY);
+
+                addNode.setSelected(false);
+                addNodeActivate=false;
+                circle.setFill(Color.LIGHTGRAY);
+
+                addTransicionActivate=false;
+                addTransition.setSelected(false);
+                line.setStartY(0);
+                line.setStroke(Color.BLACK);
+                previous= null;
+                if(addFinalNodeActivate){
+                    addFinalNodeActivate=false;
+                    circleFinal.setFill(Color.LIGHTGRAY);
+                }else{
+                    addFinalNodeActivate=true;
+                    circleFinal.setFill(Color.WHITE);
+                }
+            }
+        });
+
         this.addTransition.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                addInitialNodeActivate=false;
+                circleInitial.setFill(Color.LIGHTGRAY);
+                addStartNode.setSelected(false);
+
+                addNode.setSelected(false);
                 addNodeActivate=false;
-                previous=null;
                 circle.setFill(Color.LIGHTGRAY);
+
+                addFinalNodeActivate=false;
+                addFinal.setSelected(false);
+                circleFinal.setFill(Color.LIGHTGRAY);
                 if(addTransicionActivate){
                     addTransicionActivate=false;
                     line.setStartY(0);
                     line.setStroke(Color.BLACK);
                 }else{
                     addTransicionActivate=true;
-                    line.setStartY(35);
+                    line.setStartY(15);
                     line.setStroke(Color.GRAY);
 
                 }
@@ -93,7 +178,31 @@ public class Controller implements Initializable{
                 if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
                     groupPaint.getChildren().addAll(temp_circle);
                     addNodeActivate= false;
+                    addNode.setSelected(false);
                     circle.setFill(Color.LIGHTGRAY);
+                    event.consume();
+                } else if(addInitialNodeActivate &&!inn &&!detectCollitionsCircles(temp_circle)){
+                    if(afnd.getEstadoInicial()==null) {
+                        temp_circle.setEsInitial(true);
+                        afnd.setEstadoInicial(temp_circle);
+                        groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
+                        addInitialNodeActivate = false;
+                        addStartNode.setSelected(false);
+                        circleInitial.setFill(Color.LIGHTGRAY);
+                        event.consume();
+                    } else {
+                        genericAlert("Accion invalida","Ya existe un nodo incial",null, Alert.AlertType.WARNING);
+                        addInitialNodeActivate = false;
+                        addStartNode.setSelected(false);
+                        circleInitial.setFill(Color.LIGHTGRAY);
+                    }
+                } else if(addFinalNodeActivate&&!inn &&!detectCollitionsCircles(temp_circle)){
+                    temp_circle.setEsFinal(true);
+                    temp_circle.setStrokeWidth(4);
+                    addFinal.setSelected(false);
+                    addFinalNodeActivate=false;
+                    circleFinal.setFill(Color.LIGHTGRAY);
+                    groupPaint.getChildren().add(temp_circle);
                     event.consume();
                 }
             }
@@ -106,7 +215,7 @@ public class Controller implements Initializable{
          */
         this.readLanguageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
 
-                //this.alphabetLabel.textProperty().setValue(newValue);
+            //this.alphabetLabel.textProperty().setValue(newValue);
 
             this.afnd.setAlfabeto(newValue); // Asigna el alfabeto del textbox al AFND.
 
@@ -119,16 +228,27 @@ public class Controller implements Initializable{
 
     }
 
-    private void invalidDraw() {
-
+    private void invalidDraw() {//borrar y ocupar el generico
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Operación Invalida");
         alert.setHeaderText("No es posible dibujar el nodo indicado.");
         alert.setContentText(null);
-
         alert.showAndWait();
+    }
 
-
+    /**
+     * Alerta para el usuario (retroalimentacion del programa)
+     * @param title
+     * @param headerText
+     * @param contentText
+     * @param alertType
+     */
+    private void genericAlert(String title, String headerText, String contentText, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
     }
 
 
@@ -156,17 +276,21 @@ public class Controller implements Initializable{
 
         circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(MouseEvent event) {//coneccion entre ambos nodos
                 if(previous==null&&addTransicionActivate){
                     previous=circle;
+                    event.consume();
                 }else if(previous!=null&&addTransicionActivate&&previous!=circle){
                     lineToConect= connect(previous,circle);
                     groupPaint.getChildren().add(lineToConect);
                     addTransicionActivate=false;
+                    addTransition.setSelected(false);
                     line.setStartY(0);
                     line.setStroke(Color.BLACK);
                     previous.toFront();
                     circle.toFront();
+                    previous=null;
+                    event.consume();
                 }
             }
         });
@@ -182,14 +306,15 @@ public class Controller implements Initializable{
         circle.setOnMouseDragged((t) -> {
             double offsetX = t.getSceneX() - orgSceneX;
             double offsetY = t.getSceneY() - orgSceneY;
-
-                Nodo c = (Nodo) (t.getSource());
-
-                c.setCenterX(c.getCenterX() + offsetX);
-                c.setCenterY(c.getCenterY() + offsetY);
-
-                orgSceneX = t.getSceneX();
-                orgSceneY = t.getSceneY();
+            Nodo c = (Nodo) (t.getSource());
+            c.setCenterX(c.getCenterX() + offsetX);
+            c.setCenterY(c.getCenterY() + offsetY);
+            if(c.isEsInitial()) {
+                c.getForInitial().getPoints().setAll(new Double[]{(double)(c.getCenterX() + offsetX -40),(double)(c.getCenterY() + offsetY +10),
+                        (double)(c.getCenterX() + offsetX -30),(double)(c.getCenterY() + offsetY ),(double)(c.getCenterX() + offsetX-40), (double)(c.getCenterY() + offsetY-10)});
+            }
+            orgSceneX = t.getSceneX();
+            orgSceneY = t.getSceneY();
         });
         return circle;
     }
