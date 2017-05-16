@@ -9,10 +9,12 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -41,6 +43,11 @@ public class Controller implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.afnd= new Afnd();
+
+        Circle c= createCircle(100,100,false,false);
+        c.setFill(new ImagePattern(textToImage("q0","lightgray")));
+
+        this.groupPaint.getChildren().add(c);
 
         Circle circle= new Circle(0,0,10,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
@@ -175,7 +182,10 @@ public class Controller implements Initializable{
             @Override
             public void handle(MouseEvent event) {
                 Nodo temp_circle= createCircle(event.getX(), event.getY(),false,false);
+                String input= "";
                 if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
+                    //agregar alert
+                    temp_circle.setFill(new ImagePattern(textToImage(input,"lightgray")));
                     groupPaint.getChildren().addAll(temp_circle);
                     addNodeActivate= false;
                     addNode.setSelected(false);
@@ -183,6 +193,8 @@ public class Controller implements Initializable{
                     event.consume();
                 } else if(addInitialNodeActivate &&!inn &&!detectCollitionsCircles(temp_circle)){
                     if(afnd.getEstadoInicial()==null) {
+                        //agregar alert
+                        temp_circle.setFill(new ImagePattern(textToImage(input,"lightgray")));
                         temp_circle.setEsInitial(true);
                         afnd.setEstadoInicial(temp_circle);
                         groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
@@ -202,6 +214,7 @@ public class Controller implements Initializable{
                     addFinal.setSelected(false);
                     addFinalNodeActivate=false;
                     circleFinal.setFill(Color.LIGHTGRAY);
+                    temp_circle.setFill(new ImagePattern(textToImage(input,"lightgray")));
                     groupPaint.getChildren().add(temp_circle);
                     event.consume();
                 }
@@ -252,7 +265,14 @@ public class Controller implements Initializable{
     }
 
 
-
+    /**
+     *
+     * @param x
+     * @param y
+     * @param esInicial
+     * @param esFinal
+     * @return
+     */
     private Nodo createCircle(double x, double y, boolean esInicial, boolean esFinal) {
         Nodo circle = new Nodo(x, y);
         circle.setStroke(Color.BLACK);
@@ -260,7 +280,7 @@ public class Controller implements Initializable{
         circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                circle.setFill(Color.WHITE);
+                circle.setFill(new ImagePattern(textToImage(circle.getEstado(),"white")));
                 inn=true;
                 event.consume();
             }
@@ -268,7 +288,7 @@ public class Controller implements Initializable{
         circle.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                circle.setFill(Color.LIGHTGRAY);
+                circle.setFill(new ImagePattern(textToImage(circle.getEstado(),"lightgray")));
                 inn=false;
                 event.consume();
             }
@@ -310,8 +330,8 @@ public class Controller implements Initializable{
             c.setCenterX(c.getCenterX() + offsetX);
             c.setCenterY(c.getCenterY() + offsetY);
             if(c.isEsInitial()) {
-                c.getForInitial().getPoints().setAll(new Double[]{(double)(c.getCenterX() + offsetX -40),(double)(c.getCenterY() + offsetY +10),
-                        (double)(c.getCenterX() + offsetX -30),(double)(c.getCenterY() + offsetY ),(double)(c.getCenterX() + offsetX-40), (double)(c.getCenterY() + offsetY-10)});
+                c.getForInitial().getPoints().setAll(new Double[]{(double)(c.getCenterX() + offsetX -30),(double)(c.getCenterY() + offsetY +10),
+                        (double)(c.getCenterX() + offsetX -20),(double)(c.getCenterY() + offsetY ),(double)(c.getCenterX() + offsetX-30), (double)(c.getCenterY() + offsetY-10)});
             }
             orgSceneX = t.getSceneX();
             orgSceneY = t.getSceneY();
@@ -351,15 +371,15 @@ public class Controller implements Initializable{
     }
 
 
-    private Image textToImage(String text) {
-        Label label = new Label(text);
-        label.setMinSize(125, 125);
-        label.setMaxSize(125, 125);
-        label.setPrefSize(125, 125);
-        label.setStyle("-fx-background-color: transparent; -fx-text-fill:black;");
+    private Image textToImage(String text, String color) {
+        Label label = new Label(" "+text);
+        label.setMinSize(30, 30);
+        label.setMaxSize(30, 30);
+        label.setPrefSize(30, 30);
+        label.setStyle("-fx-background-color: "+color+"; -fx-text-fill:black;");
         label.setWrapText(true);
         Scene scene = new Scene(new Group(label));
-        WritableImage img = new WritableImage(125, 125) ;
+        WritableImage img = new WritableImage(25, 30) ;
         scene.snapshot(img);
         return img ;
     }

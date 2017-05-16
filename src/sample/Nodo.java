@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
@@ -25,13 +26,13 @@ public class Nodo extends Circle {
     }
 
     public Nodo(double x, double y){
-        super(x, y, 30, Color.LIGHTGRAY);
+        super(x, y, 20, Color.LIGHTGRAY);
         this.estado = super.getId();
         //this.forFinal= new Polygon();
-        forInitial= new Polygon(new double[]{(double)(x-40),(double)(y+10),(double)(x-30),(double)(y),(double)(x-40),(double)(y-10)});
+        forInitial= new Polygon(new double[]{(double)(x-30),(double)(y+10),(double)(x-20),(double)(y),(double)(x-30),(double)(y-10)});
         forInitial.setVisible(true);
         //this.forInitial.setFill(Color.BLACK);
-        this.estado = null;
+        this.estado ="";
         this.esFinal = false;
         this.transiciones = new ArrayList<>();
     }
