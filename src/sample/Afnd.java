@@ -90,6 +90,11 @@ public class Afnd {
         return false;
     }
 
+
+    public void printTransiciones(){
+        System.out.println(estados.size());
+    }
+
     /**
      * Muerstra los nodos y sus transiciones por consola.
      */

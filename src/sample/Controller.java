@@ -90,12 +90,18 @@ public class Controller implements Initializable{
             @Override
             public void handle(MouseEvent event) {
                 Nodo temp_circle= createCircle(event.getX(), event.getY(),false,false);
-                if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
+                if( addNodeActivate && !inn&& !detectCollitionsCircles(temp_circle) ) { // falta agregar restricciones
                     groupPaint.getChildren().addAll(temp_circle);
                     addNodeActivate= false;
                     circle.setFill(Color.LIGHTGRAY);
                     event.consume();
+
+
+
+                    afnd.addEstado(temp_circle);
+                    afnd.printTransiciones();
                 }
+
             }
         });
 
@@ -109,8 +115,8 @@ public class Controller implements Initializable{
                 //this.alphabetLabel.textProperty().setValue(newValue);
 
             this.afnd.setAlfabeto(newValue); // Asigna el alfabeto del textbox al AFND.
+            System.out.println(this.afnd.getAlfabeto());
 
-            //System.out.println(this.afnd.getAlfabeto());
 
 
             //System.out.println(newValue.trim().toCharArray()); try the language in the console
@@ -119,16 +125,13 @@ public class Controller implements Initializable{
 
     }
 
-    private void invalidDraw() {
+    private static void invalidDraw(String title, String headerText) {
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Operación Invalida");
-        alert.setHeaderText("No es posible dibujar el nodo indicado.");
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
         alert.setContentText(null);
-
         alert.showAndWait();
-
-
     }
 
 
@@ -217,10 +220,20 @@ public class Controller implements Initializable{
         for (Node temp_node: groupPaint.getChildren()) {
             if(temp_node instanceof Nodo){
                 temp_circle= ((Nodo)temp_node);
+
+                invalidDraw(
+                        "Operación Invalida",
+                        "No es posible dibujar el nodo indicado.");
+
                 if(temp_circle!=innCircle&&temp_circle.getBoundsInParent().intersects(innCircle.getBoundsInParent())){
+
                     return true;
+
                 }
+
+
             }
+
         }
         return false;
     }
