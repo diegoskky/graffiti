@@ -177,11 +177,14 @@ public class Controller implements Initializable{
             }
         });
 
+        /**
+         * Listener
+         */
         this.groupPaint.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 Nodo temp_circle= createCircle(event.getX(), event.getY(),false,false);
-                String input = "";
+                String input = ""; // ignore me.
 
                 if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
                     input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
@@ -191,6 +194,7 @@ public class Controller implements Initializable{
                     if (input != null) {
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
+                        afnd.addEstado(temp_circle); // adds a node to the AFND.
                         groupPaint.getChildren().addAll(temp_circle);
 
                     }
@@ -205,7 +209,7 @@ public class Controller implements Initializable{
                             temp_circle.setEstado(input);
                             temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                             temp_circle.setEsInitial(true);
-                            afnd.setEstadoInicial(temp_circle);
+                            afnd.setEstadoInicial(temp_circle); // Sets the Automata initial state.
                             groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
                         }
                         event.consume();
@@ -226,6 +230,7 @@ public class Controller implements Initializable{
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                         groupPaint.getChildren().add(temp_circle);
+                        afnd.addEstado(temp_circle);
                         event.consume();
                     }
                 }
@@ -266,13 +271,13 @@ public class Controller implements Initializable{
         if (afnd.comprobarAutomata()){
             if(this.afnd.comprobarPalabra(value)){
                 genericAlert("Palabra Valida" , "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
-            };
-            genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada no pertenece al autómata.");
+
+            }
+            else {
+                genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada NO pertenece al autómata.");
+            }
+
         }
-        genericAlert("El Autómata es inválido.", "Automata Inválido", "El autómata ingresado es invalido, intente con una nueva configuración.");
-
-
-
     }
 
 
@@ -342,10 +347,11 @@ public class Controller implements Initializable{
                             "Nodo Inicio: " + previous.getEstado() + " a Nodo llegada: " + circle.getEstado(),
                             "Caracter");
 
-                    System.out.println(nameOfTheTransition);
+                    System.out.println("Transición: " + nameOfTheTransition);
 
                     if (nameOfTheTransition != null && nameOfTheTransition != "Ingrese caracter...") {
-                        lineToConect= connect(previous,circle);
+                        lineToConect = connect(previous,circle);
+                        previous.addTransicion(new Transicion(circle, nameOfTheTransition)); // Adds a transition to the a Preview Node.
                         groupPaint.getChildren().add(lineToConect);
                         addTransicionActivate=false;
                         addTransition.setSelected(false);

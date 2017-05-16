@@ -13,6 +13,17 @@ public class Transicion {
         this.estadoLlegada = llegada;
     }
 
+    public Transicion(Nodo llegada, String nameOfTheTransition) {
+        this.transiciones = new ArrayList<>();
+        this.estadoLlegada = llegada;
+
+        transiciones.add(nameOfTheTransition.charAt(0)); // todo solo lee una wea.
+
+
+    }
+
+
+
     public ArrayList<Character> getTransiciones(){
         return transiciones;
     }
