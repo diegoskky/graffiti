@@ -29,6 +29,8 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
     private @FXML TextField readLanguageTextField;
+    private @FXML TextField inWordTF;
+    private @FXML Button checkWordBtn;
     private @FXML ToggleButton addStartNode; // todo
     private @FXML ToggleButton addNode;
     private @FXML ToggleButton addTransition;
@@ -248,7 +250,31 @@ public class Controller implements Initializable{
         });
 
 
+
+        this.inWordTF.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            System.out.println("Word: " + newValue);
+            this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue));
+        });
+
+
+
     }
+
+    private void checkWord( String value ) {
+
+        if (afnd.comprobarAutomata()){
+            if(this.afnd.comprobarPalabra(value)){
+                genericAlert("Palabra Valida" , "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
+            };
+            genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada no pertenece al autómata.");
+        }
+        genericAlert("El Autómata es inválido.", "Automata Inválido", "El autómata ingresado es invalido, intente con una nueva configuración.");
+
+
+
+    }
+
 
     private void invalidDraw() {//borrar y ocupar el generico
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -373,6 +399,15 @@ public class Controller implements Initializable{
             return result.get();
         }
         return null;
+    }
+
+    private void genericAlert(String title, String header, String contentText) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(contentText);
+
+        alert.showAndWait();
     }
 
 
