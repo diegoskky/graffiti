@@ -19,7 +19,7 @@ public class Nodo extends Circle {
 
 
     public Nodo(){
-        this.estado = super.getId(); // Adquiere un Id para el nodo. Todo notacion q1, q2, etc.
+        this.estado = super.getId(); // Adquiere un Id para el nodo. Todo notacion q1, q2, etc..
         this.esFinal = false;
         this.esInitial= false;
         this.transiciones = new ArrayList<>();
@@ -28,6 +28,7 @@ public class Nodo extends Circle {
     public Nodo(double x, double y){
         super(x, y, 20, Color.LIGHTGRAY);
         this.estado = super.getId();
+        this.estado = "hello node!";
         //this.forFinal= new Polygon();
         forInitial= new Polygon(new double[]{(double)(x-30),(double)(y+10),(double)(x-20),(double)(y),(double)(x-30),(double)(y-10)});
         forInitial.setVisible(true);

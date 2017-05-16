@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,6 +24,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
@@ -43,11 +45,6 @@ public class Controller implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.afnd= new Afnd();
-
-        Circle c= createCircle(100,100,false,false);
-        c.setFill(new ImagePattern(textToImage("q0","lightgray")));
-
-        this.groupPaint.getChildren().add(c);
 
         Circle circle= new Circle(0,0,10,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
@@ -232,7 +229,7 @@ public class Controller implements Initializable{
 
             this.afnd.setAlfabeto(newValue); // Asigna el alfabeto del textbox al AFND.
 
-            //System.out.println(this.afnd.getAlfabeto());
+            System.out.println("Alphabet: " + this.afnd.getAlfabeto());
 
 
             //System.out.println(newValue.trim().toCharArray()); try the language in the console
@@ -301,16 +298,26 @@ public class Controller implements Initializable{
                     previous=circle;
                     event.consume();
                 }else if(previous!=null&&addTransicionActivate&&previous!=circle){
-                    lineToConect= connect(previous,circle);
-                    groupPaint.getChildren().add(lineToConect);
-                    addTransicionActivate=false;
-                    addTransition.setSelected(false);
-                    line.setStartY(0);
-                    line.setStroke(Color.BLACK);
-                    previous.toFront();
-                    circle.toFront();
-                    previous=null;
-                    event.consume();
+
+                    String nameOfTheTransition = genericAlertInput(
+                            "Ingrese el caracter de la Transición",
+                            "Nodo Inicio: " + previous.getEstado() + " a Nodo llegada: " + circle.getEstado(),
+                            "Caracter");
+
+                    System.out.println(nameOfTheTransition);
+
+                    if (nameOfTheTransition != null) {
+                        lineToConect= connect(previous,circle);
+                        groupPaint.getChildren().add(lineToConect);
+                        addTransicionActivate=false;
+                        addTransition.setSelected(false);
+                        line.setStartY(0);
+                        line.setStroke(Color.BLACK);
+                        previous.toFront();
+                        circle.toFront();
+                        previous=null;
+                        event.consume();
+                    }
                 }
             }
         });
@@ -338,6 +345,24 @@ public class Controller implements Initializable{
         });
         return circle;
     }
+
+    private String genericAlertInput(String title, String header, String contentText) {
+        TextInputDialog dialog = new TextInputDialog("Ingrese caracter...");
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(contentText);
+
+// Traditional way to get the response value.
+        Optional<String> result = dialog.showAndWait();
+        String[] character = {new String()};
+        // The Java 8 way to get the response value (with lambda expression).
+
+        if (result.isPresent()){
+            return result.get();
+        }
+        return null;
+    }
+
 
 
     private Line connect(Nodo c1, Nodo c2) {
