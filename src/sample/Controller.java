@@ -179,25 +179,33 @@ public class Controller implements Initializable{
             @Override
             public void handle(MouseEvent event) {
                 Nodo temp_circle= createCircle(event.getX(), event.getY(),false,false);
-                String input= "";
+                String input = "";
+
                 if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
-                    //agregar alert
-                    temp_circle.setFill(new ImagePattern(textToImage(input,"lightgray")));
-                    groupPaint.getChildren().addAll(temp_circle);
-                    addNodeActivate= false;
+                    input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
+                    addNodeActivate = false;
                     addNode.setSelected(false);
                     circle.setFill(Color.LIGHTGRAY);
-                    event.consume();
+                    if (input != null) {
+                        temp_circle.setEstado(input);
+                        temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
+                        groupPaint.getChildren().addAll(temp_circle);
+
+                    }
                 } else if(addInitialNodeActivate &&!inn &&!detectCollitionsCircles(temp_circle)){
                     if(afnd.getEstadoInicial()==null) {
-                        //agregar alert
-                        temp_circle.setFill(new ImagePattern(textToImage(input,"lightgray")));
-                        temp_circle.setEsInitial(true);
-                        afnd.setEstadoInicial(temp_circle);
-                        groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
+                        input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
                         addInitialNodeActivate = false;
                         addStartNode.setSelected(false);
                         circleInitial.setFill(Color.LIGHTGRAY);
+
+                        if (input != null) {
+                            temp_circle.setEstado(input);
+                            temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
+                            temp_circle.setEsInitial(true);
+                            afnd.setEstadoInicial(temp_circle);
+                            groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
+                        }
                         event.consume();
                     } else {
                         genericAlert("Accion invalida","Ya existe un nodo incial",null, Alert.AlertType.WARNING);
@@ -211,9 +219,13 @@ public class Controller implements Initializable{
                     addFinal.setSelected(false);
                     addFinalNodeActivate=false;
                     circleFinal.setFill(Color.LIGHTGRAY);
-                    temp_circle.setFill(new ImagePattern(textToImage(input,"lightgray")));
-                    groupPaint.getChildren().add(temp_circle);
-                    event.consume();
+                    input= genericAlertInput("Ingrese nombre del Nodo final", null, "Nodo: ");
+                    if (input != null) {
+                        temp_circle.setEstado(input);
+                        temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
+                        groupPaint.getChildren().add(temp_circle);
+                        event.consume();
+                    }
                 }
             }
         });
@@ -298,7 +310,7 @@ public class Controller implements Initializable{
                     previous=circle;
                     event.consume();
                 }else if(previous!=null&&addTransicionActivate&&previous!=circle){
-
+                    System.out.println(previous.getEstado());
                     String nameOfTheTransition = genericAlertInput(
                             "Ingrese el caracter de la Transición",
                             "Nodo Inicio: " + previous.getEstado() + " a Nodo llegada: " + circle.getEstado(),
@@ -306,7 +318,7 @@ public class Controller implements Initializable{
 
                     System.out.println(nameOfTheTransition);
 
-                    if (nameOfTheTransition != null) {
+                    if (nameOfTheTransition != null && nameOfTheTransition != "Ingrese caracter...") {
                         lineToConect= connect(previous,circle);
                         groupPaint.getChildren().add(lineToConect);
                         addTransicionActivate=false;
@@ -347,7 +359,7 @@ public class Controller implements Initializable{
     }
 
     private String genericAlertInput(String title, String header, String contentText) {
-        TextInputDialog dialog = new TextInputDialog("Ingrese caracter...");
+        TextInputDialog dialog = new TextInputDialog(null);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(contentText);
