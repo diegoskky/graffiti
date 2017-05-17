@@ -17,7 +17,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
 
 <BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <top>
@@ -45,9 +44,9 @@
                   <Insets left="-10.0" right="-10.0" />
                </VBox.margin>
             </MenuBar>
-            <HBox id="barraHerramientas" alignment="CENTER" prefHeight="70.0" spacing="10.0">
+            <HBox id="barraHerramientas" alignment="CENTER" minHeight="-Infinity" prefHeight="75.0" spacing="10.0">
                <children>
-                  <Button fx:id="openBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-repeat: no-repeat; -fx-background-image: url('/resources/xfolder.png'); -fx-background-size: 100% 100%;">
+                  <Button fx:id="openBtn" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-repeat: no-repeat; -fx-background-image: url('/resources/xfolder.png'); -fx-background-size: 100% 100%;">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -55,7 +54,7 @@
                         <Blend />
                      </effect>
                   </Button>
-                  <Button fx:id="guardarBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-image: url('/resources/xsave.png'); -fx-background-repeat: no-repeat; -fx-background-size: 100% 100%;">
+                  <Button fx:id="guardarBtn" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-image: url('/resources/xsave.png'); -fx-background-repeat: no-repeat; -fx-background-size: 100% 100%;">
                      <effect>
                         <Blend />
                      </effect>
@@ -63,7 +62,7 @@
                         <Insets />
                      </opaqueInsets>
                   </Button>
-                  <Button id="leftBtn" fx:id="leftBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-Image: url('/resources/xundo.png'); -fx-background-repeat: no-repeat; -fx-background-size: 100% 100%;">
+                  <Button id="leftBtn" fx:id="leftBtn" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-Image: url('/resources/xundo.png'); -fx-background-repeat: no-repeat; -fx-background-size: 100% 100%;">
                      <effect>
                         <Blend />
                      </effect>
@@ -71,7 +70,7 @@
                         <Insets />
                      </opaqueInsets>
                   </Button>
-                  <Button id="rightBtn" fx:id="rightBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-image: url('/resources/xredo.png'); -fx-background-size: 100% 100%; -fx-background-repeat: no-repeat;">
+                  <Button id="rightBtn" fx:id="rightBtn" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-image: url('/resources/xredo.png'); -fx-background-size: 100% 100%; -fx-background-repeat: no-repeat;">
                      <effect>
                         <Blend />
                      </effect>
@@ -79,7 +78,7 @@
                         <Insets />
                      </opaqueInsets>
                   </Button>
-                  <Button id="comprobarBtn" fx:id="checkAFNDBtn" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-image: url('/resources/check.png'); -fx-background-size: 100% 100%; -fx-background-repeat: no-repeat;">
+                  <Button id="comprobarBtn" fx:id="checkAFNDBtn" contentDisplay="CENTER" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-image: url('/resources/check.png'); -fx-background-size: 100% 100%; -fx-background-repeat: no-repeat;">
                      <effect>
                         <Blend />
                      </effect>
@@ -90,23 +89,28 @@
                   <HBox alignment="CENTER" prefHeight="70.0" prefWidth="200.0">
                      <children>
                         <Label prefHeight="50.0" prefWidth="25.0" text="Σ =" />
-                        <TextField id="inLenguajeTF" fx:id="readLanguageTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="150.0" promptText="Ingrese Alfabeto..." />
+                        <TextField id="inLenguajeTF" fx:id="readLanguageTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="150.0" promptText="Ingrese Alfabeto...">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets></TextField>
                      </children>
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
                   </HBox>
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <VBox alignment="CENTER" prefHeight="70.0" prefWidth="150.0" spacing="10.0">
+                  <VBox alignment="CENTER" prefHeight="70.0" prefWidth="150.0">
                      <children>
-                        <TextField id="inPalabraTF" fx:id="inWordTF" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="25.0" prefWidth="150.0" promptText="Ingrese Palabra...">
-                           <font>
-                              <Font size="11.0" />
-                           </font>
-                        </TextField>
+                        <TextField id="inPalabraTF" fx:id="inWordTF" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="150.0" promptText="Ingrese Palabra..." />
                      </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
                   </VBox>
-                  <Button id="comprobarBtn" fx:id="checkWordBtn" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Comprobar" />
+                  <Button id="comprobarBtn" fx:id="checkWordBtn" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Palabra" />
                </children>
                <opaqueInsets>
                   <Insets />
@@ -118,10 +122,15 @@
    <left>
       <VBox id="panelBotonesIzq" alignment="TOP_CENTER" fillWidth="false" minWidth="-Infinity" prefWidth="100.0" spacing="10.0">
          <children>
-            <ToggleButton fx:id="addStartNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Start" />
-            <ToggleButton fx:id="addNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Node" />
-            <ToggleButton fx:id="addTransition" layoutX="23.0" layoutY="55.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Transition" />
-            <ToggleButton fx:id="addFinal" layoutX="23.0" layoutY="140.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Final" />
+            <ToggleButton fx:id="addStartNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Start" wrapText="true" />
+            <ToggleButton fx:id="addNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Node" wrapText="true" />
+            <ToggleButton fx:id="addTransition" layoutX="23.0" layoutY="55.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Transition" wrapText="true" />
+            <ToggleButton fx:id="addFinal" layoutX="23.0" layoutY="140.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Final" wrapText="true" />
+            <Button fx:id="integrityButton" accessibleRole="BUTTON" layoutX="23.0" layoutY="20.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Integrity" wrapText="true">
+               <effect>
+                  <Blend />
+               </effect>
+            </Button>
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -37,6 +37,7 @@ public class Controller implements Initializable{
     private @FXML ToggleButton addFinal; // todo
     private @FXML Group groupPaint;
     private @FXML TreeView treeView;
+    private @FXML Button integrityButton;
 
     private Nodo previous=null;
     private Line lineToConect,line=null;
@@ -256,38 +257,52 @@ public class Controller implements Initializable{
 
 
 
+        // this.checkWordBtn.setOnAction(event -> checkWord(inWordTF.getText())); // Click comprobar
+
+        this.integrityButton.setOnAction(event -> {
+
+            boolean integrityState = checkIntegrity(this.afnd);
+
+            if (integrityState){
+                genericAlert("El Autómata es válido.");
+            }
+            else {
+                genericAlert("El Autómata es inválido.");
+            }
+
+        });
+
         this.inWordTF.textProperty().addListener((observable, oldValue, newValue) -> {
 
             System.out.println("Word: " + newValue);
-            this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue));
+
+            this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue) );
         });
-
-
 
     }
 
-    private void checkWord( String value ) {
+    private boolean checkIntegrity(Afnd afnd) {
+        return afnd.comprobarAutomata();
+    }
 
-        if (afnd.comprobarAutomata()){
-            if(this.afnd.comprobarPalabra(value)){
+    /**
+     *
+     * @param word represents the word to be check by the alphabet.
+     */
+    private void checkWord( String word ) {
+
+        System.out.println(word);
+        System.out.println(this.afnd.getAlfabeto());
+
+        if(this.afnd.comprobarPalabra(word)){
                 genericAlert("Palabra Valida" , "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
-
             }
-            else {
+        else {
                 genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada NO pertenece al autómata.");
             }
 
         }
-    }
 
-
-    private void invalidDraw() {//borrar y ocupar el generico
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Operación Invalida");
-        alert.setHeaderText("No es posible dibujar el nodo indicado.");
-        alert.setContentText(null);
-        alert.showAndWait();
-    }
 
     /**
      * Alerta para el usuario (retroalimentacion del programa)
@@ -390,13 +405,20 @@ public class Controller implements Initializable{
         return circle;
     }
 
+    /**
+     * It displays an alert and returns a text form the user.
+     *
+     * @param title title of the alert.
+     * @param header header of the alert box.
+     * @param contentText text displaying the problem information.
+     * @return A text from the user.
+     */
     private String genericAlertInput(String title, String header, String contentText) {
         TextInputDialog dialog = new TextInputDialog(null);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(contentText);
 
-// Traditional way to get the response value.
         Optional<String> result = dialog.showAndWait();
         String[] character = {new String()};
         // The Java 8 way to get the response value (with lambda expression).
@@ -412,6 +434,19 @@ public class Controller implements Initializable{
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(contentText);
+
+        alert.showAndWait();
+    }
+
+    /**
+     * Display an alert with a single text.
+     * @param title represents the title of the alert message.
+     */
+    private void genericAlert(String title) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        //alert.setContentText(title);
 
         alert.showAndWait();
     }
