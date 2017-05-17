@@ -1,6 +1,6 @@
 package sample;
 
-import javafx.event.Event;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
@@ -20,8 +19,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 import java.net.URL;
 import java.util.Optional;
@@ -264,10 +261,10 @@ public class Controller implements Initializable{
             boolean integrityState = checkIntegrity(this.afnd);
 
             if (integrityState){
-                genericAlert("El Autómata es válido.");
+                autohideAlert("El Autómata es Válido.", 2000);
             }
             else {
-                genericAlert("El Autómata es inválido.");
+                autohideAlert("El Autómata es inválido.", 2000 );
             }
 
         });
@@ -281,7 +278,42 @@ public class Controller implements Initializable{
 
     }
 
+    public void autohideAlert(String title, int wait){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        //alert.setContentText(content);
+        //ButtonType buttonTypeOne = new ButtonType("Yes");
+        //ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+        //alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
+
+        Thread thread = new Thread(() -> {
+            try {
+                // Wait for 5 secs
+                Thread.sleep(wait);
+                if (alert.isShowing()) {
+                    Platform.runLater(() -> alert.close());
+                }
+            } catch (Exception exp) {
+                exp.printStackTrace();
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+        Optional<ButtonType> result = alert.showAndWait();
+    }
+
+
+
+    /**
+     * Check the integrity for any AFND.
+     * @param afnd an automata finite non-deterministic.
+     * @return true for a valid automata, false otherwise.
+     */
     private boolean checkIntegrity(Afnd afnd) {
+
+
+
         return afnd.comprobarAutomata();
     }
 
