@@ -326,7 +326,7 @@ public class Controller implements Initializable{
         System.out.println(word);
         System.out.println(this.afnd.getAlfabeto());
 
-        if(this.afnd.comprobarPalabra(word)){
+        if(this.afnd.comprobarPalabra2(word)){
                 genericAlert("Palabra Valida" , "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
             }
         else {

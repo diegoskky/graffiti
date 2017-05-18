@@ -91,6 +91,57 @@ public class Afnd {
     }
 
 
+    public boolean comprobarPalabra2(String palabra){
+        ArrayList<String> colaPalabras = new ArrayList<>();
+        ArrayList<Nodo> colaNodos = new ArrayList<>();
+        char letra;
+        String aux, palabraActual;
+        Nodo estadoActual = new Nodo();
+
+        letra = palabra.charAt(0);
+        aux = palabra.substring(1);
+        if(comprobarAlfabeto(letra)){
+            estadoActual = estadoInicial;
+            palabraActual = aux;
+            for(Transicion i : estadoActual.getTransiciones()){
+                if(i.getTransiciones().contains(letra)){
+                    colaNodos.add(i.getEstadoLlegada());
+                    colaPalabras.add(aux);
+                }
+            }
+
+            while(!aux.trim().isEmpty()){
+                letra = aux.charAt(0);
+                aux = aux.substring(1);
+                while(colaPalabras.contains(palabraActual) && palabraActual != ""){
+                    //System.out.println(colaPalabras);
+                    for(Transicion i : colaNodos.get(colaPalabras.indexOf(palabraActual)).getTransiciones()){
+                        if(i.getTransiciones().contains(letra) && comprobarAlfabeto(letra)){
+                            colaNodos.add(i.getEstadoLlegada());
+                            colaPalabras.add(aux);
+
+                        }
+                    }
+
+                    colaNodos.remove(colaPalabras.indexOf(palabraActual));
+                    colaPalabras.remove(colaPalabras.indexOf(palabraActual));
+                }
+                System.out.println(palabraActual+"!!");
+                palabraActual = aux;
+                System.out.println(colaPalabras+"???");
+            }
+        }
+        System.out.println(colaPalabras);
+        for(Nodo j : colaNodos){
+            System.out.println(j.getEstado()+"???");
+            if(j.getEsFinal()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public void printTransiciones(){
         System.out.println(estados.size());
     }
