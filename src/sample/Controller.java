@@ -318,16 +318,16 @@ public class Controller implements Initializable{
 
     /**
      * @param alphabet arreglo de String dividido por el caracter (;)
-     * @return retorna un alfabeto valido en caso de si el input es correcto 7
+     * @return retorna un alfabeto valido en caso de si el input es correcto
      * y un alfabeto vacio de lo contrario.
-     * También muestra una alerta.
+     * También muestra una alerta si el alfabeto no es válido.
      */
     private String[] checkAlphabet(String[] alphabet) {
 
         for (String a :
                 alphabet) {
             if (a.length() > 1){
-                genericAlert("No es un alfabeto válido, siga las instrucciones.");
+                autohideAlert("No es un alfabeto válido, siga las instrucciones.",2000);
                 return new String[0];
             }
         }
