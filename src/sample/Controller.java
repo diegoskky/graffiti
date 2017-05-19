@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,8 +21,6 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -246,8 +243,16 @@ public class Controller implements Initializable{
          * Reads dynamically from the language text box.
          */
         this.readLanguageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            this.afnd.setAlfabeto(newValue);
+
+
+            String[] alphabet = newValue.split(";");
+
+            String[] alphabetChecked = checkAlphabet(alphabet);
+
+            this.afnd.setAlfabeto(alphabetChecked);
             System.out.println("Alphabet: " + this.afnd.getAlfabeto());
+
+
         });
 
         Tooltip tooltipReadAlphabet = new Tooltip();
@@ -309,6 +314,24 @@ public class Controller implements Initializable{
         }
 
 
+    }
+
+    /**
+     * @param alphabet arreglo de String dividido por el caracter (;)
+     * @return retorna un alfabeto valido en caso de si el input es correcto 7
+     * y un alfabeto vacio de lo contrario.
+     * También muestra una alerta.
+     */
+    private String[] checkAlphabet(String[] alphabet) {
+
+        for (String a :
+                alphabet) {
+            if (a.length() > 1){
+                genericAlert("No es un alfabeto válido, siga las instrucciones.");
+                return new String[0];
+            }
+        }
+        return alphabet;
     }
 
     public void autohideAlert(String title, int wait){

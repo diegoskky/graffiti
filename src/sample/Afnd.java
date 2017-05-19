@@ -38,6 +38,7 @@ public class Afnd {
         this.alfabeto = alfabeto;
     }
 
+
     public Nodo getEstadoInicial() {
         return estadoInicial;
     }
@@ -223,5 +224,20 @@ public class Afnd {
         }
 
         return false;
+    }
+
+    /**
+     * Asigna una un alfabeto de caracteres (de uno en uno) desde una lista de String[]
+     * con solo un caracter por posición en el arreglo.
+     * @param alphabetValid un arreglo de String de solo una letra cada uno.
+     */
+    public void setAlfabeto(String[] alphabetValid) {
+
+        String alphabet = new String("");
+        for (int i = 0; i < alphabetValid.length; i++) {
+            String s = alphabetValid[i];
+            alphabet = alphabet + s;
+        }
+        this.alfabeto = alphabet;
     }
 }
