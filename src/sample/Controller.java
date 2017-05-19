@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,8 +20,12 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.text.Font;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -54,7 +59,7 @@ public class Controller implements Initializable{
         circleInitial.setStroke(Color.BLACK);
         Polygon poly= new Polygon(new double[]{(double)(circleInitial.getCenterX()-15),(double)(circleInitial.getCenterY()+5),
                 (double)(circleInitial.getCenterX()-10),(double)(circleInitial.getCenterY()),(double)(circleInitial.getCenterX()-15),(double)(circleInitial.getCenterY()-5)});
-        Pane graficInitialNode= new Pane();
+        Pane graficInitialNode = new Pane();
         graficInitialNode.getChildren().addAll(circleInitial,poly);
         this.addStartNode.setGraphic(graficInitialNode);
 
@@ -241,21 +246,33 @@ public class Controller implements Initializable{
          * Reads dynamically from the language text box.
          */
         this.readLanguageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-
-            //this.alphabetLabel.textProperty().setValue(newValue);
-            if(comprobarAlfabetoIngresado(newValue)) {
-                this.afnd.setAlfabeto(newValue.replace(";","")); // Asigna el alfabeto del textbox al AFND.
-                System.out.println("Alphabet: " + this.afnd.getAlfabeto());
-            }else{
-                //genericAlert("Formato incorrecto" , "El formato Ingresado es incorrecto", "");
-            }
-
-            //System.out.println(newValue.trim().toCharArray()); try the language in the console
+            this.afnd.setAlfabeto(newValue);
+            System.out.println("Alphabet: " + this.afnd.getAlfabeto());
         });
 
+        Tooltip tooltipReadAlphabet = new Tooltip();
+        tooltipReadAlphabet.setText(
+                "Para separar un caracter utilice (;)\n" +
+                "Ej: hello;world!\n"
+        );
+        tooltipReadAlphabet.setFont(Font.font(13));
+        tooltipReadAlphabet.contentDisplayProperty();
+        tooltipReadAlphabet.setWrapText(true);
 
+        /**
+         * It adds a tooltip to the alphabet input textbox.
+         */
+        this.readLanguageTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                tooltipReadAlphabet.show(readLanguageTextField,
+                        readLanguageTextField.getScene().getWindow().getX() + readLanguageTextField.getLayoutX() + readLanguageTextField.getWidth() + 110, //
+                        readLanguageTextField.getScene().getWindow().getY() + readLanguageTextField.getLayoutY() + readLanguageTextField.getHeight() + 70 ) ;
+            }
+            else {
+                tooltipReadAlphabet.hide();
+            }
+        });
 
-        // this.checkWordBtn.setOnAction(event -> checkWord(inWordTF.getText())); // Click comprobar
 
         this.integrityButton.setOnAction(event -> {
 
@@ -276,6 +293,21 @@ public class Controller implements Initializable{
 
             this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue) );
         });
+
+
+        // MATRIZ DE TRANSICIONES
+
+        TreeItem<String> rootNode =
+                new TreeItem<String>("Nodos");
+        rootNode.setExpanded(true);
+
+        ArrayList<String> lista = new ArrayList<>();
+
+        for (int i=0; i<10; i++){
+            TreeItem<String> leaf = new TreeItem<>("pico");
+            rootNode.getChildren().add(leaf);
+        }
+
 
     }
 
@@ -312,6 +344,9 @@ public class Controller implements Initializable{
      * @return true for a valid automata, false otherwise.
      */
     private boolean checkIntegrity(Afnd afnd) {
+
+
+
         return afnd.comprobarAutomata();
     }
 

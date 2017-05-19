@@ -173,7 +173,7 @@
    <right>
       <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
-            <TreeView minWidth="-Infinity" prefHeight="500.0" prefWidth="200.0" />
+            <TreeView fx:id="treeView" minWidth="-Infinity" prefHeight="500.0" prefWidth="200.0" />
          </children>
          <opaqueInsets>
             <Insets />

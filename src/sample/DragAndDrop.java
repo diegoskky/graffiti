@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 /**
  * Demonstrates a drag-and-drop feature.
@@ -128,6 +129,7 @@ public class DragAndDrop extends Application {
                 }
 
                 event.consume();
+
             }
         });
 
