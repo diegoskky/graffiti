@@ -90,7 +90,12 @@ public class Afnd {
         return false;
     }
 
-
+    /**
+     * Funcion que consume una palabra y verifica si es valida
+     * segun el lenguaje descrito por el automata
+     * @param palabra String con la palabra a verificar
+     * @return true si la palabra es valida
+     */
     public boolean comprobarPalabra2(String palabra){
         ArrayList<String> colaPalabras = new ArrayList<>();
         ArrayList<Nodo> colaNodos = new ArrayList<>();

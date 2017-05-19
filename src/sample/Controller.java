@@ -243,11 +243,12 @@ public class Controller implements Initializable{
         this.readLanguageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
 
             //this.alphabetLabel.textProperty().setValue(newValue);
-
-            this.afnd.setAlfabeto(newValue); // Asigna el alfabeto del textbox al AFND.
-
-            System.out.println("Alphabet: " + this.afnd.getAlfabeto());
-
+            if(comprobarAlfabetoIngresado(newValue)) {
+                this.afnd.setAlfabeto(newValue.replace(";","")); // Asigna el alfabeto del textbox al AFND.
+                System.out.println("Alphabet: " + this.afnd.getAlfabeto());
+            }else{
+                //genericAlert("Formato incorrecto" , "El formato Ingresado es incorrecto", "");
+            }
 
             //System.out.println(newValue.trim().toCharArray()); try the language in the console
         });
@@ -311,9 +312,6 @@ public class Controller implements Initializable{
      * @return true for a valid automata, false otherwise.
      */
     private boolean checkIntegrity(Afnd afnd) {
-
-
-
         return afnd.comprobarAutomata();
     }
 
@@ -322,18 +320,19 @@ public class Controller implements Initializable{
      * @param word represents the word to be check by the alphabet.
      */
     private void checkWord( String word ) {
+        if(comprobarPalabraIngresada(word)) {
+            System.out.println(word);
+            System.out.println(this.afnd.getAlfabeto());
 
-        System.out.println(word);
-        System.out.println(this.afnd.getAlfabeto());
-
-        if(this.afnd.comprobarPalabra2(word)){
-                genericAlert("Palabra Valida" , "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
-            }
-        else {
+            if (this.afnd.comprobarPalabra2(word)) {
+                genericAlert("Palabra Valida", "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
+            } else {
                 genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada NO pertenece al autómata.");
             }
-
+        }else{
+            genericAlert("Formato Incorrecto", "La palabra ingresada no es valida", "");
         }
+    }
 
 
     /**
@@ -529,6 +528,28 @@ public class Controller implements Initializable{
         return img ;
     }
 
+    /**
+     * Comprueba si el String ingresado como alfabeto tiene el formato correcto.
+     * @param alfabeto
+     * @return true si es correcto, false si no lo es.
+     */
+    public boolean comprobarAlfabetoIngresado(String alfabeto){
+        if(alfabeto.matches("((\\w;)|(\\s;))*((\\w)|(\\s))")){
+            return true;
+        }
+        return false;
+    }
 
+    /**
+     * Comprueba si la palabra ingresada tiene el formato correcto.
+     * @param palabra
+     * @return true si es correcto, false si no lo es.
+     */
+    public boolean comprobarPalabraIngresada(String palabra){
+        if(palabra.matches("\\w*")){
+            return true;
+        }
+        return false;
+    }
 
 }
