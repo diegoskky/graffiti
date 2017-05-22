@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,6 +28,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.List;
@@ -43,7 +46,10 @@ public class Controller implements Initializable{
     private @FXML ToggleButton addFinal; // todo
     private @FXML Group groupPaint;
     private @FXML TreeView treeView;
+    private @FXML ListView<String> listView;
     private @FXML Button integrityButton;
+    private @FXML Label listViewLabel;
+
 
     private Nodo previous=null;
     private Line lineToConect,line=null;
@@ -54,6 +60,9 @@ public class Controller implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.afnd= new Afnd();
+        this.listView = new ListView<String>();
+        setListView();
+
 
         Circle circle= new Circle(0,0,10,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
@@ -287,7 +296,7 @@ public class Controller implements Initializable{
             }
         });
 
-        // this.checkWordBtn.setOnAction(event -> checkWord(inWordTF.getText())); // Click comprobar
+        //this.checkWordBtn.setOnAction(event -> setListView()); // Click comprobar
 
         this.integrityButton.setOnAction(event -> {
 
@@ -312,16 +321,21 @@ public class Controller implements Initializable{
 
         // MATRIZ DE TRANSICIONES
 
-        TreeItem<String> rootNode =
-                new TreeItem<String>("Nodos");
-        rootNode.setExpanded(true);
 
-        ArrayList<String> lista = new ArrayList<>();
 
-        for (int i=0; i<10; i++){
-            TreeItem<String> leaf = new TreeItem<>("pico");
-            rootNode.getChildren().add(leaf);
-        }
+
+
+
+    }
+
+    private void setListView() {
+
+        ObservableList<String> names = FXCollections.observableArrayList(
+                "Julia", "Ian", "Sue", "Matthew", "Hannah", "Stephan", "Denise");
+        listView = new ListView<String>(names);
+        listView.setItems(names);
+
+        listViewLabel.setText("Matriz de Transiciones");
 
 
     }

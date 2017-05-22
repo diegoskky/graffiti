@@ -249,4 +249,8 @@ public class Afnd {
         ArrayList<Nodo> aux = this.estados;
         return aux;
     }
+
+    public ArrayList<Nodo> getEstados(){
+        return this.estados;
+    }
 }
