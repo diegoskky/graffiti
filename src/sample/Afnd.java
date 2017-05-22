@@ -22,10 +22,6 @@ public class Afnd {
         this.estadoInicial = null;
     }
 
-    public ArrayList<Nodo> getEstados() {
-        return estados;
-    }
-
     public void setEstados(ArrayList<Nodo> estados) {
         this.estados = estados;
     }
@@ -239,5 +235,15 @@ public class Afnd {
             alphabet = alphabet + s;
         }
         this.alfabeto = alphabet;
+    }
+
+    /**
+     * Retorna una lista con los estados
+     * @return ArrayList<Nodo>
+     */
+    public ArrayList<Nodo> getEstados(){
+        ArrayList<Nodo> aux = new ArrayList<>(estados);
+        aux.add(0,estadoInicial);
+        return aux;
     }
 }
