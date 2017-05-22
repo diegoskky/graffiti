@@ -237,6 +237,10 @@ public class Afnd {
         this.alfabeto = alphabet;
     }
 
+    /**
+     * Retorna una lista con los estados
+     * @return ArrayList<Nodo>
+     */
     public ArrayList<Nodo> getEstados(){
         ArrayList<Nodo> aux = new ArrayList<>(estados);
         aux.add(0,estadoInicial);
