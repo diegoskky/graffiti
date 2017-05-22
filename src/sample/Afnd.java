@@ -243,7 +243,9 @@ public class Afnd {
      * Retorna una lista con los estados
      * @return ArrayList<Nodo>
      */
-    public ArrayList<Nodo> getEstados(){
+
+
+    public ArrayList<Nodo> getEstados2(){
         ArrayList<Nodo> aux = new ArrayList<>(estados);
         aux.add(0,estadoInicial);
         return aux;

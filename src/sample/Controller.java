@@ -527,7 +527,7 @@ public class Controller implements Initializable{
                 c.getForInitial().getPoints().setAll(new Double[]{(double)(c.getCenterX() + offsetX -30),(double)(c.getCenterY() + offsetY +10),
                         (double)(c.getCenterX() + offsetX -20),(double)(c.getCenterY() + offsetY ),(double)(c.getCenterX() + offsetX-30), (double)(c.getCenterY() + offsetY-10)});
             }
-            for(Nodo temp_node:afnd.getEstados()){
+            for(Nodo temp_node:afnd.getEstados2()){
                 temp_node.update();
             }
             if(afnd.getEstadoInicial()!=null){
