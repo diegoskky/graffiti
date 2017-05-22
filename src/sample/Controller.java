@@ -334,8 +334,7 @@ public class Controller implements Initializable{
      */
     private String[] checkAlphabet(String[] alphabet) {
 
-        for (String a :
-                alphabet) {
+        for (String a :alphabet) {
             if (a.length() > 1){
                 autohideAlert("No es un alfabeto válido, siga las instrucciones.",2000);
                 return new String[0];
@@ -486,8 +485,7 @@ public class Controller implements Initializable{
                     System.out.println("Transición: " + nameOfTheTransition);
                     if (nameOfTheTransition != null && nameOfTheTransition != "Ingrese caracter...") {
                         CubicCurve curve = conectTo2(previous,circle);
-                        Transicion transicion=new Transicion(circle, nameOfTheTransition,curve,true
-                        );
+                        Transicion transicion=new Transicion(circle, nameOfTheTransition,curve,true);
                         Transicion.Anchor anchor= transicion.getAnchor();
 
                         List<Transicion.Arrow> arrows= transicion.getArrows();
@@ -720,6 +718,16 @@ public class Controller implements Initializable{
             return true;
         }
         return false;
+    }
+
+    public String[] checkWordsInTransicion(String newValue){
+
+        String[] alphabet = newValue.split(";");
+
+        String[] alphabetChecked = checkAlphabet(alphabet);
+
+        System.out.println("SymbolsChecked: " + alphabetChecked);
+        return alphabetChecked;
     }
 
 }

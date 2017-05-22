@@ -42,7 +42,7 @@ public class Transicion {
         this.estadoLlegada = llegada;
         transiciones.add(nameOfTheTransition.charAt(0)); // todo solo lee una wea.
         this.curve= curve;
-        this.anchor = new Anchor("LIGHTBLUE",curve.controlX1Property(), curve.controlY1Property(),curve.controlX2Property(), curve.controlY2Property(),transiciones.toString());
+        this.anchor = new Anchor("LIGHTBLUE",curve.controlX1Property(), curve.controlY1Property(),curve.controlX2Property(), curve.controlY2Property(),nameOfTheTransition);
 
         double[] arrowShape = new double[] { 0,0,8,16,-8,16 };//forma de la flechas
         arrows.add( new Arrow( curve, 0.96f, arrowShape));

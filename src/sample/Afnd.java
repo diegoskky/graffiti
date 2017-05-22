@@ -246,8 +246,7 @@ public class Afnd {
 
 
     public ArrayList<Nodo> getEstados2(){
-        ArrayList<Nodo> aux = new ArrayList<>(estados);
-        aux.add(0,estadoInicial);
+        ArrayList<Nodo> aux = this.estados;
         return aux;
     }
 }
