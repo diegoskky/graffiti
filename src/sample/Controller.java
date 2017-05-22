@@ -4,6 +4,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -16,14 +17,12 @@ import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -179,7 +178,7 @@ public class Controller implements Initializable{
         });
 
         /**
-         * Listener
+         * Listener all adds of software
          */
         this.groupPaint.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -365,9 +364,43 @@ public class Controller implements Initializable{
                     System.out.println("Transición: " + nameOfTheTransition);
 
                     if (nameOfTheTransition != null && nameOfTheTransition != "Ingrese caracter...") {
-                        lineToConect = connect(previous,circle);
-                        previous.addTransicion(new Transicion(circle, nameOfTheTransition)); // Adds a transition to the a Preview Node.
-                        groupPaint.getChildren().add(lineToConect);
+                        CubicCurve curve = conectTo(previous,circle);
+                        Transicion transicion=new Transicion(circle, nameOfTheTransition,curve);
+                        Transicion.Anchor anchor= transicion.getAnchor();
+                        List<Transicion.Arrow> arrows= transicion.getArrows();
+                        previous.addTransicion(transicion); // Adds a transition to the a Preview Node.
+                        groupPaint.getChildren().addAll(curve,anchor);
+                        for(Transicion.Arrow temp_value :arrows){
+                            groupPaint.getChildren().add(temp_value);
+                        }
+                        addTransicionActivate=false;
+                        addTransition.setSelected(false);
+                        line.setStartY(0);
+                        line.setStroke(Color.BLACK);
+                        previous.toFront();
+                        circle.toFront();
+                        previous=null;
+                        event.consume();
+                    }
+                }else if(previous!=null&&addTransicionActivate&&previous==circle){
+                    System.out.println(previous.getEstado());
+                    String nameOfTheTransition = genericAlertInput(
+                            "Ingrese el caracter de la Transición",
+                            "Nodo Inicio: " + previous.getEstado() + " a Nodo llegada: " + circle.getEstado(),
+                            "Caracter");
+                    System.out.println("Transición: " + nameOfTheTransition);
+                    if (nameOfTheTransition != null && nameOfTheTransition != "Ingrese caracter...") {
+                        CubicCurve curve = conectTo2(previous,circle);
+                        Transicion transicion=new Transicion(circle, nameOfTheTransition,curve,true
+                        );
+                        Transicion.Anchor anchor= transicion.getAnchor();
+
+                        List<Transicion.Arrow> arrows= transicion.getArrows();
+                        previous.addTransicion(transicion); // Adds a transition to the a Preview Node.
+                        groupPaint.getChildren().addAll(curve,anchor);
+                        for(Transicion.Arrow temp_value :arrows){
+                            groupPaint.getChildren().add(temp_value);
+                        }
                         addTransicionActivate=false;
                         addTransition.setSelected(false);
                         line.setStartY(0);
@@ -398,6 +431,12 @@ public class Controller implements Initializable{
             if(c.isEsInitial()) {
                 c.getForInitial().getPoints().setAll(new Double[]{(double)(c.getCenterX() + offsetX -30),(double)(c.getCenterY() + offsetY +10),
                         (double)(c.getCenterX() + offsetX -20),(double)(c.getCenterY() + offsetY ),(double)(c.getCenterX() + offsetX-30), (double)(c.getCenterY() + offsetY-10)});
+            }
+            for(Nodo temp_node:afnd.getEstados()){
+                temp_node.update();
+            }
+            if(afnd.getEstadoInicial()!=null){
+                afnd.getEstadoInicial().update();
             }
             orgSceneX = t.getSceneX();
             orgSceneY = t.getSceneY();
@@ -469,6 +508,72 @@ public class Controller implements Initializable{
         return line;
     }
 
+    private CubicCurve conectTo(Nodo c1, Nodo c2){
+        CubicCurve curve = new CubicCurve();
+        //aqui conectar a los nodos
+        curve.startXProperty().bind(c1.centerXProperty());
+        curve.startYProperty().bind(c1.centerYProperty());
+        curve.endXProperty().bind(c2.centerXProperty());
+        curve.endYProperty().bind(c2.centerYProperty());
+
+        double x1= c1.getCenterX();
+        double x2= c2.getCenterX();
+        double y1= c1.getCenterY();
+        double y2= c2.getCenterY();
+
+        double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
+        double tetha=Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2-y1,2))/distance)));
+        double hipo= distance/Math.cos(Math.toRadians(45));
+        System.out.println("distance: "+distance+" -tetha: "+tetha+" -hipo: "+hipo);
+        if(x1<=x2 ){ //primer cuadrante
+            curve.setControlX1((hipo * Math.cos(Math.toRadians(45 ))));
+            curve.setControlY1((hipo * Math.sin(Math.toRadians(45 ))));
+            curve.setControlX2((hipo * Math.cos(Math.toRadians(45 ))));
+            curve.setControlY2((hipo * Math.sin(Math.toRadians(45 ))));
+        }else {
+            curve.setControlX1((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
+            curve.setControlY1((Math.sqrt(Math.pow(y2 - y1, 2) / 2)));
+            curve.setControlX2((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
+            curve.setControlY2((Math.sqrt(Math.pow(y2 - y1, 2) / 2)));
+        }
+        curve.setStroke(Color.GRAY);
+        curve.setStrokeWidth(3);
+        curve.setStrokeLineCap(StrokeLineCap.SQUARE);
+        curve.setFill(Color.TRANSPARENT);
+        curve.getStrokeDashArray().setAll(5.0, 5.0);
+        return curve;
+    }
+
+    private CubicCurve conectTo2(Nodo c1, Nodo c2){
+        CubicCurve curve = new CubicCurve();
+        //aqui conectar a los nodos
+        curve.startXProperty().bind(c1.centerXProperty());
+        curve.startYProperty().bind(c1.centerYProperty());
+        curve.endXProperty().bind(c2.centerXProperty());
+        curve.endYProperty().bind(c2.centerYProperty());
+
+        double x1= c1.getCenterX();
+        double x2= c2.getCenterX();
+        double y1= c1.getCenterY();
+        double y2= c2.getCenterY();
+
+        double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
+        double tetha=Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2-y1,2))/distance)));
+        double hipo= distance/Math.cos(Math.toRadians(45));
+        System.out.println("distance: "+distance+" -tetha: "+tetha+" -hipo: "+hipo);
+
+            curve.setControlX1(x1+40);
+            curve.setControlY1(y1);
+            curve.setControlX2(x2);
+            curve.setControlY2(y2+40);
+
+        curve.setStroke(Color.GRAY);
+        curve.setStrokeWidth(3);
+        curve.setStrokeLineCap(StrokeLineCap.SQUARE);
+        curve.setFill(Color.TRANSPARENT);
+        curve.getStrokeDashArray().setAll(5.0, 5.0);
+        return curve;
+    }
 
     private boolean detectCollitionsCircles(Nodo innCircle){
         Nodo temp_circle= null;
@@ -485,14 +590,15 @@ public class Controller implements Initializable{
 
 
     private Image textToImage(String text, String color) {
-        Label label = new Label(" "+text);
+        Label label = new Label(text);
+        label.setAlignment(Pos.CENTER);
         label.setMinSize(30, 30);
         label.setMaxSize(30, 30);
         label.setPrefSize(30, 30);
         label.setStyle("-fx-background-color: "+color+"; -fx-text-fill:black;");
         label.setWrapText(true);
         Scene scene = new Scene(new Group(label));
-        WritableImage img = new WritableImage(25, 30) ;
+        WritableImage img = new WritableImage(30, 30) ;
         scene.snapshot(img);
         return img ;
     }

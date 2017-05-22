@@ -160,4 +160,8 @@ public class Afnd {
 
         return false;
     }
+
+    public ArrayList<Nodo> getEstados() {
+        return estados;
+    }
 }

@@ -29,10 +29,8 @@ public class Nodo extends Circle {
         super(x, y, 20, Color.LIGHTGRAY);
         this.estado = super.getId();
         this.estado = "hello node!";
-        //this.forFinal= new Polygon();
         forInitial= new Polygon(new double[]{(double)(x-30),(double)(y+10),(double)(x-20),(double)(y),(double)(x-30),(double)(y-10)});
         forInitial.setVisible(true);
-        //this.forInitial.setFill(Color.BLACK);
         this.estado ="";
         this.esFinal = false;
         this.transiciones = new ArrayList<>();
@@ -102,5 +100,11 @@ public class Nodo extends Circle {
 
     public void setForInitial(Polygon forInitial) {
         this.forInitial = forInitial;
+    }
+
+    public  void update(){
+        for (Transicion t: transiciones){
+            t.updateAllArrows();
+        }
     }
 }
