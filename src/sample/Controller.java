@@ -359,17 +359,12 @@ public class Controller implements Initializable{
         Optional<ButtonType> result = alert.showAndWait();
     }
 
-
-
     /**
      * Check the integrity for any AFND.
      * @param afnd an automata finite non-deterministic.
      * @return true for a valid automata, false otherwise.
      */
     private boolean checkIntegrity(Afnd afnd) {
-
-
-
         return afnd.comprobarAutomata();
     }
 
