@@ -330,11 +330,10 @@ public class Controller implements Initializable{
 
     private void setListView() {
 
-        ObservableList<String> names = FXCollections.observableArrayList(
-                "Julia", "Ian", "Sue", "Matthew", "Hannah", "Stephan", "Denise");
-        listView = new ListView<String>(names);
-        listView.setItems(names);
 
+        ObservableList<String> wordsList = FXCollections.observableArrayList("First word","Second word", "Third word", "Etc.");
+        listView = new ListView<>(wordsList);
+        listView.setItems(wordsList);
         listViewLabel.setText("Matriz de Transiciones");
 
 
