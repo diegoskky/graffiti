@@ -1,76 +1,34 @@
-
 package sample;
-
-import javafx.beans.property.DoubleProperty;
-import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
-import javafx.scene.Cursor;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.CubicCurve;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.StrokeType;
-import javafx.scene.transform.Rotate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.application.Application;
+import javafx.beans.property.DoubleProperty;
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.CubicCurve;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeType;
+import javafx.scene.transform.Rotate;
+import javafx.stage.Stage;
 
-public class Transicion {
+/**
+ * Example of how a cubic curve works, drag the anchors around to change the curve.
+ * Extended with arrows with the help of José Pereda: http://stackoverflow.com/questions/26702519/javafx-line-curve-with-arrow-head
+ * Original code by jewelsea: http://stackoverflow.com/questions/13056795/cubiccurve-javafx
+ */
+public class CubicCurveManipulatorWithArrows extends Application {
+
     List<Arrow> arrows = new ArrayList<Arrow>();
-    private CubicCurve curve;
-    private Label caracteres;
-    private Anchor anchor;
-    private ArrayList<Character> transiciones;
-    private Nodo estadoLlegada;
-
-    public Transicion(Nodo llegada){
-        this.transiciones = new ArrayList<>();
-        this.estadoLlegada = llegada;
-    }
-
-    public Transicion(Nodo llegada, String nameOfTheTransition,CubicCurve curve) {
-        this.transiciones = new ArrayList<>();
-        this.estadoLlegada = llegada;
-        transiciones.add(nameOfTheTransition.charAt(0)); // todo solo lee una wea.
-        this.curve= curve;
-        this.anchor = new Anchor("LIGHTBLUE",curve.controlX1Property(), curve.controlY1Property(),curve.controlX2Property(), curve.controlY2Property(),transiciones.toString());
-
-        double[] arrowShape = new double[] { 0,0,8,16,-8,16 };//forma de la flechas
-        arrows.add( new Arrow( curve, 0.96f, arrowShape));
-    }
-
-    public Transicion(Nodo llegada, String nameOfTheTransition,CubicCurve curve,boolean boll) {
-        this.transiciones = new ArrayList<>();
-        this.estadoLlegada = llegada;
-        transiciones.add(nameOfTheTransition.charAt(0)); // todo solo lee una wea.
-        this.curve= curve;
-        this.anchor = new Anchor("LIGHTBLUE",curve.controlX1Property(), curve.controlY1Property(),curve.controlX2Property(), curve.controlY2Property(),transiciones.toString(),boll);
-
-        double[] arrowShape = new double[] { 0,0,8,16,-8,16 };//forma de la flechas
-        arrows.add( new Arrow( curve, 0.96f, arrowShape));
-    }
-
-
-    public ArrayList<Character> getTransiciones(){
-        return transiciones;
-    }
-
-    public void addTransicion(char transicion){
-        transiciones.add(transicion);
-    }
-
-    public Nodo getEstadoLlegada(){
-        return estadoLlegada;
-    }
 
     public static class Arrow extends Polygon {
 
@@ -95,7 +53,7 @@ public class Transicion {
 
         private void init() {
 
-            setFill(Color.BLACK);
+            setFill(Color.web("#ff0900"));
 
             rz = new Rotate();
             {
@@ -166,13 +124,80 @@ public class Transicion {
         }
     }
 
+
+
+    public static void main(String[] args) throws Exception { launch(args); }
+    @Override public void start(final Stage stage) throws Exception {
+        CubicCurve curve = createStartingCurve(100d,300d,300d,100d);
+
+        Anchor start    = new Anchor(Color.PALEGREEN, curve.startXProperty(),    curve.startYProperty());
+        Anchor control1 = new Anchor(Color.GOLD,      curve.controlX1Property(), curve.controlY1Property(),curve.controlX2Property(), curve.controlY2Property());
+        Anchor end      = new Anchor(Color.TOMATO,    curve.endXProperty(),      curve.endYProperty());
+
+        Group root = new Group();
+        root.getChildren().addAll(curve, start, control1, end);
+
+        double[] arrowShape = new double[] { 0,0,10,20,-10,20 };//forma de la flechas
+
+        arrows.add( new Arrow( curve, 0.02f, arrowShape));
+        arrows.add( new Arrow( curve, 0.98f, arrowShape));
+        root.getChildren().addAll( arrows);
+
+        stage.setTitle("Cubic Curve Manipulation Sample");
+        stage.setScene(new Scene( root, 400, 400, Color.ALICEBLUE));
+        stage.show();
+    }
+
+
+    private CubicCurve createStartingCurve(Double x1,Double y1,Double x2,Double y2) {
+        CubicCurve curve = new CubicCurve();
+        //aqui conectar a los nodos
+        curve.setStartX(x1);
+        curve.setStartY(y1);
+        curve.setEndX(x2);
+        curve.setEndY(y2);
+        double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
+        double tetha=Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2-y1,2))/distance)));
+        double hipo= distance/Math.cos(Math.toRadians(45));
+        System.out.println("distance: "+distance+" -tetha: "+tetha+" -hipo: "+hipo);
+        if(x1<=x2 ){ //primer cuadrante
+            curve.setControlX1((hipo * Math.cos(Math.toRadians(45 ))));
+            curve.setControlY1((hipo * Math.sin(Math.toRadians(45 ))));
+            curve.setControlX2((hipo * Math.cos(Math.toRadians(45 ))));
+            curve.setControlY2((hipo * Math.sin(Math.toRadians(45 ))));
+        }else {
+            curve.setControlX1((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
+            curve.setControlY1((Math.sqrt(Math.pow(y2 - y1, 2) / 2)));
+            curve.setControlX2((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
+            curve.setControlY2((Math.sqrt(Math.pow(y2 - y1, 2) / 2)));
+        }
+        curve.setStroke(Color.FORESTGREEN);
+        curve.setStrokeWidth(4);
+        curve.setStrokeLineCap(StrokeLineCap.ROUND);
+        curve.setFill(Color.TRANSPARENT);
+        return curve;
+    }
+
+
     // a draggable anchor displayed around a point.
     class Anchor extends Circle {
+        Anchor(Color color, DoubleProperty x, DoubleProperty y) {
+            super(x.get(), y.get(), 10);
+            setFill(color.deriveColor(1, 1, 1, 0.5));
+            setStroke(color);
+            setStrokeWidth(2);
+            setStrokeType(StrokeType.OUTSIDE);
 
-        Anchor(String color, DoubleProperty x1, DoubleProperty y1,DoubleProperty x2, DoubleProperty y2,String letrasFondo) {
-            super(x1.get(), y1.get(), 15);
-            setFill(new ImagePattern(textToImage(letrasFondo,color)));
-            setStroke(Color.LIGHTBLUE);
+            x.bind(centerXProperty());
+            y.bind(centerYProperty());
+            this.setVisible(true);//true
+            enableDrag();
+        }
+
+        Anchor(Color color, DoubleProperty x1, DoubleProperty y1,DoubleProperty x2, DoubleProperty y2) {
+            super(x1.get(), y1.get(), 10);
+            setFill(color.deriveColor(1, 1, 1, 0.5));
+            setStroke(color);
             setStrokeWidth(2);
             setStrokeType(StrokeType.OUTSIDE);
 
@@ -184,24 +209,9 @@ public class Transicion {
             enableDrag();
         }
 
-        Anchor(String color, DoubleProperty x1, DoubleProperty y1,DoubleProperty x2, DoubleProperty y2,String letrasFondo,boolean bool) {
-            super(x1.get(), y1.get(), 15);
-            setFill(new ImagePattern(textToImage(letrasFondo,color)));
-            setStroke(Color.LIGHTBLUE);
-            setStrokeWidth(2);
-            setStrokeType(StrokeType.OUTSIDE);
-
-            x1.bind(centerXProperty());
-            y1.bind(centerYProperty().subtract(70d));
-            x2.bind(centerXProperty().add(70d));
-            y2.bind(centerYProperty().add(70d));
-            this.setVisible(true);//true
-            enableDrag();
-        }
-
         // make a node movable by dragging it around with the mouse.
         private void enableDrag() {
-            final Transicion.Anchor.Delta dragDelta = new Transicion.Anchor.Delta();
+            final Delta dragDelta = new Delta();
             setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override public void handle(MouseEvent mouseEvent) {
                     // record a delta distance for the drag and drop operation.
@@ -251,38 +261,4 @@ public class Transicion {
         // records relative x and y co-ordinates.
         private class Delta { double x, y; }
     }
-
-
-    public List<Arrow> getArrows() {
-        return arrows;
-    }
-
-    public Anchor getAnchor() {
-        return anchor;
-    }
-
-    public CubicCurve getCurve() {
-        return curve;
-    }
-
-    public void updateAllArrows(){
-        for (Arrow arrow: arrows){
-            arrow.update();
-        }
-    }
-
-    private Image textToImage(String text, String color) {
-        Label label = new Label(text);
-        label.setAlignment(Pos.CENTER);
-        label.setMinSize(30, 30);
-        label.setMaxSize(30, 30);
-        label.setPrefSize(30, 30);
-        label.setStyle("-fx-background-color: "+color+"; -fx-text-fill:black;");
-        label.setWrapText(true);
-        Scene scene = new Scene(new Group(label));
-        WritableImage img = new WritableImage(30, 30) ;
-        scene.snapshot(img);
-        return img ;
-    }
-
 }
