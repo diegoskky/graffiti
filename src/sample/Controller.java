@@ -20,9 +20,15 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.text.Font;
 
 import java.net.URL;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -246,15 +252,39 @@ public class Controller implements Initializable{
 
             //this.alphabetLabel.textProperty().setValue(newValue);
 
-            this.afnd.setAlfabeto(newValue); // Asigna el alfabeto del textbox al AFND.
+            String[] alphabet = newValue.split(";");
 
+            String[] alphabetChecked = checkAlphabet(alphabet);
+
+            this.afnd.setAlfabeto(alphabetChecked);
             System.out.println("Alphabet: " + this.afnd.getAlfabeto());
 
 
             //System.out.println(newValue.trim().toCharArray()); try the language in the console
         });
 
+        Tooltip tooltipReadAlphabet = new Tooltip();
+        tooltipReadAlphabet.setText(
+                "Para separar un caracter utilice (;)\n" +
+                "Ej: hello;world!\n"
+        );
+        tooltipReadAlphabet.setFont(Font.font(13));
+        tooltipReadAlphabet.contentDisplayProperty();
+        tooltipReadAlphabet.setWrapText(true);
 
+        /**
+         * It adds a tooltip to the alphabet input textbox.
+         */
+        this.readLanguageTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                tooltipReadAlphabet.show(readLanguageTextField,
+                        readLanguageTextField.getScene().getWindow().getX() + readLanguageTextField.getLayoutX() + readLanguageTextField.getWidth() + 110, //
+                        readLanguageTextField.getScene().getWindow().getY() + readLanguageTextField.getLayoutY() + readLanguageTextField.getHeight() + 70 ) ;
+            }
+            else {
+                tooltipReadAlphabet.hide();
+            }
+        });
 
         // this.checkWordBtn.setOnAction(event -> checkWord(inWordTF.getText())); // Click comprobar
 
@@ -263,10 +293,10 @@ public class Controller implements Initializable{
             boolean integrityState = checkIntegrity(this.afnd);
 
             if (integrityState){
-                genericAlert("El Autómata es válido.");
+                autohideAlert("El Autómata es Válido.", 2000);
             }
             else {
-                genericAlert("El Autómata es inválido.");
+                autohideAlert("El Autómata es inválido.", 2000 );
             }
 
         });
@@ -278,8 +308,71 @@ public class Controller implements Initializable{
             this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue) );
         });
 
+
+        // MATRIZ DE TRANSICIONES
+
+        TreeItem<String> rootNode =
+                new TreeItem<String>("Nodos");
+        rootNode.setExpanded(true);
+
+        ArrayList<String> lista = new ArrayList<>();
+
+        for (int i=0; i<10; i++){
+            TreeItem<String> leaf = new TreeItem<>("pico");
+            rootNode.getChildren().add(leaf);
+        }
+
+
     }
 
+    /**
+     * @param alphabet arreglo de String dividido por el caracter (;)
+     * @return retorna un alfabeto valido en caso de si el input es correcto 7
+     * y un alfabeto vacio de lo contrario.
+     * También muestra una alerta.
+     */
+    private String[] checkAlphabet(String[] alphabet) {
+
+        for (String a :
+                alphabet) {
+            if (a.length() > 1){
+                genericAlert("No es un alfabeto válido, siga las instrucciones.");
+                return new String[0];
+            }
+        }
+        return alphabet;
+    }
+
+    public void autohideAlert(String title, int wait){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        //alert.setContentText(content);
+        //ButtonType buttonTypeOne = new ButtonType("Yes");
+        //ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+        //alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
+
+        Thread thread = new Thread(() -> {
+            try {
+                // Wait for 5 secs
+                Thread.sleep(wait);
+                if (alert.isShowing()) {
+                    Platform.runLater(() -> alert.close());
+                }
+            } catch (Exception exp) {
+                exp.printStackTrace();
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+        Optional<ButtonType> result = alert.showAndWait();
+    }
+
+    /**
+     * Check the integrity for any AFND.
+     * @param afnd an automata finite non-deterministic.
+     * @return true for a valid automata, false otherwise.
+     */
     private boolean checkIntegrity(Afnd afnd) {
         return afnd.comprobarAutomata();
     }
@@ -289,18 +382,19 @@ public class Controller implements Initializable{
      * @param word represents the word to be check by the alphabet.
      */
     private void checkWord( String word ) {
+        if(comprobarPalabraIngresada(word)) {
+            System.out.println(word);
+            System.out.println(this.afnd.getAlfabeto());
 
-        System.out.println(word);
-        System.out.println(this.afnd.getAlfabeto());
-
-        if(this.afnd.comprobarPalabra(word)){
-                genericAlert("Palabra Valida" , "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
-            }
-        else {
+            if (this.afnd.comprobarPalabra2(word)) {
+                genericAlert("Palabra Valida", "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
+            } else {
                 genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada NO pertenece al autómata.");
             }
-
+        }else{
+            genericAlert("Formato Incorrecto", "La palabra ingresada no es valida", "");
         }
+    }
 
 
     /**
@@ -603,6 +697,28 @@ public class Controller implements Initializable{
         return img ;
     }
 
+    /**
+     * Comprueba si el String ingresado como alfabeto tiene el formato correcto.
+     * @param alfabeto
+     * @return true si es correcto, false si no lo es.
+     */
+    public boolean comprobarAlfabetoIngresado(String alfabeto){
+        if(alfabeto.matches("((\\w;)|(\\s;))*((\\w)|(\\s))")){
+            return true;
+        }
+        return false;
+    }
 
+    /**
+     * Comprueba si la palabra ingresada tiene el formato correcto.
+     * @param palabra
+     * @return true si es correcto, false si no lo es.
+     */
+    public boolean comprobarPalabraIngresada(String palabra){
+        if(palabra.matches("\\w*")){
+            return true;
+        }
+        return false;
+    }
 
 }
