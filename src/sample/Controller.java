@@ -337,7 +337,7 @@ public class Controller implements Initializable{
         observableList.removeAll();
 
 
-        VBox.setVgrow(listView, Priority.ALWAYS);
+        panelDeTransiciones.setVgrow(listView, Priority.ALWAYS);
         listViewLabel.setText("Matriz de Transiciones");
 
         observableList.addAll(this.afnd.getArrayEstados());
@@ -347,10 +347,6 @@ public class Controller implements Initializable{
 
         });
         listView.setItems(observableList);
-
-
-
-
 
     }
 
