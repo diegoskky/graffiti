@@ -19,7 +19,7 @@ public class Nodo extends Circle {
 
 
     public Nodo(){
-        this.estado = super.getId(); // Adquiere un Id para el nodo. Todo notacion q1, q2, etc..
+        this.estado = super.getId();
         this.esFinal = false;
         this.esInitial= false;
         this.transiciones = new ArrayList<>();

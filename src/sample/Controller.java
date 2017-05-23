@@ -1,6 +1,10 @@
 package sample;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -27,58 +31,75 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.net.URL;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
-public class Controller implements Initializable{
-    private @FXML TextField readLanguageTextField;
-    private @FXML TextField inWordTF;
-    private @FXML Button checkWordBtn;
-    private @FXML ToggleButton addStartNode; // todo
-    private @FXML ToggleButton addNode;
-    private @FXML ToggleButton addTransition;
-    private @FXML ToggleButton addFinal; // todo
-    private @FXML Group groupPaint;
-    private @FXML TreeView treeView;
-    private @FXML ListView<String> listView;
-    private @FXML Button integrityButton;
-    private @FXML Label listViewLabel;
-    private @FXML VBox panelDeTransiciones;
+public class Controller implements Initializable {
+    private @FXML
+    TextField readLanguageTextField;
+    private @FXML
+    TextField inWordTF;
+    private @FXML
+    Button checkWordBtn;
+    private @FXML
+    ToggleButton addStartNode;
+    private @FXML
+    ToggleButton addNode;
+    private @FXML
+    ToggleButton addTransition;
+    private @FXML
+    ToggleButton addFinal;
+    private @FXML
+    Group groupPaint;
+    private @FXML
+    ListView<String> listView;
+    private @FXML
+    Button integrityButton;
+    private @FXML
+    Label listViewLabel;
+    private @FXML
+    VBox panelDeTransiciones;
 
-    private Nodo previous=null;
-    private Line lineToConect,line=null;
+    private Nodo previous = null;
+    private Line lineToConect, line = null;
     private Afnd afnd;
-    private double orgSceneX,orgSceneY,previousX,previousY;
-    private boolean inn,addNodeActivate,addTransicionActivate,addInitialNodeActivate,addFinalNodeActivate=false;
+    private double orgSceneX, orgSceneY, previousX, previousY;
+    private boolean inn, addNodeActivate, addTransicionActivate, addInitialNodeActivate, addFinalNodeActivate = false;
 
     private ObservableList<String> observableList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.afnd= new Afnd();
+        this.afnd = new Afnd();
         updateTransitionMatrix();
 
 
-        Circle circle= new Circle(0,0,10,Color.LIGHTGRAY);
+        Circle circle = new Circle(0, 0, 10, Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
         this.addNode.setGraphic(circle);
 
-        Circle circleInitial= new Circle(15,10,10,Color.LIGHTGRAY);
+        Circle circleInitial = new Circle(15, 10, 10, Color.LIGHTGRAY);
         circleInitial.setStroke(Color.BLACK);
-        Polygon poly= new Polygon(new double[]{(double)(circleInitial.getCenterX()-15),(double)(circleInitial.getCenterY()+5),
-                (double)(circleInitial.getCenterX()-10),(double)(circleInitial.getCenterY()),(double)(circleInitial.getCenterX()-15),(double)(circleInitial.getCenterY()-5)});
-        Pane graficInitialNode= new Pane();
-        graficInitialNode.getChildren().addAll(circleInitial,poly);
+        Polygon poly = new Polygon(new double[]{
+                (double) (circleInitial.getCenterX() - 15), (double) (circleInitial.getCenterY() + 5),
+                (double) (circleInitial.getCenterX() - 10), (double) (circleInitial.getCenterY()),
+                (double) (circleInitial.getCenterX() - 15), (double) (circleInitial.getCenterY() - 5)});
+        Pane graficInitialNode = new Pane();
+        graficInitialNode.getChildren().addAll(circleInitial, poly);
         this.addStartNode.setGraphic(graficInitialNode);
 
-        Circle circleFinal= new Circle(0,0,10,Color.LIGHTGRAY);
+        Circle circleFinal = new Circle(0, 0, 10, Color.LIGHTGRAY);
         circleFinal.setStroke(Color.BLACK);
         circleFinal.setStrokeWidth(3);
         this.addFinal.setGraphic(circleFinal);
 
-        line=new Line(0,0,15,15);
+        line = new Line(0, 0, 15, 15);
         line.setStroke(Color.BLACK);
         line.setStrokeWidth(2);
         line.setStrokeLineCap(StrokeLineCap.ROUND);
@@ -87,26 +108,26 @@ public class Controller implements Initializable{
 
         this.addStartNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                addNodeActivate=false;
+                addNodeActivate = false;
                 addNode.setSelected(false);
                 circle.setFill(Color.LIGHTGRAY);
 
                 addFinal.setSelected(false);
-                addFinalNodeActivate=false;
+                addFinalNodeActivate = false;
                 circleFinal.setFill(Color.LIGHTGRAY);
 
                 addTransition.setSelected(false);
-                addTransicionActivate=false;
+                addTransicionActivate = false;
                 line.setStartY(0);
                 line.setStroke(Color.BLACK);
-                previous= null;
-                if(addInitialNodeActivate){
+                previous = null;
+                if (addInitialNodeActivate) {
                     addStartNode.setSelected(false);
-                    addInitialNodeActivate=false;
+                    addInitialNodeActivate = false;
                     circleInitial.setFill(Color.LIGHTGRAY);
                 } else {
                     addStartNode.setSelected(true);
-                    addInitialNodeActivate=true;
+                    addInitialNodeActivate = true;
                     circleInitial.setFill(Color.WHITE);
                 }
             }
@@ -114,24 +135,24 @@ public class Controller implements Initializable{
 
         this.addNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                addInitialNodeActivate=false;
+                addInitialNodeActivate = false;
                 addStartNode.setSelected(false);
                 circleInitial.setFill(Color.LIGHTGRAY);
 
                 addFinal.setSelected(false);
-                addFinalNodeActivate=false;
+                addFinalNodeActivate = false;
                 circleFinal.setFill(Color.LIGHTGRAY);
 
-                addTransicionActivate=false;
+                addTransicionActivate = false;
                 addTransition.setSelected(false);
                 line.setStartY(0);
                 line.setStroke(Color.BLACK);
-                previous= null;
-                if(addNodeActivate){
-                    addNodeActivate=false;
+                previous = null;
+                if (addNodeActivate) {
+                    addNodeActivate = false;
                     circle.setFill(Color.LIGHTGRAY);
                 } else {
-                    addNodeActivate=true;
+                    addNodeActivate = true;
                     circle.setFill(Color.WHITE);
                 }
             }
@@ -140,24 +161,24 @@ public class Controller implements Initializable{
         this.addFinal.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                addInitialNodeActivate=false;
+                addInitialNodeActivate = false;
                 addStartNode.setSelected(false);
                 circleInitial.setFill(Color.LIGHTGRAY);
 
                 addNode.setSelected(false);
-                addNodeActivate=false;
+                addNodeActivate = false;
                 circle.setFill(Color.LIGHTGRAY);
 
-                addTransicionActivate=false;
+                addTransicionActivate = false;
                 addTransition.setSelected(false);
                 line.setStartY(0);
                 line.setStroke(Color.BLACK);
-                previous= null;
-                if(addFinalNodeActivate){
-                    addFinalNodeActivate=false;
+                previous = null;
+                if (addFinalNodeActivate) {
+                    addFinalNodeActivate = false;
                     circleFinal.setFill(Color.LIGHTGRAY);
-                }else{
-                    addFinalNodeActivate=true;
+                } else {
+                    addFinalNodeActivate = true;
                     circleFinal.setFill(Color.WHITE);
                 }
             }
@@ -166,23 +187,23 @@ public class Controller implements Initializable{
         this.addTransition.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                addInitialNodeActivate=false;
+                addInitialNodeActivate = false;
                 circleInitial.setFill(Color.LIGHTGRAY);
                 addStartNode.setSelected(false);
 
                 addNode.setSelected(false);
-                addNodeActivate=false;
+                addNodeActivate = false;
                 circle.setFill(Color.LIGHTGRAY);
 
-                addFinalNodeActivate=false;
+                addFinalNodeActivate = false;
                 addFinal.setSelected(false);
                 circleFinal.setFill(Color.LIGHTGRAY);
-                if(addTransicionActivate){
-                    addTransicionActivate=false;
+                if (addTransicionActivate) {
+                    addTransicionActivate = false;
                     line.setStartY(0);
                     line.setStroke(Color.BLACK);
-                }else{
-                    addTransicionActivate=true;
+                } else {
+                    addTransicionActivate = true;
                     line.setStartY(15);
                     line.setStroke(Color.GRAY);
 
@@ -196,11 +217,11 @@ public class Controller implements Initializable{
         this.groupPaint.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                Nodo temp_circle= createCircle(event.getX(), event.getY(),false,false);
+                Nodo temp_circle = createCircle(event.getX(), event.getY(), false, false);
                 String input = ""; // ignore me.
 
-                if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
-                    input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
+                if (addNodeActivate && !inn && !detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
+                    input = genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
                     addNodeActivate = false;
                     addNode.setSelected(false);
                     circle.setFill(Color.LIGHTGRAY);
@@ -214,9 +235,9 @@ public class Controller implements Initializable{
                         groupPaint.getChildren().addAll(temp_circle);
 
                     }
-                } else if(addInitialNodeActivate &&!inn &&!detectCollitionsCircles(temp_circle)){
-                    if(afnd.getEstadoInicial()==null) {
-                        input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
+                } else if (addInitialNodeActivate && !inn && !detectCollitionsCircles(temp_circle)) {
+                    if (afnd.getEstadoInicial() == null) {
+                        input = genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
                         addInitialNodeActivate = false;
                         addStartNode.setSelected(false);
                         circleInitial.setFill(Color.LIGHTGRAY);
@@ -233,18 +254,20 @@ public class Controller implements Initializable{
                         }
                         event.consume();
                     } else {
-                        genericAlert("Accion invalida","Ya existe un nodo incial",null, Alert.AlertType.WARNING);
+                        genericAlert("Accion invalida",
+                                "Ya existe un nodo incial",
+                                null, Alert.AlertType.WARNING);
                         addInitialNodeActivate = false;
                         addStartNode.setSelected(false);
                         circleInitial.setFill(Color.LIGHTGRAY);
                     }
-                } else if(addFinalNodeActivate&&!inn &&!detectCollitionsCircles(temp_circle)){
+                } else if (addFinalNodeActivate && !inn && !detectCollitionsCircles(temp_circle)) {
                     temp_circle.setEsFinal(true);
                     temp_circle.setStrokeWidth(4);
                     addFinal.setSelected(false);
-                    addFinalNodeActivate=false;
+                    addFinalNodeActivate = false;
                     circleFinal.setFill(Color.LIGHTGRAY);
-                    input= genericAlertInput("Ingrese nombre del Nodo final", null, "Nodo: ");
+                    input = genericAlertInput("Ingrese nombre del Nodo final", null, "Nodo: ");
                     if (input != null) {
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
@@ -259,7 +282,6 @@ public class Controller implements Initializable{
                 }
             }
         });
-
 
 
         /**
@@ -280,40 +302,53 @@ public class Controller implements Initializable{
             //System.out.println(newValue.trim().toCharArray()); try the language in the console
         });
 
-        Tooltip tooltipReadAlphabet = new Tooltip();
-        tooltipReadAlphabet.setText(
-                "Para separar un caracter utilice (;)\n" +
-                "Ej: hello;world!\n"
-        );
-        tooltipReadAlphabet.setFont(Font.font(13));
-        tooltipReadAlphabet.contentDisplayProperty();
-        tooltipReadAlphabet.setWrapText(true);
 
         /**
          * It adds a tooltip to the alphabet input textbox.
          */
         this.readLanguageTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            Tooltip tooltip = genericTooltip(
+                    "Para separar un caracter utilice (;)\n" +
+                            "Ej: hello;world!\n"
+            );
             if (newValue) {
-                tooltipReadAlphabet.show(readLanguageTextField,
-                        readLanguageTextField.getScene().getWindow().getX() + readLanguageTextField.getLayoutX() + readLanguageTextField.getWidth() + 110, //
-                        readLanguageTextField.getScene().getWindow().getY() + readLanguageTextField.getLayoutY() + readLanguageTextField.getHeight() + 70 ) ;
-            }
-            else {
-                tooltipReadAlphabet.hide();
+
+                tooltip.show(readLanguageTextField,
+                        readLanguageTextField.getScene().getWindow().getX() +
+                                readLanguageTextField.getLayoutX() + readLanguageTextField.getWidth() + 110, //
+                        readLanguageTextField.getScene().getWindow().getY() +
+                                readLanguageTextField.getLayoutY() + readLanguageTextField.getHeight() + 70);
+            } else {
+                tooltip.hide();
             }
         });
 
-        //this.checkWordBtn.setOnAction(event -> updateTransitionMatrix()); // Click comprobar
+
+        Tooltip integrityTooltip = genericTooltip(
+                "Verifica la Integridad del Automata dibujado " +
+                        "basado en un alfabeto ingresado.");
+
+        this.integrityButton.onMouseEnteredProperty().setValue(event -> {
+            integrityTooltip.show(integrityButton.getScene().getWindow());
+        });
+
+        this.integrityButton.onMouseExitedProperty().setValue(e -> {
+            integrityTooltip.hide();
+        });
+
 
         this.integrityButton.setOnAction(event -> {
 
             boolean integrityState = checkIntegrity(this.afnd);
 
-            if (integrityState){
-                autohideAlert("El Autómata es Válido.", 2000);
-            }
-            else {
-                autohideAlert("El Autómata es inválido.", 2000 );
+            if (integrityState) {
+                autohideAlert(
+                        "El Autómata es Válido.",
+                        2000);
+            } else {
+                autohideAlert(
+                        "El Autómata es inválido.",
+                        2000);
             }
 
         });
@@ -321,7 +356,7 @@ public class Controller implements Initializable{
         this.inWordTF.textProperty().addListener((observable, oldValue, newValue) -> {
 
             System.out.println("Word: " + newValue);
-            this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue) );
+            this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue));
 
         });
 
@@ -329,10 +364,23 @@ public class Controller implements Initializable{
         // MATRIZ DE TRANSICIONES
 
 
+    }
 
+    /**
+     * Generates a genetic Tooltip with a given message.
+     *
+     * @param message what text is displayed as a Tooltip
+     * @return a Tooltip with a message
+     */
+    private Tooltip genericTooltip(String message) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setText(message);
+        tooltip.setFont(Font.font(13));
+        tooltip.contentDisplayProperty();
+        tooltip.autoHideProperty().set(true);
+        tooltip.setWrapText(true);
 
-
-
+        return tooltip;
     }
 
     private void updateTransitionMatrix() {
@@ -360,16 +408,18 @@ public class Controller implements Initializable{
      */
     private String[] checkAlphabet(String[] alphabet) {
 
-        for (String a :alphabet) {
-            if (a.length() > 1){
-                autohideAlert("No es un alfabeto válido, siga las instrucciones.",2000);
+        for (String a : alphabet) {
+            if (a.length() > 1) {
+                autohideAlert(
+                        "No es un alfabeto válido, siga las instrucciones.",
+                        2000);
                 return new String[0];
             }
         }
         return alphabet;
     }
 
-    public void autohideAlert(String title, int wait){
+    public void autohideAlert(String title, int wait) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(title);
@@ -396,6 +446,7 @@ public class Controller implements Initializable{
 
     /**
      * Check the integrity for any AFND.
+     *
      * @param afnd an automata finite non-deterministic.
      * @return true for a valid automata, false otherwise.
      */
@@ -404,27 +455,33 @@ public class Controller implements Initializable{
     }
 
     /**
-     *
      * @param word represents the word to be check by the alphabet.
      */
-    private void checkWord( String word ) {
-        if(comprobarPalabraIngresada(word)) {
+    private void checkWord(String word) {
+        if (comprobarPalabraIngresada(word)) {
             System.out.println(word);
             System.out.println(this.afnd.getAlfabeto());
 
             if (this.afnd.comprobarPalabra2(word)) {
-                genericAlert("Palabra Valida", "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
+                genericAlert("Palabra Valida",
+                        "Palabra Válida",
+                        "La palabra ingresada pertenece al lenguaje.");
             } else {
-                genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada NO pertenece al autómata.");
+                genericAlert("Palabra invalida",
+                        "Palabra Invalida",
+                        "La palabra ingresada NO pertenece al autómata.");
             }
-        }else{
-            genericAlert("Formato Incorrecto", "La palabra ingresada no es valida", "La palabra solo puede contener letras y numeros");
+        } else {
+            genericAlert("Formato Incorrecto",
+                    "La palabra ingresada no es valida",
+                    "La palabra solo puede contener letras y numeros");
         }
     }
 
 
     /**
      * Alerta para el usuario (retroalimentacion del programa)
+     *
      * @param title
      * @param headerText
      * @param contentText
@@ -440,7 +497,6 @@ public class Controller implements Initializable{
 
 
     /**
-     *
      * @param x
      * @param y
      * @param esInicial
@@ -454,16 +510,16 @@ public class Controller implements Initializable{
         circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                circle.setFill(new ImagePattern(textToImage(circle.getEstado(),"white")));
-                inn=true;
+                circle.setFill(new ImagePattern(textToImage(circle.getEstado(), "white")));
+                inn = true;
                 event.consume();
             }
         });
         circle.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                circle.setFill(new ImagePattern(textToImage(circle.getEstado(),"lightgray")));
-                inn=false;
+                circle.setFill(new ImagePattern(textToImage(circle.getEstado(), "lightgray")));
+                inn = false;
                 event.consume();
             }
         });
@@ -471,10 +527,10 @@ public class Controller implements Initializable{
         circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {//coneccion entre ambos nodos
-                if(previous==null&&addTransicionActivate){
-                    previous=circle;
+                if (previous == null && addTransicionActivate) {
+                    previous = circle;
                     event.consume();
-                }else if(previous!=null&&addTransicionActivate&&previous!=circle){
+                } else if (previous != null && addTransicionActivate && previous != circle) {
                     System.out.println(previous.getEstado());
                     String nameOfTheTransition = genericAlertInput(
                             "Ingrese el caracter de la Transición",
@@ -484,52 +540,52 @@ public class Controller implements Initializable{
                     System.out.println("Transición: " + nameOfTheTransition);
 
                     if (nameOfTheTransition != null && nameOfTheTransition != "Ingrese caracter...") {
-                        CubicCurve curve = conectTo(previous,circle);
-                        Transicion transicion=new Transicion(circle, nameOfTheTransition,curve);
-                        Transicion.Anchor anchor= transicion.getAnchor();
-                        List<Transicion.Arrow> arrows= transicion.getArrows();
+                        CubicCurve curve = conectTo(previous, circle);
+                        Transicion transicion = new Transicion(circle, nameOfTheTransition, curve);
+                        Transicion.Anchor anchor = transicion.getAnchor();
+                        List<Transicion.Arrow> arrows = transicion.getArrows();
                         previous.addTransicion(transicion); // Adds a transition to the a Preview Node.
 
                         updateTransitionMatrix();
 
-                        groupPaint.getChildren().addAll(curve,anchor);
-                        for(Transicion.Arrow temp_value :arrows){
+                        groupPaint.getChildren().addAll(curve, anchor);
+                        for (Transicion.Arrow temp_value : arrows) {
                             groupPaint.getChildren().add(temp_value);
                         }
-                        addTransicionActivate=false;
+                        addTransicionActivate = false;
                         addTransition.setSelected(false);
                         line.setStartY(0);
                         line.setStroke(Color.BLACK);
                         previous.toFront();
                         circle.toFront();
-                        previous=null;
+                        previous = null;
                         event.consume();
                     }
-                }else if(previous!=null&&addTransicionActivate&&previous==circle){
+                } else if (previous != null && addTransicionActivate && previous == circle) {
                     System.out.println(previous.getEstado());
                     String nameOfTheTransition = genericAlertInput(
                             "Ingrese el caracter de la Transición",
                             "Nodo Inicio: " + previous.getEstado() + " a Nodo llegada: " + circle.getEstado(),
                             "Caracter");
                     System.out.println("Transición: " + nameOfTheTransition);
-                    if (nameOfTheTransition != null ) {
-                        CubicCurve curve = conectTo2(previous,circle);
-                        Transicion transicion=new Transicion(circle, nameOfTheTransition,curve,true);
-                        Transicion.Anchor anchor= transicion.getAnchor();
+                    if (nameOfTheTransition != null) {
+                        CubicCurve curve = conectTo2(previous, circle);
+                        Transicion transicion = new Transicion(circle, nameOfTheTransition, curve, true);
+                        Transicion.Anchor anchor = transicion.getAnchor();
 
-                        List<Transicion.Arrow> arrows= transicion.getArrows();
+                        List<Transicion.Arrow> arrows = transicion.getArrows();
                         previous.addTransicion(transicion); // Adds a transition to the a Preview Node.
-                        groupPaint.getChildren().addAll(curve,anchor);
-                        for(Transicion.Arrow temp_value :arrows){
+                        groupPaint.getChildren().addAll(curve, anchor);
+                        for (Transicion.Arrow temp_value : arrows) {
                             groupPaint.getChildren().add(temp_value);
                         }
-                        addTransicionActivate=false;
+                        addTransicionActivate = false;
                         addTransition.setSelected(false);
                         line.setStartY(0);
                         line.setStroke(Color.BLACK);
                         previous.toFront();
                         circle.toFront();
-                        previous=null;
+                        previous = null;
                         event.consume();
                     }
                 }
@@ -550,14 +606,16 @@ public class Controller implements Initializable{
             Nodo c = (Nodo) (t.getSource());
             c.setCenterX(c.getCenterX() + offsetX);
             c.setCenterY(c.getCenterY() + offsetY);
-            if(c.isEsInitial()) {
-                c.getForInitial().getPoints().setAll(new Double[]{(double)(c.getCenterX() + offsetX -30),(double)(c.getCenterY() + offsetY +10),
-                        (double)(c.getCenterX() + offsetX -20),(double)(c.getCenterY() + offsetY ),(double)(c.getCenterX() + offsetX-30), (double)(c.getCenterY() + offsetY-10)});
+            if (c.isEsInitial()) {
+                c.getForInitial().getPoints().setAll(new Double[]{
+                        (double) (c.getCenterX() + offsetX - 30), (double) (c.getCenterY() + offsetY + 10),
+                        (double) (c.getCenterX() + offsetX - 20), (double) (c.getCenterY() + offsetY),
+                        (double) (c.getCenterX() + offsetX - 30), (double) (c.getCenterY() + offsetY - 10)});
             }
-            for(Nodo temp_node:afnd.getEstados2()){
+            for (Nodo temp_node : afnd.getEstados2()) {
                 temp_node.update();
             }
-            if(afnd.getEstadoInicial()!=null){
+            if (afnd.getEstadoInicial() != null) {
                 afnd.getEstadoInicial().update();
             }
             orgSceneX = t.getSceneX();
@@ -567,10 +625,10 @@ public class Controller implements Initializable{
     }
 
     /**
-     * It displays an alert and returns a text form the user.
+     * It displays an alert and returns a text from the user.
      *
-     * @param title title of the alert.
-     * @param header header of the alert box.
+     * @param title       title of the alert.
+     * @param header      header of the alert box.
      * @param contentText text displaying the problem information.
      * @return A text from the user.
      */
@@ -584,7 +642,7 @@ public class Controller implements Initializable{
         String[] character = {new String()};
         // The Java 8 way to get the response value (with lambda expression).
 
-        if (result.isPresent()){
+        if (result.isPresent()) {
             return result.get();
         }
         return null;
@@ -601,6 +659,7 @@ public class Controller implements Initializable{
 
     /**
      * Display an alert with a single text.
+     *
      * @param title represents the title of the alert message.
      */
     private void genericAlert(String title) {
@@ -611,7 +670,6 @@ public class Controller implements Initializable{
 
         alert.showAndWait();
     }
-
 
 
     private Line connect(Nodo c1, Nodo c2) {
@@ -630,7 +688,7 @@ public class Controller implements Initializable{
         return line;
     }
 
-    private CubicCurve conectTo(Nodo c1, Nodo c2){
+    private CubicCurve conectTo(Nodo c1, Nodo c2) {
         CubicCurve curve = new CubicCurve();
         //aqui conectar a los nodos
         curve.startXProperty().bind(c1.centerXProperty());
@@ -638,21 +696,21 @@ public class Controller implements Initializable{
         curve.endXProperty().bind(c2.centerXProperty());
         curve.endYProperty().bind(c2.centerYProperty());
 
-        double x1= c1.getCenterX();
-        double x2= c2.getCenterX();
-        double y1= c1.getCenterY();
-        double y2= c2.getCenterY();
+        double x1 = c1.getCenterX();
+        double x2 = c2.getCenterX();
+        double y1 = c1.getCenterY();
+        double y2 = c2.getCenterY();
 
-        double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
-        double tetha=Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2-y1,2))/distance)));
-        double hipo= distance/Math.cos(Math.toRadians(45));
-        System.out.println("distance: "+distance+" -tetha: "+tetha+" -hipo: "+hipo);
-        if(x1<=x2 ){ //primer cuadrante
-            curve.setControlX1((hipo * Math.cos(Math.toRadians(45 ))));
-            curve.setControlY1((hipo * Math.sin(Math.toRadians(45 ))));
-            curve.setControlX2((hipo * Math.cos(Math.toRadians(45 ))));
-            curve.setControlY2((hipo * Math.sin(Math.toRadians(45 ))));
-        }else {
+        double distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y2 - y1, 2));
+        double tetha = Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2 - y1, 2)) / distance)));
+        double hipo = distance / Math.cos(Math.toRadians(45));
+        System.out.println("distance: " + distance + " -tetha: " + tetha + " -hipo: " + hipo);
+        if (x1 <= x2) { //primer cuadrante
+            curve.setControlX1((hipo * Math.cos(Math.toRadians(45))));
+            curve.setControlY1((hipo * Math.sin(Math.toRadians(45))));
+            curve.setControlX2((hipo * Math.cos(Math.toRadians(45))));
+            curve.setControlY2((hipo * Math.sin(Math.toRadians(45))));
+        } else {
             curve.setControlX1((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
             curve.setControlY1((Math.sqrt(Math.pow(y2 - y1, 2) / 2)));
             curve.setControlX2((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
@@ -666,7 +724,7 @@ public class Controller implements Initializable{
         return curve;
     }
 
-    private CubicCurve conectTo2(Nodo c1, Nodo c2){
+    private CubicCurve conectTo2(Nodo c1, Nodo c2) {
         CubicCurve curve = new CubicCurve();
         //aqui conectar a los nodos
         curve.startXProperty().bind(c1.centerXProperty());
@@ -674,20 +732,20 @@ public class Controller implements Initializable{
         curve.endXProperty().bind(c2.centerXProperty());
         curve.endYProperty().bind(c2.centerYProperty());
 
-        double x1= c1.getCenterX();
-        double x2= c2.getCenterX();
-        double y1= c1.getCenterY();
-        double y2= c2.getCenterY();
+        double x1 = c1.getCenterX();
+        double x2 = c2.getCenterX();
+        double y1 = c1.getCenterY();
+        double y2 = c2.getCenterY();
 
-        double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
-        double tetha=Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2-y1,2))/distance)));
-        double hipo= distance/Math.cos(Math.toRadians(45));
-        System.out.println("distance: "+distance+" -tetha: "+tetha+" -hipo: "+hipo);
+        double distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y2 - y1, 2));
+        double tetha = Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2 - y1, 2)) / distance)));
+        double hipo = distance / Math.cos(Math.toRadians(45));
+        System.out.println("distance: " + distance + " -tetha: " + tetha + " -hipo: " + hipo);
 
-            curve.setControlX1(x1+40);
-            curve.setControlY1(y1);
-            curve.setControlX2(x2);
-            curve.setControlY2(y2+40);
+        curve.setControlX1(x1 + 40);
+        curve.setControlY1(y1);
+        curve.setControlX2(x2);
+        curve.setControlY2(y2 + 40);
 
         curve.setStroke(Color.GRAY);
         curve.setStrokeWidth(3);
@@ -697,12 +755,12 @@ public class Controller implements Initializable{
         return curve;
     }
 
-    private boolean detectCollitionsCircles(Nodo innCircle){
-        Nodo temp_circle= null;
-        for (Node temp_node: groupPaint.getChildren()) {
-            if(temp_node instanceof Nodo){
-                temp_circle= ((Nodo)temp_node);
-                if(temp_circle!=innCircle&&temp_circle.getBoundsInParent().intersects(innCircle.getBoundsInParent())){
+    private boolean detectCollitionsCircles(Nodo innCircle) {
+        Nodo temp_circle = null;
+        for (Node temp_node : groupPaint.getChildren()) {
+            if (temp_node instanceof Nodo) {
+                temp_circle = ((Nodo) temp_node);
+                if (temp_circle != innCircle && temp_circle.getBoundsInParent().intersects(innCircle.getBoundsInParent())) {
                     return true;
                 }
             }
@@ -717,21 +775,22 @@ public class Controller implements Initializable{
         label.setMinSize(30, 30);
         label.setMaxSize(30, 30);
         label.setPrefSize(30, 30);
-        label.setStyle("-fx-background-color: "+color+"; -fx-text-fill:black;");
+        label.setStyle("-fx-background-color: " + color + "; -fx-text-fill:black;");
         label.setWrapText(true);
         Scene scene = new Scene(new Group(label));
-        WritableImage img = new WritableImage(30, 30) ;
+        WritableImage img = new WritableImage(30, 30);
         scene.snapshot(img);
-        return img ;
+        return img;
     }
 
     /**
      * Comprueba si el String ingresado como alfabeto tiene el formato correcto.
+     *
      * @param alfabeto
      * @return true si es correcto, false si no lo es.
      */
-    public boolean comprobarAlfabetoIngresado(String alfabeto){
-        if(alfabeto.matches("((\\w;)|(\\s;))*((\\w)|(\\s))")){
+    public boolean comprobarAlfabetoIngresado(String alfabeto) {
+        if (alfabeto.matches("((\\w;)|(\\s;))*((\\w)|(\\s))")) {
             return true;
         }
         return false;
@@ -739,21 +798,49 @@ public class Controller implements Initializable{
 
     /**
      * Comprueba si la palabra ingresada tiene el formato correcto.
+     *
      * @param palabra
      * @return true si es correcto, false si no lo es.
      */
-    public boolean comprobarPalabraIngresada(String palabra){
-        if(palabra.matches("\\w*")){
+    public boolean comprobarPalabraIngresada(String palabra) {
+        if (palabra.matches("\\w*")) {
             return true;
         }
         return false;
     }
 
-    public String[] checkWordsInTransicion(String newValue){
+    public String[] checkWordsInTransicion(String newValue) {
         String[] alphabet = newValue.split(";");
         String[] alphabetChecked = checkAlphabet(alphabet);
         System.out.println("SymbolsChecked: " + alphabetChecked);
         return alphabetChecked;
+    }
+
+    private static void updateTooltipBehavior(double openDelay, double visibleDuration,
+                                              double closeDelay, boolean hideOnExit) {
+        try {
+            // Get the non public field "BEHAVIOR"
+            Field fieldBehavior = Tooltip.class.getDeclaredField("BEHAVIOR");
+            // Make the field accessible to be able to get and set its value
+            fieldBehavior.setAccessible(true);
+            // Get the value of the static field
+            Object objBehavior = fieldBehavior.get(null);
+            // Get the constructor of the private static inner class TooltipBehavior
+            Constructor<?> constructor = objBehavior.getClass().getDeclaredConstructor(
+                    javafx.util.Duration.class, javafx.util.Duration.class, javafx.util.Duration.class, boolean.class
+            );
+            // Make the constructor accessible to be able to invoke it
+            constructor.setAccessible(true);
+            // Create a new instance of the private static inner class TooltipBehavior
+            Object tooltipBehavior = constructor.newInstance(
+                    new javafx.util.Duration(openDelay), new javafx.util.Duration(visibleDuration),
+                    new javafx.util.Duration(closeDelay), hideOnExit
+            );
+            // Set the new instance of TooltipBehavior
+            fieldBehavior.set(null, tooltipBehavior);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
 }

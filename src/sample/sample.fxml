@@ -173,7 +173,10 @@
    <right>
       <VBox fx:id="panelDeTransiciones" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
-             <Label fx:id="listViewLabel" text="Label" />
+             <Label fx:id="listViewLabel" alignment="CENTER" contentDisplay="CENTER" text="Panel de Transiciones" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin></Label>
              <ListView fx:id="listView" editable="true" minHeight="-Infinity" minWidth="-Infinity " prefHeight="450.0" prefWidth="200.0" />
 
          </children>
