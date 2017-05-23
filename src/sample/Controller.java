@@ -318,8 +318,8 @@ public class Controller implements Initializable{
         this.inWordTF.textProperty().addListener((observable, oldValue, newValue) -> {
 
             System.out.println("Word: " + newValue);
-
             this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue) );
+
         });
 
 
@@ -420,7 +420,7 @@ public class Controller implements Initializable{
                 genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada NO pertenece al autómata.");
             }
         }else{
-            genericAlert("Formato Incorrecto", "La palabra ingresada no es valida", "");
+            genericAlert("Formato Incorrecto", "La palabra ingresada no es valida", "La palabra solo puede contener letras y numeros");
         }
     }
 
