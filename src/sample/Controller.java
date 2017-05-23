@@ -61,19 +61,19 @@ public class Controller implements Initializable{
         updateTransitionMatrix();
 
 
-        Circle circle= new Circle(0,0,10,Color.LIGHTGRAY);
+        Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
         this.addNode.setGraphic(circle);
 
-        Circle circleInitial= new Circle(15,10,10,Color.LIGHTGRAY);
+        Circle circleInitial= new Circle(32,35,20,Color.LIGHTGRAY);
         circleInitial.setStroke(Color.BLACK);
-        Polygon poly= new Polygon(new double[]{(double)(circleInitial.getCenterX()-15),(double)(circleInitial.getCenterY()+5),
-                (double)(circleInitial.getCenterX()-10),(double)(circleInitial.getCenterY()),(double)(circleInitial.getCenterX()-15),(double)(circleInitial.getCenterY()-5)});
+        Polygon poly= new Polygon(new double[]{(double)(circleInitial.getCenterX()-30),(double)(circleInitial.getCenterY()+10),
+                (double)(circleInitial.getCenterX()-20),(double)(circleInitial.getCenterY()),(double)(circleInitial.getCenterX()-30),(double)(circleInitial.getCenterY()-10)});
         Pane graficInitialNode= new Pane();
         graficInitialNode.getChildren().addAll(circleInitial,poly);
         this.addStartNode.setGraphic(graficInitialNode);
 
-        Circle circleFinal= new Circle(0,0,10,Color.LIGHTGRAY);
+        Circle circleFinal= new Circle(0,0,20,Color.LIGHTGRAY);
         circleFinal.setStroke(Color.BLACK);
         circleFinal.setStrokeWidth(3);
         this.addFinal.setGraphic(circleFinal);
