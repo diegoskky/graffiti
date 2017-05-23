@@ -25,10 +25,12 @@ import java.util.List;
 
 
 public class Transicion {
+    //atributos para la interfaz
     List<Arrow> arrows = new ArrayList<Arrow>();
     private CubicCurve curve;
     private Label caracteres;
     private Anchor anchor;
+    //atributos para backend
     private ArrayList<Character> transiciones;
     private Nodo estadoLlegada;
 
@@ -64,9 +66,40 @@ public class Transicion {
         return transiciones;
     }
 
+    /**
+     * Agrega un caracter a la lista de transiciones
+     * en caso de existir en el arreglo no lo agrega
+     * @param transicion (caracter) a agregar a la lista
+     */
     public void addTransicion(char transicion){
-        transiciones.add(transicion);
+        if(!existeTransicion(transicion)) {
+            transiciones.add(transicion);
+        }else{
+            System.out.println("Alert Type N°1: ¡No se ingreso la transicion: "+transicion+" ,porque ya existe!");
+        }
     }
+
+    /**
+     * Agrega los caracteres de la lista a la lista de transiciones
+     * si existen algunos caracteres solo agregara los que no esten
+     * @param transiciones lista de caracteres a agregar
+     */
+    public void addTransicion(char[] transiciones){
+        for(Character c_temp: transiciones){
+            addTransicion(c_temp);
+        }
+    }
+
+    public boolean existeTransicion(char nueva){
+        for(Character c: transiciones){
+            if(c.equals(nueva)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     public Nodo getEstadoLlegada(){
         return estadoLlegada;
@@ -283,6 +316,18 @@ public class Transicion {
         WritableImage img = new WritableImage(30, 30) ;
         scene.snapshot(img);
         return img ;
+    }
+
+    public void updateAnchor(){
+        this.anchor.setFill(new ImagePattern(textToImage(wordToDisplayInTransition(),"LIGHTBLUE")));
+    }
+
+    public String wordToDisplayInTransition(){
+        String str="";
+        for(Character c_temp:transiciones ){
+            str= str+""+c_temp+",";
+        }
+        return str;
     }
 
 }
