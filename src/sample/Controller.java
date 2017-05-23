@@ -226,6 +226,9 @@ public class Controller implements Initializable{
                             temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                             temp_circle.setEsInitial(true);
                             afnd.setEstadoInicial(temp_circle); // Sets the Automata initial state.
+
+                            updateTransitionMatrix(); // Actualiza la matriz de estados
+
                             groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
                         }
                         event.consume();
@@ -334,8 +337,8 @@ public class Controller implements Initializable{
 
     private void updateTransitionMatrix() {
 
-        observableList.removeAll();
 
+        observableList.clear(); // Borra los elementos previos
 
         panelDeTransiciones.setVgrow(listView, Priority.ALWAYS);
         listViewLabel.setText("Matriz de Transiciones");
@@ -343,7 +346,6 @@ public class Controller implements Initializable{
         observableList.addAll(this.afnd.getArrayEstados());
 
         listView.itemsProperty().addListener((observable, oldValue, newValue) -> {
-
 
         });
         listView.setItems(observableList);
