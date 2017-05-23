@@ -1,7 +1,8 @@
 package sample;
 
 import javafx.application.Platform;
-import javafx.event.Event;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,15 +13,14 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -29,7 +29,6 @@ import javafx.scene.text.Font;
 
 import java.net.URL;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -43,7 +42,10 @@ public class Controller implements Initializable{
     private @FXML ToggleButton addFinal; // todo
     private @FXML Group groupPaint;
     private @FXML TreeView treeView;
+    private @FXML ListView<String> listView;
     private @FXML Button integrityButton;
+    private @FXML Label listViewLabel;
+    private @FXML VBox panelDeTransiciones;
 
     private Nodo previous=null;
     private Line lineToConect,line=null;
@@ -51,9 +53,13 @@ public class Controller implements Initializable{
     private double orgSceneX,orgSceneY,previousX,previousY;
     private boolean inn,addNodeActivate,addTransicionActivate,addInitialNodeActivate,addFinalNodeActivate=false;
 
+    private ObservableList<String> observableList = FXCollections.observableArrayList();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.afnd= new Afnd();
+        updateTransitionMatrix();
+
 
         Circle circle= new Circle(0,0,10,Color.LIGHTGRAY);
         circle.setStroke(Color.BLACK);
@@ -202,6 +208,9 @@ public class Controller implements Initializable{
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                         afnd.addEstado(temp_circle); // adds a node to the AFND.
+
+                        updateTransitionMatrix(); // actualiza la matriz de estados
+
                         groupPaint.getChildren().addAll(temp_circle);
 
                     }
@@ -217,6 +226,9 @@ public class Controller implements Initializable{
                             temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                             temp_circle.setEsInitial(true);
                             afnd.setEstadoInicial(temp_circle); // Sets the Automata initial state.
+
+                            updateTransitionMatrix(); // Actualiza la matriz de estados
+
                             groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
                         }
                         event.consume();
@@ -237,7 +249,11 @@ public class Controller implements Initializable{
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                         groupPaint.getChildren().add(temp_circle);
+
                         afnd.addEstado(temp_circle);
+
+                        updateTransitionMatrix(); // actualiza la matriz de estados.
+
                         event.consume();
                     }
                 }
@@ -287,7 +303,7 @@ public class Controller implements Initializable{
             }
         });
 
-        // this.checkWordBtn.setOnAction(event -> checkWord(inWordTF.getText())); // Click comprobar
+        //this.checkWordBtn.setOnAction(event -> updateTransitionMatrix()); // Click comprobar
 
         this.integrityButton.setOnAction(event -> {
 
@@ -305,38 +321,48 @@ public class Controller implements Initializable{
         this.inWordTF.textProperty().addListener((observable, oldValue, newValue) -> {
 
             System.out.println("Word: " + newValue);
-
             this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue) );
+
         });
 
 
         // MATRIZ DE TRANSICIONES
 
-        TreeItem<String> rootNode =
-                new TreeItem<String>("Nodos");
-        rootNode.setExpanded(true);
 
-        ArrayList<String> lista = new ArrayList<>();
 
-        for (int i=0; i<10; i++){
-            TreeItem<String> leaf = new TreeItem<>("pico");
-            rootNode.getChildren().add(leaf);
-        }
 
+
+
+    }
+
+    private void updateTransitionMatrix() {
+
+
+        observableList.clear(); // Borra los elementos previos
+
+        panelDeTransiciones.setVgrow(listView, Priority.ALWAYS);
+        listViewLabel.setText("Matriz de Transiciones");
+
+        observableList.addAll(this.afnd.getArrayEstados());
+
+        listView.itemsProperty().addListener((observable, oldValue, newValue) -> {
+
+        });
+        listView.setItems(observableList);
 
     }
 
     /**
      * @param alphabet arreglo de String dividido por el caracter (;)
-     * @return retorna un alfabeto valido en caso de si el input es correcto 7
+     * @return retorna un alfabeto valido en caso de si el input es correcto
      * y un alfabeto vacio de lo contrario.
-     * También muestra una alerta.
+     * También muestra una alerta si el alfabeto no es válido.
      */
     private String[] checkAlphabet(String[] alphabet) {
 
         for (String a :alphabet) {
             if (a.length() > 1){
-                genericAlert("No es un alfabeto válido, siga las instrucciones.");
+                autohideAlert("No es un alfabeto válido, siga las instrucciones.",2000);
                 return new String[0];
             }
         }
@@ -392,7 +418,7 @@ public class Controller implements Initializable{
                 genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada NO pertenece al autómata.");
             }
         }else{
-            genericAlert("Formato Incorrecto", "La palabra ingresada no es valida", "");
+            genericAlert("Formato Incorrecto", "La palabra ingresada no es valida", "La palabra solo puede contener letras y numeros");
         }
     }
 
@@ -463,6 +489,9 @@ public class Controller implements Initializable{
                         Transicion.Anchor anchor= transicion.getAnchor();
                         List<Transicion.Arrow> arrows= transicion.getArrows();
                         previous.addTransicion(transicion); // Adds a transition to the a Preview Node.
+
+                        updateTransitionMatrix();
+
                         groupPaint.getChildren().addAll(curve,anchor);
                         for(Transicion.Arrow temp_value :arrows){
                             groupPaint.getChildren().add(temp_value);

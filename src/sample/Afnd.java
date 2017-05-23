@@ -1,6 +1,10 @@
 package sample;
 
+import javafx.scene.control.Control;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * It represents a non-deterministic finite automata.
@@ -249,4 +253,99 @@ public class Afnd {
         ArrayList<Nodo> aux = this.estados;
         return aux;
     }
+
+    public ArrayList<Nodo> getEstados(){
+        return this.estados;
+    }
+
+    /*public ArrayList<String> getArrayEstados() {
+
+        ArrayList<String> transitions = new ArrayList<>();
+
+        if (estadoInicial != null) {
+            transitions.add(estadoInicial.getEstado());
+        }
+
+        for (Nodo nodo : this.estados){
+
+            String id = new String(nodo.getEstado());
+
+            for (Transicion t : nodo.getTransiciones()) {
+                id = id + " " + t.getTransiciones();
+            }
+
+            transitions.add(id);
+
+        };
+
+        return transitions;
+    }*/
+    /*
+    public ArrayList<String> getArrayEstados(){
+        ArrayList<String> lista = new ArrayList<>();
+        String aux;
+        String aux2;
+
+        if(this.estadoInicial != null) {
+            aux = this.estadoInicial.getEstado() + "=";
+            for (Transicion i : this.estadoInicial.getTransiciones()) {
+                aux2 = "(";
+                for(Character j : i.getTransiciones()){
+                    aux2 += j+",";
+                }
+                aux2 += ")";
+                aux += " " + aux2 + i.getEstadoLlegada().getEstado() + " ;";
+                aux2 = "";
+            }
+            lista.add(aux);
+            aux = "";
+        }
+
+        if(this.estados != null) {
+            for (Nodo i : this.estados) {
+                aux = i.getEstado() + "= ";
+                for (Transicion j : i.getTransiciones()) {
+                    aux += " " + j.getTransiciones() + "(" + j.getEstadoLlegada().getEstado() + ") ;";
+                }
+                lista.add(aux);
+                aux = "";
+            }
+        }
+        return lista;
+    }*/
+
+    /**
+     * Creates Strings with the nodes and it's transitions 
+     * @return
+     */
+    public ArrayList<String> getArrayEstados() {
+        ArrayList<String> lista = new ArrayList<>();
+        StringBuilder aux = new StringBuilder();
+
+        if (this.estadoInicial != null) {
+            aux.append(this.estadoInicial.getEstado() + " =");
+            for (Transicion i : this.estadoInicial.getTransiciones()) {
+                aux.append(" " + i.getTransiciones().toString() + i.getEstadoLlegada().getEstado() + " ;");
+            }
+            aux.deleteCharAt(aux.toString().length()-1);
+            lista.add(aux.toString());
+            aux.setLength(0);
+            aux.trimToSize();
+        }
+
+        if (this.estados != null) {
+            for (Nodo i : this.estados) {
+                aux.append(i.getEstado() + " =");
+                for (Transicion j : i.getTransiciones()) {
+                    aux.append(" " + j.getTransiciones().toString() +  j.getEstadoLlegada().getEstado() + " ;");
+                }
+                aux.deleteCharAt(aux.toString().length()-1);
+                lista.add(aux.toString());
+                aux.setLength(0);
+                aux.trimToSize();
+            }
+        }
+        return lista;
+    }
+
 }
