@@ -122,10 +122,10 @@
    <left>
       <VBox id="panelBotonesIzq" alignment="TOP_CENTER" fillWidth="false" minWidth="-Infinity" prefWidth="100.0" spacing="10.0">
          <children>
-            <ToggleButton fx:id="addStartNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Start" wrapText="true" />
-            <ToggleButton fx:id="addNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Node" wrapText="true" />
-            <ToggleButton fx:id="addTransition" layoutX="23.0" layoutY="55.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Transition" wrapText="true" />
-            <ToggleButton fx:id="addFinal" layoutX="23.0" layoutY="140.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Final" wrapText="true" />
+            <ToggleButton fx:id="addStartNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" wrapText="true" />
+            <ToggleButton fx:id="addNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" wrapText="true" />
+            <ToggleButton fx:id="addTransition" layoutX="23.0" layoutY="55.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" wrapText="true" />
+            <ToggleButton fx:id="addFinal" layoutX="23.0" layoutY="140.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" wrapText="true" />
             <Button fx:id="integrityButton" accessibleRole="BUTTON" layoutX="23.0" layoutY="20.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" text="Integrity" wrapText="true">
                <effect>
                   <Blend />
