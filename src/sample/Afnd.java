@@ -1,6 +1,10 @@
 package sample;
 
+import javafx.scene.control.Control;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * It represents a non-deterministic finite automata.
@@ -252,5 +256,29 @@ public class Afnd {
 
     public ArrayList<Nodo> getEstados(){
         return this.estados;
+    }
+
+    public ArrayList<String> getArrayEstados() {
+
+        ArrayList<String> transitions = new ArrayList<>();
+
+        if (estadoInicial != null) {
+            transitions.add(estadoInicial.getEstado());
+        }
+
+        for (Nodo nodo : this.estados){
+
+            String id = new String(nodo.getEstado());
+
+            for (Transicion t :
+                    nodo.getTransiciones()) {
+                id = id + " " + t.getTransiciones();
+            }
+
+            transitions.add(id);
+
+        };
+
+        return transitions;
     }
 }

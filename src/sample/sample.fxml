@@ -171,7 +171,7 @@
       <Blend />
    </effect>
    <right>
-      <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+      <VBox fx:id="panelDeTransiciones" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
              <Label fx:id="listViewLabel" text="Label" />
              <ListView fx:id="listView" editable="true" minHeight="-Infinity" minWidth="-Infinity " prefHeight="450.0" prefWidth="200.0" />

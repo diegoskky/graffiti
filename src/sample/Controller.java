@@ -3,7 +3,6 @@ package sample;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,25 +13,22 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
-import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -49,7 +45,7 @@ public class Controller implements Initializable{
     private @FXML ListView<String> listView;
     private @FXML Button integrityButton;
     private @FXML Label listViewLabel;
-
+    private @FXML VBox panelDeTransiciones;
 
     private Nodo previous=null;
     private Line lineToConect,line=null;
@@ -57,11 +53,12 @@ public class Controller implements Initializable{
     private double orgSceneX,orgSceneY,previousX,previousY;
     private boolean inn,addNodeActivate,addTransicionActivate,addInitialNodeActivate,addFinalNodeActivate=false;
 
+    private ObservableList<String> observableList = FXCollections.observableArrayList();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.afnd= new Afnd();
-        this.listView = new ListView<String>();
-        setListView();
+        updateTransitionMatrix();
 
 
         Circle circle= new Circle(0,0,10,Color.LIGHTGRAY);
@@ -211,6 +208,9 @@ public class Controller implements Initializable{
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                         afnd.addEstado(temp_circle); // adds a node to the AFND.
+
+                        updateTransitionMatrix(); // actualiza la matriz de estados
+
                         groupPaint.getChildren().addAll(temp_circle);
 
                     }
@@ -246,7 +246,11 @@ public class Controller implements Initializable{
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                         groupPaint.getChildren().add(temp_circle);
+
                         afnd.addEstado(temp_circle);
+
+                        updateTransitionMatrix(); // actualiza la matriz de estados.
+
                         event.consume();
                     }
                 }
@@ -296,7 +300,7 @@ public class Controller implements Initializable{
             }
         });
 
-        //this.checkWordBtn.setOnAction(event -> setListView()); // Click comprobar
+        //this.checkWordBtn.setOnAction(event -> updateTransitionMatrix()); // Click comprobar
 
         this.integrityButton.setOnAction(event -> {
 
@@ -328,13 +332,24 @@ public class Controller implements Initializable{
 
     }
 
-    private void setListView() {
+    private void updateTransitionMatrix() {
+
+        observableList.removeAll();
 
 
-        ObservableList<String> wordsList = FXCollections.observableArrayList("First word","Second word", "Third word", "Etc.");
-        listView = new ListView<>(wordsList);
-        listView.setItems(wordsList);
+        VBox.setVgrow(listView, Priority.ALWAYS);
         listViewLabel.setText("Matriz de Transiciones");
+
+        observableList.addAll(this.afnd.getArrayEstados());
+
+        listView.itemsProperty().addListener((observable, oldValue, newValue) -> {
+
+
+        });
+        listView.setItems(observableList);
+
+
+
 
 
     }
@@ -476,6 +491,9 @@ public class Controller implements Initializable{
                         Transicion.Anchor anchor= transicion.getAnchor();
                         List<Transicion.Arrow> arrows= transicion.getArrows();
                         previous.addTransicion(transicion); // Adds a transition to the a Preview Node.
+
+                        updateTransitionMatrix();
+
                         groupPaint.getChildren().addAll(curve,anchor);
                         for(Transicion.Arrow temp_value :arrows){
                             groupPaint.getChildren().add(temp_value);
