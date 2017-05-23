@@ -314,6 +314,10 @@ public class Afnd {
         return lista;
     }*/
 
+    /**
+     * Creates Strings with the nodes and it's transitions 
+     * @return
+     */
     public ArrayList<String> getArrayEstados() {
         ArrayList<String> lista = new ArrayList<>();
         StringBuilder aux = new StringBuilder();
