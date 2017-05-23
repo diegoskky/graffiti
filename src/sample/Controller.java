@@ -483,7 +483,7 @@ public class Controller implements Initializable{
                             "Nodo Inicio: " + previous.getEstado() + " a Nodo llegada: " + circle.getEstado(),
                             "Caracter");
                     System.out.println("Transición: " + nameOfTheTransition);
-                    if (nameOfTheTransition != null && nameOfTheTransition != "Ingrese caracter...") {
+                    if (nameOfTheTransition != null ) {
                         CubicCurve curve = conectTo2(previous,circle);
                         Transicion transicion=new Transicion(circle, nameOfTheTransition,curve,true);
                         Transicion.Anchor anchor= transicion.getAnchor();
@@ -721,11 +721,8 @@ public class Controller implements Initializable{
     }
 
     public String[] checkWordsInTransicion(String newValue){
-
         String[] alphabet = newValue.split(";");
-
         String[] alphabetChecked = checkAlphabet(alphabet);
-
         System.out.println("SymbolsChecked: " + alphabetChecked);
         return alphabetChecked;
     }
