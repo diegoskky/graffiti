@@ -524,7 +524,7 @@ public class Controller implements Initializable{
                     System.out.println(previous.getEstado());
                     String nameOfTheTransition = genericAlertInput(
                             "Ingrese el caracter de la Transición",
-                            "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado(),
+                            "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+"\n  separe lo caracteres con (;)",
                             "Caracter");
 
                     System.out.println("Transición: " + nameOfTheTransition);
@@ -546,6 +546,8 @@ public class Controller implements Initializable{
                                     event.consume();
                                 }
                             }
+                        }else{
+                            inputOfUser= false;
                         }
                     }
 
@@ -576,8 +578,8 @@ public class Controller implements Initializable{
                     System.out.println(previous.getEstado());
                     String nameOfTheTransition;
                         nameOfTheTransition = genericAlertInput(
-                                "Ingrese los caracteres de la Transición separados por (;)",
-                                "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado(),
+                                "Ingrese los caracteres de la Transición ",
+                                "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+ "\n  separe lo caracteres con (;)",
                                 "Caracter");
                         System.out.println("Transición: " + nameOfTheTransition);
                         //Busco si ya existe la transicion ingresada
@@ -599,6 +601,8 @@ public class Controller implements Initializable{
                                         event.consume();
                                     }
                                 }
+                            }else{
+                                inputOfUser=false;
                             }
                         }
 
@@ -632,7 +636,6 @@ public class Controller implements Initializable{
         });
 
         circle.setOnMousePressed((t) -> {
-            System.out.println("pressed");
             orgSceneX = t.getSceneX();
             orgSceneY = t.getSceneY();
             Nodo c = (Nodo) (t.getSource());
@@ -848,7 +851,7 @@ public class Controller implements Initializable{
         String[] alphabetChecked = checkAlphabet(alphabet);
         for (String a :alphabet) {
             if (a.length() > 1){
-                autohideAlert("No es un alfabeto válido, siga las instrucciones.",2000);
+                autohideAlert("No es una entrada válida, siga las instrucciones.",2000);
                 return false;
             }
         };
