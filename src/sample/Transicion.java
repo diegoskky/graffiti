@@ -341,6 +341,8 @@ public class Transicion {
      * @return
      */
     public ArrayList<Character> setListaTransiciones(String transiciones){
+        transiciones= transiciones.replace(" ","");
+        transiciones= transiciones.replace(",","");
         ArrayList<Character> lista = new ArrayList<>();
         for(int i = 0; i < transiciones.length(); i++){
             lista.add(transiciones.charAt(i));
