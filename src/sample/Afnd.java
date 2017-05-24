@@ -324,26 +324,30 @@ public class Afnd {
         StringBuilder aux = new StringBuilder();
 
         if (this.estadoInicial != null) {
-            aux.append(this.estadoInicial.getEstado() + " →");
             for (Transicion i : this.estadoInicial.getTransiciones()) {
-                aux.append(" " + i.getEstadoLlegada().getEstado() + i.getTransiciones().toString()+ " ;");
+                aux.append("\u03A3"+" ("+this.estadoInicial.getEstado());
+                for(Character j : i.getTransiciones()) {
+                    aux.append("," + j);
+                }
+                aux.append(") = " + i.getEstadoLlegada().getEstado());
+                lista.add(aux.toString());
+                aux.setLength(0);
+                aux.trimToSize();
             }
-            aux.deleteCharAt(aux.toString().length()-1);
-            lista.add(aux.toString());
-            aux.setLength(0);
-            aux.trimToSize();
         }
 
         if (this.estados != null) {
             for (Nodo i : this.estados) {
-                aux.append(i.getEstado() + " →");
-                for (Transicion j : i.getTransiciones()) {
-                    aux.append(" "  +  j.getEstadoLlegada().getEstado() +  j.getTransiciones().toString()+" ;");
+                for(Transicion j : i.getTransiciones()){
+                    aux.append("\u03A3"+" ("+i.getEstado());
+                    for(Character k : j.getTransiciones()){
+                        aux.append("," + k);
+                    }
+                    aux.append(") =  "+j.getEstadoLlegada().getEstado());
+                    lista.add(aux.toString());
+                    aux.setLength(0);
+                    aux.trimToSize();
                 }
-                aux.deleteCharAt(aux.toString().length()-1);
-                lista.add(aux.toString());
-                aux.setLength(0);
-                aux.trimToSize();
             }
         }
         return lista;
