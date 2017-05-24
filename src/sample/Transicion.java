@@ -42,7 +42,7 @@ public class Transicion {
     public Transicion(Nodo llegada, String nameOfTheTransition,CubicCurve curve) {
         this.transiciones = new ArrayList<>();
         this.estadoLlegada = llegada;
-        transiciones.add(nameOfTheTransition.charAt(0)); // todo solo lee una wea.
+        transiciones = setListaTransiciones(nameOfTheTransition);
         this.curve= curve;
         this.anchor = new Anchor("LIGHTBLUE",curve.controlX1Property(), curve.controlY1Property(),curve.controlX2Property(), curve.controlY2Property(),nameOfTheTransition);
 
@@ -53,7 +53,7 @@ public class Transicion {
     public Transicion(Nodo llegada, String nameOfTheTransition,CubicCurve curve,boolean boll) {
         this.transiciones = new ArrayList<>();
         this.estadoLlegada = llegada;
-        transiciones.add(nameOfTheTransition.charAt(0)); // todo solo lee una wea.
+        transiciones = setListaTransiciones(nameOfTheTransition);
         this.curve= curve;
         this.anchor = new Anchor("LIGHTBLUE",curve.controlX1Property(), curve.controlY1Property(),curve.controlX2Property(), curve.controlY2Property(),nameOfTheTransition,boll);
 
@@ -335,4 +335,16 @@ public class Transicion {
         return str;
     }
 
+    /**
+     * setea el array de transiciones.
+     * @param transiciones
+     * @return
+     */
+    public ArrayList<Character> setListaTransiciones(String transiciones){
+        ArrayList<Character> lista = new ArrayList<>();
+        for(int i = 0; i < transiciones.length(); i++){
+            lista.add(transiciones.charAt(i));
+        }
+        return lista;
+    }
 }

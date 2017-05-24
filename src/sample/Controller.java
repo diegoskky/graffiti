@@ -1,10 +1,6 @@
 package sample;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -31,30 +27,25 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.net.URL;
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 public class Controller implements Initializable{
     private @FXML TextField readLanguageTextField;
     private @FXML TextField inWordTF;
     private @FXML Button checkWordBtn;
-    private @FXML ToggleButton addStartNode;
+    private @FXML ToggleButton addStartNode; // todo
     private @FXML ToggleButton addNode;
     private @FXML ToggleButton addTransition;
-    private @FXML ToggleButton addFinal;
+    private @FXML ToggleButton addFinal; // todo
     private @FXML Group groupPaint;
     private @FXML TreeView treeView;
     private @FXML ListView<String> listView;
     private @FXML Button integrityButton;
     private @FXML Label listViewLabel;
     private @FXML VBox panelDeTransiciones;
-    private @FXML Label statusBar;
 
     private Nodo previous=null;
     private Line lineToConect,line=null;
@@ -62,14 +53,12 @@ public class Controller implements Initializable{
     private double orgSceneX,orgSceneY,previousX,previousY;
     private boolean inn,addNodeActivate,addTransicionActivate,addInitialNodeActivate,addFinalNodeActivate=false;
 
-
     private ObservableList<String> observableList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.afnd= new Afnd();
         updateTransitionMatrix();
-        String statusBarDefault = statusBar.getText();
 
 
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
@@ -201,8 +190,6 @@ public class Controller implements Initializable{
             }
         });
 
-
-
         /**
          * Listener all adds of software
          */
@@ -306,114 +293,27 @@ public class Controller implements Initializable{
          * It adds a tooltip to the alphabet input textbox.
          */
         this.readLanguageTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            Tooltip tooltip = genericTooltip(
-                    "Para separar un caracter utilice (;)\n" +
-                            "Ej: hello;world!\n"
-            );
             if (newValue) {
-                tooltip.show(readLanguageTextField.getScene().getWindow());
-            } else {
-                tooltip.hide();
+                tooltipReadAlphabet.show(readLanguageTextField,
+                        readLanguageTextField.getScene().getWindow().getX() + readLanguageTextField.getLayoutX() + readLanguageTextField.getWidth() + 110, //
+                        readLanguageTextField.getScene().getWindow().getY() + readLanguageTextField.getLayoutY() + readLanguageTextField.getHeight() + 70 ) ;
+            }
+            else {
+                tooltipReadAlphabet.hide();
             }
         });
-//
-//        /**
-//         * Agrega un tooltip al nodo inicial
-//         */
-//        Tooltip startNodeTooltip = genericTooltip(
-//                "Agrega un Nodo inicial"
-//        );
-//        addStartNode.setOnMouseEntered(e -> {
-//            startNodeTooltip.show(addStartNode.getScene().getWindow());
-//        });
-//        addStartNode.setOnMouseExited(e -> {
-//            startNodeTooltip.hide();
-//        });
-//
-//        /**
-//         * Agrega un Tooltip a un Nodo generico.
-//         */
-//        Tooltip nodeTooltip = genericTooltip(
-//                "Agrega un Nodo"
-//        );
-//        addNode.setOnMouseEntered(e -> {
-//            nodeTooltip.show(addNode.getScene().getWindow());
-//        });
-//        addNode.setOnMouseExited(e -> {
-//            nodeTooltip.hide();
-//        });
-//
-//        /**
-//         * Agrega un Tooltip al boton de Transicion.
-//         */
-//        Tooltip transitionTooltip = genericTooltip(
-//                "Agrega una transición"
-//        );
-//        addTransition.setOnMouseEntered(e -> {
-//            transitionTooltip.show(addTransition.getScene().getWindow());
-//        });
-//        addTransition.setOnMouseExited(e -> {
-//            transitionTooltip.hide();
-//        });
-//
-//        /**
-//         * Agrega un Tooltip al Nodo final.
-//         */
-//        Tooltip finalNodeTooltip = genericTooltip(
-//                "Agrega un Nodo Final"
-//        );
-//        addFinal.setOnMouseEntered(e -> {
-//            finalNodeTooltip.show(addFinal.getScene().getWindow());
-//        });
-//        addFinal.setOnMouseExited(e -> {
-//            finalNodeTooltip.hide();
-//        });
-//
-//        /**
-//         * Agrega un Tooltip al botón que verifica la integridad.
-//         */
-//        Tooltip integrityTooltip = genericTooltip(
-//                "Verifica la Integridad del Automata dibujado"
-//        );
-//
-//        this.integrityButton.setOnMouseEntered(event -> {
-//            integrityTooltip.show(integrityButton.getScene().getWindow());
-//        });
-//
-//        this.integrityButton.setOnMouseExited(e -> {
-//            integrityTooltip.hide();
-//        });
 
+        //this.checkWordBtn.setOnAction(event -> updateTransitionMatrix()); // Click comprobar
 
         this.integrityButton.setOnAction(event -> {
-            addInitialNodeActivate=false;
-            circleInitial.setFill(Color.LIGHTGRAY);
-            addStartNode.setSelected(false);
-
-            addNode.setSelected(false);
-            addNodeActivate=false;
-            circle.setFill(Color.LIGHTGRAY);
-
-            addFinalNodeActivate=false;
-            addFinal.setSelected(false);
-            circleFinal.setFill(Color.LIGHTGRAY);
-
-            addTransicionActivate=false;
-            addTransition.setSelected(false);
-            line.setStartY(0);
-            line.setStroke(Color.BLACK);
-            previous= null;
 
             boolean integrityState = checkIntegrity(this.afnd);
 
-            if (integrityState) {
-                autohideAlert(
-                        "El Autómata es Válido.",
-                        2000);
-            } else {
-                autohideAlert(
-                        "El Autómata es inválido.",
-                        2000);
+            if (integrityState){
+                autohideAlert("El Autómata es Válido.", 2000);
+            }
+            else {
+                autohideAlert("El Autómata es inválido.", 2000 );
             }
 
         });
@@ -421,28 +321,18 @@ public class Controller implements Initializable{
         this.inWordTF.textProperty().addListener((observable, oldValue, newValue) -> {
 
             System.out.println("Word: " + newValue);
-            this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue));
+            this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue) );
 
         });
 
-    }
 
-    /**
-     * Generates a genetic Tooltip with a given message.
-     *
-     * @param message what text is displayed as a Tooltip
-     * @return a Tooltip with a message
-     */
-    private Tooltip genericTooltip(String message) {
-        Tooltip tooltip = new Tooltip();
-        tooltip.setText(message);
-        tooltip.setFont(Font.font(13));
-        tooltip.contentDisplayProperty();
-        tooltip.autoHideProperty().set(true);
-        tooltip.setWrapText(true);
+        // MATRIZ DE TRANSICIONES
 
 
-        return tooltip;
+
+
+
+
     }
 
     private void updateTransitionMatrix() {
@@ -508,7 +398,6 @@ public class Controller implements Initializable{
 
     /**
      * Check the integrity for any AFND.
-     *
      * @param afnd an automata finite non-deterministic.
      * @return true for a valid automata, false otherwise.
      */
@@ -538,7 +427,6 @@ public class Controller implements Initializable{
 
     /**
      * Alerta para el usuario (retroalimentacion del programa)
-     *
      * @param title
      * @param headerText
      * @param contentText
@@ -585,42 +473,19 @@ public class Controller implements Initializable{
         circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {//coneccion entre ambos nodos
-                boolean inputOfUser= true;
-                if(previous==null&&addTransicionActivate){//asignar nodo previous
+                if(previous==null&&addTransicionActivate){
                     previous=circle;
                     event.consume();
-                }else if(previous!=null&&addTransicionActivate&&previous!=circle){//agrega una transicion normal entre dos nodos
+                }else if(previous!=null&&addTransicionActivate&&previous!=circle){
                     System.out.println(previous.getEstado());
-                    String nameOfTheTransition = genericAlertInput(
+                    String nameOfTheTransition = genericAlertTransitionInput(
                             "Ingrese el caracter de la Transición",
-                            "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+"\n  separe lo caracteres con (;)",
+                            "Nodo Inicio: " + previous.getEstado() + " a Nodo llegada: " + circle.getEstado(),
                             "Caracter");
 
                     System.out.println("Transición: " + nameOfTheTransition);
-                    if(nameOfTheTransition!=null){
-                        if(checkWordsInTransicion(nameOfTheTransition)){
-                            for(Transicion t_temp :previous.getTransiciones()){
-                                if(t_temp.getEstadoLlegada()==circle){
-                                    t_temp.addTransicion(getCharsForTransicion(nameOfTheTransition));
-                                    t_temp.updateAnchor();
-                                    inputOfUser=false;
-                                    addTransicionActivate=false;
-                                    addTransition.setSelected(false);
-                                    line.setStartY(0);
-                                    line.setStroke(Color.BLACK);
-                                    previous.toFront();
-                                    circle.toFront();
-                                    previous=null;
-                                    updateTransitionMatrix();
-                                    event.consume();
-                                }
-                            }
-                        }else{
-                            inputOfUser= false;
-                        }
-                    }
 
-                    if (nameOfTheTransition != null && inputOfUser==true) {
+                    if (nameOfTheTransition != null && nameOfTheTransition != "Ingrese caracter...") {
                         CubicCurve curve = conectTo(previous,circle);
                         Transicion transicion=new Transicion(circle, nameOfTheTransition,curve);
                         Transicion.Anchor anchor= transicion.getAnchor();
@@ -642,44 +507,14 @@ public class Controller implements Initializable{
                         previous=null;
                         event.consume();
                     }
-                }else if(previous!=null&&addTransicionActivate&&previous==circle){//agrega una transicion ciclica
-                    inputOfUser= true;
+                }else if(previous!=null&&addTransicionActivate&&previous==circle){
                     System.out.println(previous.getEstado());
-                    String nameOfTheTransition;
-                        nameOfTheTransition = genericAlertInput(
-                                "Ingrese los caracteres de la Transición ",
-                                "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+ "\n  separe lo caracteres con (;)",
-                                "Caracter");
-                        System.out.println("Transición: " + nameOfTheTransition);
-                        //Busco si ya existe la transicion ingresada
-                        if(nameOfTheTransition!=null){
-                            if(checkWordsInTransicion(nameOfTheTransition)){
-                                for(Transicion t_temp :previous.getTransiciones()){
-                                    if(t_temp.getEstadoLlegada()==previous){
-                                        t_temp.addTransicion(getCharsForTransicion(nameOfTheTransition));
-                                        t_temp.updateAnchor();
-                                        updateTransitionMatrix();
-                                        inputOfUser=false;
-                                        addTransicionActivate=false;
-                                        addTransition.setSelected(false);
-                                        line.setStartY(0);
-                                        line.setStroke(Color.BLACK);
-                                        previous.toFront();
-                                        circle.toFront();
-                                        previous=null;
-                                        event.consume();
-                                    }
-                                }
-                            }else{
-                                inputOfUser=false;
-                            }
-                        }
-
-
-                    if (nameOfTheTransition != null && inputOfUser==true) {
-
-
-
+                    String nameOfTheTransition = genericAlertTransitionInput(
+                            "Ingrese el caracter de la Transición",
+                            "Nodo Inicio: " + previous.getEstado() + " a Nodo llegada: " + circle.getEstado(),
+                            "Caracter");
+                    System.out.println("Transición: " + nameOfTheTransition);
+                    if (nameOfTheTransition != null ) {
                         CubicCurve curve = conectTo2(previous,circle);
                         Transicion transicion=new Transicion(circle, nameOfTheTransition,curve,true);
                         Transicion.Anchor anchor= transicion.getAnchor();
@@ -697,7 +532,6 @@ public class Controller implements Initializable{
                         previous.toFront();
                         circle.toFront();
                         previous=null;
-                        updateTransitionMatrix();
                         event.consume();
                     }
                 }
@@ -705,6 +539,7 @@ public class Controller implements Initializable{
         });
 
         circle.setOnMousePressed((t) -> {
+            System.out.println("pressed");
             orgSceneX = t.getSceneX();
             orgSceneY = t.getSceneY();
             Nodo c = (Nodo) (t.getSource());
@@ -746,12 +581,39 @@ public class Controller implements Initializable{
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(contentText);
+
         Optional<String> result = dialog.showAndWait();
         String[] character = {new String()};
         // The Java 8 way to get the response value (with lambda expression).
 
         if (result.isPresent()){
             return result.get();
+        }
+        return null;
+    }
+
+    /**
+     * Ventana de input para las transiciones
+     * @param title
+     * @param header
+     * @param contentText
+     * @return
+     */
+    private String genericAlertTransitionInput(String title, String header, String contentText) {
+        TextInputDialog dialog = new TextInputDialog(null);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(contentText);
+
+        Optional<String> result = dialog.showAndWait();
+        String[] character = {new String()};
+        // The Java 8 way to get the response value (with lambda expression).
+
+        if (result.isPresent() && comprobarTransicionIngresada(result.get())){
+            return result.get().replace(";","");
+        }
+        if(!comprobarTransicionIngresada(result.get())){
+            genericAlert("Error", "Entrada incorrecta.", "Solamente puede ingresar caracteres o números (sin espacios) separados por ';'. Ejemplo = a;b;c");
         }
         return null;
     }
@@ -892,12 +754,12 @@ public class Controller implements Initializable{
     }
 
     /**
-     * Comprueba si el String ingresado como alfabeto tiene el formato correcto.
-     * @param alfabeto
+     * Comprueba si el String ingresado transiciones es valido.
+     * @param transiciones
      * @return true si es correcto, false si no lo es.
      */
-    public boolean comprobarAlfabetoIngresado(String alfabeto){
-        if(alfabeto.matches("((\\w;)|(\\s;))*((\\w)|(\\s))")){
+    public boolean comprobarTransicionIngresada(String transiciones){
+        if(transiciones.matches("(\\w;)*\\w")){
             return true;
         }
         return false;
@@ -915,35 +777,11 @@ public class Controller implements Initializable{
         return false;
     }
 
-    public boolean checkWordsInTransicion(String newValue){
+    public String[] checkWordsInTransicion(String newValue){
         String[] alphabet = newValue.split(";");
         String[] alphabetChecked = checkAlphabet(alphabet);
-        for (String a :alphabet) {
-            if (a.length() > 1){
-                autohideAlert("No es una entrada válida, siga las instrucciones.",2000);
-                return false;
-            }
-        };
-        return true;
-    }
-
-    /**
-     * Toma un string, quita sus separadores (;), mide que tengan largo 1 y
-     * entrega un arreglo de char listo para agregar a la transicion
-     * @param newValue string a convertir
-     * @return  Character List
-     */
-    public char[] getCharsForTransicion(String newValue){
-
-        String[] alphabet = newValue.split(";");
-        String[] alphabetChecked = checkAlphabet(alphabet);
-        char[] arrayOk= new char[alphabetChecked.length];
-        int index= 0;
-        for(String temp_str :alphabetChecked){
-            arrayOk[index] = temp_str.charAt(index);
-            index++;
-        }
-        return arrayOk;
+        System.out.println("SymbolsChecked: " + alphabetChecked);
+        return alphabetChecked;
     }
 
 }
