@@ -54,6 +54,7 @@ public class Controller implements Initializable{
     private @FXML Button integrityButton;
     private @FXML Label listViewLabel;
     private @FXML VBox panelDeTransiciones;
+    private @FXML Label statusBar;
 
     private Nodo previous=null;
     private Line lineToConect,line=null;
@@ -61,12 +62,14 @@ public class Controller implements Initializable{
     private double orgSceneX,orgSceneY,previousX,previousY;
     private boolean inn,addNodeActivate,addTransicionActivate,addInitialNodeActivate,addFinalNodeActivate=false;
 
+
     private ObservableList<String> observableList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.afnd= new Afnd();
         updateTransitionMatrix();
+        String statusBarDefault = statusBar.getText();
 
 
         Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
@@ -306,21 +309,70 @@ public class Controller implements Initializable{
                             "Ej: hello;world!\n"
             );
             if (newValue) {
-
-                tooltip.show(readLanguageTextField,
-                        readLanguageTextField.getScene().getWindow().getX() +
-                                readLanguageTextField.getLayoutX() + readLanguageTextField.getWidth() + 110, //
-                        readLanguageTextField.getScene().getWindow().getY() +
-                                readLanguageTextField.getLayoutY() + readLanguageTextField.getHeight() + 70);
+                tooltip.show(readLanguageTextField.getScene().getWindow());
             } else {
                 tooltip.hide();
             }
         });
 
+        /**
+         * Agrega un tooltip al nodo inicial
+         */
+        Tooltip startNodeTooltip = genericTooltip(
+                "Agrega un Nodo inicial"
+        );
+        addStartNode.onMouseEnteredProperty().setValue(e -> {
+            startNodeTooltip.show(addStartNode.getScene().getWindow());
+        });
+        addStartNode.onMouseExitedProperty().setValue(e -> {
+            startNodeTooltip.hide();
+        });
 
+        /**
+         * Agrega un Tooltip a un Nodo generico.
+         */
+        Tooltip nodeTooltip = genericTooltip(
+                "Agrega un Nodo"
+        );
+        addNode.onMouseEnteredProperty().setValue(e -> {
+            nodeTooltip.show(addNode.getScene().getWindow());
+        });
+        addNode.onMouseExitedProperty().setValue(e -> {
+            nodeTooltip.hide();
+        });
+
+        /**
+         * Agrega un Tooltip al boton de Transicion.
+         */
+        Tooltip transitionTooltip = genericTooltip(
+                "Agrega una transición"
+        );
+        addTransition.onMouseEnteredProperty().setValue(e -> {
+            transitionTooltip.show(addTransition.getScene().getWindow());
+        });
+        addTransition.onMouseExitedProperty().setValue(e -> {
+            transitionTooltip.hide();
+        });
+
+        /**
+         * Agrega un Tooltip al Nodo final.
+         */
+        Tooltip finalNodeTooltip = genericTooltip(
+                "Agrega un Nodo Final"
+        );
+        addFinal.onMouseEnteredProperty().setValue(e -> {
+            finalNodeTooltip.show(addFinal.getScene().getWindow());
+        });
+        addFinal.onMouseExitedProperty().setValue(e -> {
+            finalNodeTooltip.hide();
+        });
+
+        /**
+         * Agrega un Tooltip al botón que verifica la integridad.
+         */
         Tooltip integrityTooltip = genericTooltip(
-                "Verifica la Integridad del Automata dibujado " +
-                        "basado en un alfabeto ingresado.");
+                "Verifica la Integridad del Automata dibujado"
+        );
 
         this.integrityButton.onMouseEnteredProperty().setValue(event -> {
             integrityTooltip.show(integrityButton.getScene().getWindow());
@@ -353,10 +405,6 @@ public class Controller implements Initializable{
             this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue));
 
         });
-
-
-        // MATRIZ DE TRANSICIONES
-
 
     }
 
