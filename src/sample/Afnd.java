@@ -325,28 +325,29 @@ public class Afnd {
 
         if (this.estadoInicial != null) {
             for (Transicion i : this.estadoInicial.getTransiciones()) {
-                aux.append("\u03A3"+" ("+this.estadoInicial.getEstado());
                 for(Character j : i.getTransiciones()) {
+                    aux.append("\u03A3"+" ("+this.estadoInicial.getEstado());
                     aux.append("," + j);
+                    aux.append(") = " + i.getEstadoLlegada().getEstado());
+                    lista.add(aux.toString());
+                    aux.setLength(0);
+                    aux.trimToSize();
                 }
-                aux.append(") = " + i.getEstadoLlegada().getEstado());
-                lista.add(aux.toString());
-                aux.setLength(0);
-                aux.trimToSize();
             }
         }
 
         if (this.estados != null) {
             for (Nodo i : this.estados) {
                 for(Transicion j : i.getTransiciones()){
-                    aux.append("\u03A3"+" ("+i.getEstado());
+
                     for(Character k : j.getTransiciones()){
+                        aux.append("\u03A3"+" ("+i.getEstado());
                         aux.append("," + k);
+                        aux.append(") =  "+j.getEstadoLlegada().getEstado());
+                        lista.add(aux.toString());
+                        aux.setLength(0);
+                        aux.trimToSize();
                     }
-                    aux.append(") =  "+j.getEstadoLlegada().getEstado());
-                    lista.add(aux.toString());
-                    aux.setLength(0);
-                    aux.trimToSize();
                 }
             }
         }

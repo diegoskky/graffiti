@@ -533,6 +533,15 @@ public class Controller implements Initializable{
         }
     }
 
+    private void genericAlertConfirmation(String title, String header, String contentText) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(contentText);
+
+        alert.showAndWait();
+    }
+
 
     /**
      * Alerta para el usuario (retroalimentacion del programa)
