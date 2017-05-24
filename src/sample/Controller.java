@@ -44,10 +44,10 @@ public class Controller implements Initializable{
     private @FXML TextField readLanguageTextField;
     private @FXML TextField inWordTF;
     private @FXML Button checkWordBtn;
-    private @FXML ToggleButton addStartNode; // todo
+    private @FXML ToggleButton addStartNode;
     private @FXML ToggleButton addNode;
     private @FXML ToggleButton addTransition;
-    private @FXML ToggleButton addFinal; // todo
+    private @FXML ToggleButton addFinal;
     private @FXML Group groupPaint;
     private @FXML TreeView treeView;
     private @FXML ListView<String> listView;
@@ -314,73 +314,73 @@ public class Controller implements Initializable{
                 tooltip.hide();
             }
         });
-
-        /**
-         * Agrega un tooltip al nodo inicial
-         */
-        Tooltip startNodeTooltip = genericTooltip(
-                "Agrega un Nodo inicial"
-        );
-        addStartNode.onMouseEnteredProperty().setValue(e -> {
-            startNodeTooltip.show(addStartNode.getScene().getWindow());
-        });
-        addStartNode.onMouseExitedProperty().setValue(e -> {
-            startNodeTooltip.hide();
-        });
-
-        /**
-         * Agrega un Tooltip a un Nodo generico.
-         */
-        Tooltip nodeTooltip = genericTooltip(
-                "Agrega un Nodo"
-        );
-        addNode.onMouseEnteredProperty().setValue(e -> {
-            nodeTooltip.show(addNode.getScene().getWindow());
-        });
-        addNode.onMouseExitedProperty().setValue(e -> {
-            nodeTooltip.hide();
-        });
-
-        /**
-         * Agrega un Tooltip al boton de Transicion.
-         */
-        Tooltip transitionTooltip = genericTooltip(
-                "Agrega una transición"
-        );
-        addTransition.onMouseEnteredProperty().setValue(e -> {
-            transitionTooltip.show(addTransition.getScene().getWindow());
-        });
-        addTransition.onMouseExitedProperty().setValue(e -> {
-            transitionTooltip.hide();
-        });
-
-        /**
-         * Agrega un Tooltip al Nodo final.
-         */
-        Tooltip finalNodeTooltip = genericTooltip(
-                "Agrega un Nodo Final"
-        );
-        addFinal.onMouseEnteredProperty().setValue(e -> {
-            finalNodeTooltip.show(addFinal.getScene().getWindow());
-        });
-        addFinal.onMouseExitedProperty().setValue(e -> {
-            finalNodeTooltip.hide();
-        });
-
-        /**
-         * Agrega un Tooltip al botón que verifica la integridad.
-         */
-        Tooltip integrityTooltip = genericTooltip(
-                "Verifica la Integridad del Automata dibujado"
-        );
-
-        this.integrityButton.onMouseEnteredProperty().setValue(event -> {
-            integrityTooltip.show(integrityButton.getScene().getWindow());
-        });
-
-        this.integrityButton.onMouseExitedProperty().setValue(e -> {
-            integrityTooltip.hide();
-        });
+//
+//        /**
+//         * Agrega un tooltip al nodo inicial
+//         */
+//        Tooltip startNodeTooltip = genericTooltip(
+//                "Agrega un Nodo inicial"
+//        );
+//        addStartNode.setOnMouseEntered(e -> {
+//            startNodeTooltip.show(addStartNode.getScene().getWindow());
+//        });
+//        addStartNode.setOnMouseExited(e -> {
+//            startNodeTooltip.hide();
+//        });
+//
+//        /**
+//         * Agrega un Tooltip a un Nodo generico.
+//         */
+//        Tooltip nodeTooltip = genericTooltip(
+//                "Agrega un Nodo"
+//        );
+//        addNode.setOnMouseEntered(e -> {
+//            nodeTooltip.show(addNode.getScene().getWindow());
+//        });
+//        addNode.setOnMouseExited(e -> {
+//            nodeTooltip.hide();
+//        });
+//
+//        /**
+//         * Agrega un Tooltip al boton de Transicion.
+//         */
+//        Tooltip transitionTooltip = genericTooltip(
+//                "Agrega una transición"
+//        );
+//        addTransition.setOnMouseEntered(e -> {
+//            transitionTooltip.show(addTransition.getScene().getWindow());
+//        });
+//        addTransition.setOnMouseExited(e -> {
+//            transitionTooltip.hide();
+//        });
+//
+//        /**
+//         * Agrega un Tooltip al Nodo final.
+//         */
+//        Tooltip finalNodeTooltip = genericTooltip(
+//                "Agrega un Nodo Final"
+//        );
+//        addFinal.setOnMouseEntered(e -> {
+//            finalNodeTooltip.show(addFinal.getScene().getWindow());
+//        });
+//        addFinal.setOnMouseExited(e -> {
+//            finalNodeTooltip.hide();
+//        });
+//
+//        /**
+//         * Agrega un Tooltip al botón que verifica la integridad.
+//         */
+//        Tooltip integrityTooltip = genericTooltip(
+//                "Verifica la Integridad del Automata dibujado"
+//        );
+//
+//        this.integrityButton.setOnMouseEntered(event -> {
+//            integrityTooltip.show(integrityButton.getScene().getWindow());
+//        });
+//
+//        this.integrityButton.setOnMouseExited(e -> {
+//            integrityTooltip.hide();
+//        });
 
 
         this.integrityButton.setOnAction(event -> {
