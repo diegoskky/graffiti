@@ -524,7 +524,7 @@ public class Controller implements Initializable{
             System.out.println(this.afnd.getAlfabeto());
 
             if (this.afnd.comprobarPalabra2(word)) {
-                genericAlert("Palabra Valida", "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
+                genericAlertConfirmation("Palabra Valida", "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
             } else {
                 genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada NO pertenece al autómata.");
             }
@@ -763,6 +763,15 @@ public class Controller implements Initializable{
         alert.showAndWait();
     }
 
+    private void genericAlertConfirmation(String title, String header, String contentText) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(contentText);
+
+        alert.showAndWait();
+    }
+
     /**
      * Display an alert with a single text.
      * @param title represents the title of the alert message.
@@ -937,7 +946,7 @@ public class Controller implements Initializable{
         String[] alphabetChecked = checkAlphabet(alphabet);
         char[] arrayOk= new char[alphabetChecked.length];
         int index= 0;
-        for(String temp_str :alphabetChecked){
+        for(String temp_str : alphabetChecked){
             arrayOk[index] = temp_str.charAt(index);
             index++;
         }
