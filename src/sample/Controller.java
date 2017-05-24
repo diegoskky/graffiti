@@ -201,6 +201,8 @@ public class Controller implements Initializable{
             }
         });
 
+
+
         /**
          * Listener all adds of software
          */
@@ -384,6 +386,23 @@ public class Controller implements Initializable{
 
 
         this.integrityButton.setOnAction(event -> {
+            addInitialNodeActivate=false;
+            circleInitial.setFill(Color.LIGHTGRAY);
+            addStartNode.setSelected(false);
+
+            addNode.setSelected(false);
+            addNodeActivate=false;
+            circle.setFill(Color.LIGHTGRAY);
+
+            addFinalNodeActivate=false;
+            addFinal.setSelected(false);
+            circleFinal.setFill(Color.LIGHTGRAY);
+
+            addTransicionActivate=false;
+            addTransition.setSelected(false);
+            line.setStartY(0);
+            line.setStroke(Color.BLACK);
+            previous= null;
 
             boolean integrityState = checkIntegrity(this.afnd);
 
