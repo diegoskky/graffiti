@@ -324,8 +324,13 @@ public class Transicion {
 
     public String wordToDisplayInTransition(){
         String str="";
-        for(Character c_temp:transiciones ){
-            str= str+""+c_temp+",";
+        int index=0;
+        for(Character c_temp:transiciones ) {
+            str = str + "" + c_temp;
+            if (index != transiciones.size() - 1) {
+                str = str + ",";
+            }
+            index++;
         }
         return str;
     }

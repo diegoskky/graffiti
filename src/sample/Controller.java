@@ -528,8 +528,28 @@ public class Controller implements Initializable{
                             "Caracter");
 
                     System.out.println("Transición: " + nameOfTheTransition);
+                    if(nameOfTheTransition!=null){
+                        if(checkWordsInTransicion(nameOfTheTransition)){
+                            for(Transicion t_temp :previous.getTransiciones()){
+                                if(t_temp.getEstadoLlegada()==circle){
+                                    t_temp.addTransicion(getCharsForTransicion(nameOfTheTransition));
+                                    t_temp.updateAnchor();
+                                    inputOfUser=false;
+                                    addTransicionActivate=false;
+                                    addTransition.setSelected(false);
+                                    line.setStartY(0);
+                                    line.setStroke(Color.BLACK);
+                                    previous.toFront();
+                                    circle.toFront();
+                                    previous=null;
+                                    updateTransitionMatrix();
+                                    event.consume();
+                                }
+                            }
+                        }
+                    }
 
-                    if (nameOfTheTransition != null && nameOfTheTransition != "Ingrese caracter...") {
+                    if (nameOfTheTransition != null && inputOfUser==true) {
                         CubicCurve curve = conectTo(previous,circle);
                         Transicion transicion=new Transicion(circle, nameOfTheTransition,curve);
                         Transicion.Anchor anchor= transicion.getAnchor();
@@ -567,6 +587,7 @@ public class Controller implements Initializable{
                                     if(t_temp.getEstadoLlegada()==previous){
                                         t_temp.addTransicion(getCharsForTransicion(nameOfTheTransition));
                                         t_temp.updateAnchor();
+                                        updateTransitionMatrix();
                                         inputOfUser=false;
                                         addTransicionActivate=false;
                                         addTransition.setSelected(false);
@@ -584,7 +605,6 @@ public class Controller implements Initializable{
 
                     if (nameOfTheTransition != null && inputOfUser==true) {
 
-                        //Busco una transicion ciclica y coloco la nueva ahi(no existe en las transiciones anteriores de este nodo)
 
 
                         CubicCurve curve = conectTo2(previous,circle);
@@ -604,6 +624,7 @@ public class Controller implements Initializable{
                         previous.toFront();
                         circle.toFront();
                         previous=null;
+                        updateTransitionMatrix();
                         event.consume();
                     }
                 }
