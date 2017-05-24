@@ -1,7 +1,7 @@
 Proyecto de Programación 
 ========================
 Parte I 
-Autómata Finito No Determinista Tarea
+Autómata Finito No Determinista
 
 Objetivo
 -------------------
