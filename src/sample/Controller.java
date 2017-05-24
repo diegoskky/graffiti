@@ -282,7 +282,7 @@ public class Controller implements Initializable{
 
             //this.alphabetLabel.textProperty().setValue(newValue);
 
-            String[] alphabet = newValue.split(";");
+            String[] alphabet = newValue.split(",");
 
             String[] alphabetChecked = checkAlphabet(alphabet);
 
@@ -295,8 +295,8 @@ public class Controller implements Initializable{
 
         Tooltip tooltipReadAlphabet = new Tooltip();
         tooltipReadAlphabet.setText(
-                "Para separar un caracter utilice (;)\n" +
-                        "Ej: hello;world!\n"
+                "Para separar un caracter utilice (,)\n" +
+                        "Ej: hello,world!\n"
         );
         tooltipReadAlphabet.setFont(Font.font(13));
         tooltipReadAlphabet.contentDisplayProperty();
@@ -307,8 +307,8 @@ public class Controller implements Initializable{
          */
         this.readLanguageTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             Tooltip tooltip = genericTooltip(
-                    "Para separar un caracter utilice (;)\n" +
-                            "Ej: hello;world!\n"
+                    "Para separar un caracter utilice (,)\n" +
+                            "Ej: hello,world!\n"
             );
             if (newValue) {
                 tooltip.show(readLanguageTextField.getScene().getWindow());
@@ -463,7 +463,7 @@ public class Controller implements Initializable{
     }
 
     /**
-     * @param alphabet arreglo de String dividido por el caracter (;)
+     * @param alphabet arreglo de String dividido por el caracter (,)
      * @return retorna un alfabeto valido en caso de si el input es correcto
      * y un alfabeto vacio de lo contrario.
      * También muestra una alerta si el alfabeto no es válido.
@@ -472,7 +472,7 @@ public class Controller implements Initializable{
 
         for (String a :alphabet) {
             if (a.length() > 1){
-                autohideAlert("No es un alfabeto válido, siga las instrucciones.",2000);
+                autohideAlert("No es una entrada válida, siga las instrucciones.",2000);
                 return new String[0];
             }
         }
@@ -591,7 +591,7 @@ public class Controller implements Initializable{
                     System.out.println(previous.getEstado());
                     String nameOfTheTransition = genericAlertInput(
                             "Ingrese el caracter de la Transición",
-                            "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+"\n  separe lo caracteres con (;)",
+                            "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+"\n  separe lo caracteres con (,)",
                             "Caracter");
 
                     System.out.println("Transición: " + nameOfTheTransition);
@@ -646,7 +646,7 @@ public class Controller implements Initializable{
                     String nameOfTheTransition;
                     nameOfTheTransition = genericAlertInput(
                             "Ingrese los caracteres de la Transición ",
-                            "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+ "\n  separe lo caracteres con (;)",
+                            "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+ "\n  separe lo caracteres con (,)",
                             "Caracter");
                     System.out.println("Transición: " + nameOfTheTransition);
                     //Busco si ya existe la transicion ingresada
@@ -756,15 +756,6 @@ public class Controller implements Initializable{
 
     private void genericAlert(String title, String header, String contentText) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(contentText);
-
-        alert.showAndWait();
-    }
-
-    private void genericAlertConfirmation(String title, String header, String contentText) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(contentText);
@@ -922,12 +913,16 @@ public class Controller implements Initializable{
         return false;
     }
 
+    /**
+     * Comprueba si la palabra ingresada es valida
+     * @param newValue string a comprobar
+     * @return un boolean
+     */
     public boolean checkWordsInTransicion(String newValue){
-        String[] alphabet = newValue.split(";");
+        String[] alphabet = newValue.split(",");
         String[] alphabetChecked = checkAlphabet(alphabet);
         for (String a :alphabet) {
             if (a.length() > 1){
-                autohideAlert("No es una entrada válida, siga las instrucciones.",2000);
                 return false;
             }
         };
@@ -935,19 +930,19 @@ public class Controller implements Initializable{
     }
 
     /**
-     * Toma un string, quita sus separadores (;), mide que tengan largo 1 y
+     * Toma un string, quita sus separadores (,), mide que tengan largo 1 y
      * entrega un arreglo de char listo para agregar a la transicion
      * @param newValue string a convertir
      * @return  Character List
      */
     public char[] getCharsForTransicion(String newValue){
-
-        String[] alphabet = newValue.split(";");
+        newValue= newValue.replace(" ","");
+        String[] alphabet = newValue.split(",");
         String[] alphabetChecked = checkAlphabet(alphabet);
         char[] arrayOk= new char[alphabetChecked.length];
         int index= 0;
-        for(String temp_str : alphabetChecked){
-            arrayOk[index] = temp_str.charAt(index);
+        for(String temp_str :alphabetChecked){
+            arrayOk[index] = temp_str.charAt(0);
             index++;
         }
         return arrayOk;
