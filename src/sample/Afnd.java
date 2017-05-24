@@ -324,9 +324,9 @@ public class Afnd {
         StringBuilder aux = new StringBuilder();
 
         if (this.estadoInicial != null) {
-            aux.append(this.estadoInicial.getEstado() + " =");
+            aux.append(this.estadoInicial.getEstado() + " →");
             for (Transicion i : this.estadoInicial.getTransiciones()) {
-                aux.append(" " + i.getTransiciones().toString() + i.getEstadoLlegada().getEstado() + " ;");
+                aux.append(" " + i.getEstadoLlegada().getEstado() + i.getTransiciones().toString()+ " ;");
             }
             aux.deleteCharAt(aux.toString().length()-1);
             lista.add(aux.toString());
@@ -336,9 +336,9 @@ public class Afnd {
 
         if (this.estados != null) {
             for (Nodo i : this.estados) {
-                aux.append(i.getEstado() + " =");
+                aux.append(i.getEstado() + " →");
                 for (Transicion j : i.getTransiciones()) {
-                    aux.append(" " + j.getTransiciones().toString() +  j.getEstadoLlegada().getEstado() + " ;");
+                    aux.append(" "  +  j.getEstadoLlegada().getEstado() +  j.getTransiciones().toString()+" ;");
                 }
                 aux.deleteCharAt(aux.toString().length()-1);
                 lista.add(aux.toString());
