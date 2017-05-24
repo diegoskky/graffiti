@@ -315,6 +315,8 @@ public class Afnd {
     }*/
 
     /**
+     * todo formatear al estandar de matriz de transiciones
+     *
      * Creates Strings with the nodes and it's transitions 
      * @return
      */
