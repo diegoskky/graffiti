@@ -191,7 +191,7 @@ public class Controller implements Initializable{
         });
 
         /**
-         * Listener all adds of software
+         * Listener all adds of software, and blabla
          */
         this.groupPaint.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
