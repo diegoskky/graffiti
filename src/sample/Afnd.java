@@ -336,6 +336,7 @@ public class Afnd {
             }
         }
 
+        // todo Cuando se agrega un nodo, la matriz de transiciones debe incluirlo con llegada a Vacio. ??????
         if (this.estados != null) {
             for (Nodo i : this.estados) {
                 for(Transicion j : i.getTransiciones()){
@@ -352,6 +353,17 @@ public class Afnd {
             }
         }
         return lista;
+    }
+
+    public boolean removeNode(Nodo nodo){
+
+        if (nodo.isEsInitial()){
+
+            estadoInicial = null;
+            return true;
+        }
+
+        return estados.remove(nodo);
     }
 
 }
