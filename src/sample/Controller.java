@@ -742,26 +742,32 @@ public class Controller implements Initializable{
                         }
                     }
 
-                    ArrayList<Transicion> toErase = new ArrayList<>();
-                    for (Nodo nodoRecorrer : this.afnd.getEstados()) {
-                        for (Transicion transicionBuscada : nodoRecorrer.getTransiciones()) {
-                            if (transicionBuscada.getEstadoLlegada() == c) {
-                                toErase.add(transicionBuscada);
-                                this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
-                                this.groupPaint.getChildren().remove(transicionBuscada.getCurve());
-                                for (Transicion.Arrow arrow : transicionBuscada.getArrows()) {
-                                    this.groupPaint.getChildren().remove(arrow);
-                                }
+                    if (!c.isEsInitial()){
+                        ArrayList<Transicion> toErase = new ArrayList<>();
+                        for (Nodo nodoRecorrer : this.afnd.getEstados()) {
+                            for (Transicion transicionBuscada : nodoRecorrer.getTransiciones()) {
+                                if (transicionBuscada.getEstadoLlegada() == c) {
+                                    toErase.add(transicionBuscada);
+                                    this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
+                                    this.groupPaint.getChildren().remove(transicionBuscada.getCurve());
+                                    for (Transicion.Arrow arrow : transicionBuscada.getArrows()) {
+                                        this.groupPaint.getChildren().remove(arrow);
+                                    }
 
+                                }
                             }
                         }
+                        if (toErase.size() != 0){
+                            this.afnd.getEstados().removeAll(toErase);
+                        }
                     }
-                    this.afnd.getEstados().removeAll(toErase);
-
-                    ArrayList<Transicion> toErase2 = new ArrayList<>();
+                    if (c.isEsInitial()){
+                        ArrayList<Transicion> toErase2 = new ArrayList<>();
                         for(Transicion transicionBuscada : this.afnd.getEstadoInicial().getTransiciones()){
                             if(transicionBuscada.getEstadoLlegada() == c){
+                                System.out.println("Borra transicion desde Inicial");
                                 toErase2.add(transicionBuscada);
+                                this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
                                 this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
                                 this.groupPaint.getChildren().remove(transicionBuscada.getCurve());
                                 for(Transicion.Arrow arrow: transicionBuscada.getArrows()){
@@ -769,7 +775,11 @@ public class Controller implements Initializable{
                                 }
                             }
                         }
-                    this.afnd.getEstadoInicial().getTransiciones().removeAll(toErase2);
+                        if (toErase2.size() != 0) {
+                            this.afnd.getEstadoInicial().getTransiciones().removeAll(toErase2);
+                        }
+                    }
+
                     this.groupPaint.getChildren().remove(c);
                     this.groupPaint.getChildren().remove(c.getForInitial());
 
