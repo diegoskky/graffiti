@@ -31,10 +31,12 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -716,6 +718,72 @@ public class Controller implements Initializable{
             orgSceneY = t.getSceneY();
             Nodo c = (Nodo) (t.getSource());
             c.toFront();
+
+            if (t.isSecondaryButtonDown()) {
+                ContextMenu contextMenu = new ContextMenu();
+
+//                Menu type = new Menu("Cambiar Tipo");
+//                MenuItem startNode = new MenuItem("Nodo Inicio");
+//                MenuItem node = new MenuItem("Nodo");
+//                MenuItem endNode = new MenuItem("Nodo Final");
+//                type.getItems().addAll(startNode, node, endNode);
+
+//                MenuItem rename = new MenuItem("Cambiar Nombre");
+                MenuItem erase = new MenuItem("Eliminar Nodo");
+                contextMenu.getItems().addAll(erase);
+
+                erase.setOnAction(e -> {
+                    Nodo global = c;
+                    for (Transicion temp : c.getTransiciones()) {
+                        this.groupPaint.getChildren().remove(temp.getAnchor());
+                        this.groupPaint.getChildren().remove(temp.getCurve());
+                        for (Transicion.Arrow arrow : temp.getArrows()) {
+                            this.groupPaint.getChildren().remove(arrow);
+                        }
+                    }
+
+                    ArrayList<Transicion> toErase = new ArrayList<>();
+                    for (Nodo nodoRecorrer : this.afnd.getEstados()) {
+                        for (Transicion transicionBuscada : nodoRecorrer.getTransiciones()) {
+                            if (transicionBuscada.getEstadoLlegada() == c) {
+                                toErase.add(transicionBuscada);
+                                this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
+                                this.groupPaint.getChildren().remove(transicionBuscada.getCurve());
+                                for (Transicion.Arrow arrow : transicionBuscada.getArrows()) {
+                                    this.groupPaint.getChildren().remove(arrow);
+                                }
+
+                            }
+                        }
+                    }
+                    this.afnd.getEstados().removeAll(toErase);
+
+                    ArrayList<Transicion> toErase2 = new ArrayList<>();
+                        for(Transicion transicionBuscada : this.afnd.getEstadoInicial().getTransiciones()){
+                            if(transicionBuscada.getEstadoLlegada() == c){
+                                toErase2.add(transicionBuscada);
+                                this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
+                                this.groupPaint.getChildren().remove(transicionBuscada.getCurve());
+                                for(Transicion.Arrow arrow: transicionBuscada.getArrows()){
+                                    this.groupPaint.getChildren().remove(arrow);
+                                }
+                            }
+                        }
+                    this.afnd.getEstadoInicial().getTransiciones().removeAll(toErase2);
+                    this.groupPaint.getChildren().remove(c);
+                    this.groupPaint.getChildren().remove(c.getForInitial());
+
+                    this.afnd.removeNode(c);
+
+                    updateTransitionMatrix();
+
+                });
+
+                contextMenu.show(c.getScene().getWindow());
+
+                //groupPaint.getChildren().remove(c);
+            }
+
         });
 
         circle.setOnMouseDragged((t) -> {
