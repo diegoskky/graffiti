@@ -742,6 +742,27 @@ public class Controller implements Initializable{
                         }
                     }
 
+                    ArrayList<Transicion> toErase3 = new ArrayList<>();
+                    if (this.afnd.getEstadoInicial() != null){
+                        for (Transicion nudes : this.afnd.getEstadoInicial().getTransiciones()){
+                            if (nudes.getEstadoLlegada().equals(c)){
+                                System.out.println("###################");
+                                this.groupPaint.getChildren().remove(nudes.getAnchor());
+                                this.groupPaint.getChildren().remove(nudes.getCurve());
+                                for (Transicion.Arrow arrow : nudes.getArrows()) {
+                                    this.groupPaint.getChildren().remove(arrow);
+                                }
+                                toErase3.add(nudes);
+                            }
+                        }
+                        if (toErase3.size() != 0){
+                            this.afnd.getEstadoInicial().getTransiciones().removeAll(toErase3);
+                        }
+                    }
+
+
+
+
                     if (!c.isEsInitial()){
                         ArrayList<Transicion> toErase = new ArrayList<>();
                         for (Nodo nodoRecorrer : this.afnd.getEstados()) {
@@ -758,14 +779,13 @@ public class Controller implements Initializable{
                             }
                         }
                         if (toErase.size() != 0){
-                            this.afnd.getEstados().removeAll(toErase);
+                            this.afnd.getEstados().removeAll(toErase3);
                         }
                     }
-                    if (c.isEsInitial()){
+                    if (c.equals(this.afnd.getEstadoInicial())){
                         ArrayList<Transicion> toErase2 = new ArrayList<>();
                         for(Transicion transicionBuscada : this.afnd.getEstadoInicial().getTransiciones()){
                             if(transicionBuscada.getEstadoLlegada() == c){
-                                System.out.println("Borra transicion desde Inicial");
                                 toErase2.add(transicionBuscada);
                                 this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
                                 this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());

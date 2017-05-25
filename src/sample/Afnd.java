@@ -4,6 +4,7 @@ import javafx.scene.control.Control;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -358,7 +359,11 @@ public class Afnd {
     public boolean removeNode(Nodo nodo){
 
         if (nodo.isEsInitial()){
+            estadoInicial = null;
+            return true;
+        }
 
+        if (nodo.equals(estadoInicial)){
             estadoInicial = null;
             return true;
         }
@@ -366,4 +371,11 @@ public class Afnd {
         return estados.remove(nodo);
     }
 
+    public boolean removeAll(ArrayList<Transicion> borrarList) {
+        for (Transicion transicion : borrarList) {
+            System.out.println("pichuuuuuuuuuuuuuuuuuuuuuuuuuuuula");
+            estados.remove(transicion);
+        }
+        return true;
+    }
 }
