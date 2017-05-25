@@ -816,7 +816,11 @@ public class Controller implements Initializable{
         double y1= c1.getCenterY();
         double y2= c2.getCenterY();
 
-        double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
+        curve.setControlX1((x1+x2)/2);
+        curve.setControlY1((y1+y2)/2);
+        curve.setControlX2((x1+x2)/2);
+        curve.setControlY2((y1+y2)/2);
+        /*double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
         double tetha=Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2-y1,2))/distance)));
         double hipo= distance/Math.cos(Math.toRadians(45));
         System.out.println("distance: "+distance+" -tetha: "+tetha+" -hipo: "+hipo);
@@ -824,18 +828,12 @@ public class Controller implements Initializable{
             curve.setControlX1((hipo * Math.cos(Math.toRadians(45 ))));
             curve.setControlY1((hipo * Math.sin(Math.toRadians(45 ))));
             curve.setControlX2((hipo * Math.cos(Math.toRadians(45 ))));
-            curve.setControlY2((hipo * Math.sin(Math.toRadians(45 ))));
-        }else {
-            curve.setControlX1((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
-            curve.setControlY1((Math.sqrt(Math.pow(y2 - y1, 2) / 2)));
-            curve.setControlX2((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
-            curve.setControlY2((Math.sqrt(Math.pow(y2 - y1, 2) / 2)));
-        }
+            curve.setControlY2((hipo * Math.sin(Math.toRadians(45 ))));}*/
         curve.setStroke(Color.GRAY);
         curve.setStrokeWidth(3);
-        curve.setStrokeLineCap(StrokeLineCap.SQUARE);
+        //curve.setStrokeLineCap(StrokeLineCap.SQUARE);
         curve.setFill(Color.TRANSPARENT);
-        curve.getStrokeDashArray().setAll(5.0, 5.0);
+        //curve.getStrokeDashArray().setAll(5.0, 5.0);
         return curve;
     }
 
@@ -852,10 +850,10 @@ public class Controller implements Initializable{
         double y1= c1.getCenterY();
         double y2= c2.getCenterY();
 
-        double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
+        /*double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
         double tetha=Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2-y1,2))/distance)));
         double hipo= distance/Math.cos(Math.toRadians(45));
-        System.out.println("distance: "+distance+" -tetha: "+tetha+" -hipo: "+hipo);
+        System.out.println("distance: "+distance+" -tetha: "+tetha+" -hipo: "+hipo);*/
 
         curve.setControlX1(x1+40);
         curve.setControlY1(y1);
@@ -864,9 +862,9 @@ public class Controller implements Initializable{
 
         curve.setStroke(Color.GRAY);
         curve.setStrokeWidth(3);
-        curve.setStrokeLineCap(StrokeLineCap.SQUARE);
+        //curve.setStrokeLineCap(StrokeLineCap.SQUARE);
         curve.setFill(Color.TRANSPARENT);
-        curve.getStrokeDashArray().setAll(5.0, 5.0);
+        //curve.getStrokeDashArray().setAll(5.0, 5.0);
         return curve;
     }
 
