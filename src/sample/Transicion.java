@@ -66,6 +66,11 @@ public class Transicion {
         return transiciones;
     }
 
+    public void setTransiciones(ArrayList<Character> transiciones) {
+        this.transiciones = transiciones;
+    }
+
+
     /**
      * Agrega un caracter a la lista de transiciones
      * en caso de existir en el arreglo no lo agrega

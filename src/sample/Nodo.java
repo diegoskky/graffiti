@@ -82,6 +82,15 @@ public class Nodo extends Circle {
         return transiciones;
     }
 
+    public void setTransiciones(ArrayList<Transicion> transiciones) {
+        this.transiciones = transiciones;
+    }
+
+    public boolean removeThisInTransition(Transicion transicion){
+        return this.transiciones.remove(transicion);
+
+    }
+
     public Nodo getEstadoLlegada(char aux){
         return transiciones.get(getIndiceTransicion(aux)).getEstadoLlegada();
     }

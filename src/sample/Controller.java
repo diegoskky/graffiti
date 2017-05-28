@@ -124,7 +124,7 @@ public class Controller implements Initializable{
                 }
             }
         });
-
+        //comentario todo mostrar autohide poppy cuando vas a dibujar un nodo encima de otro, o una transicion con elementos entre medio
         this.addNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 addInitialNodeActivate=false;
@@ -713,9 +713,11 @@ public class Controller implements Initializable{
             }
         });
 
+
         circle.setOnMousePressed((t) -> {
             orgSceneX = t.getSceneX();
             orgSceneY = t.getSceneY();
+
             Nodo c = (Nodo) (t.getSource());
             c.toFront();
 
@@ -731,79 +733,63 @@ public class Controller implements Initializable{
 //                MenuItem rename = new MenuItem("Cambiar Nombre");
                 MenuItem erase = new MenuItem("Eliminar Nodo");
                 contextMenu.getItems().addAll(erase);
+                contextMenu.setX(t.getSceneX() + orgSceneX);
+                contextMenu.setY( t.getSceneY());
 
                 erase.setOnAction(e -> {
+                    //Buscamos las transiciones que apunten al nodo seleccionado
+                    ArrayList<Transicion> listToEraser= new ArrayList();
+                    for (Nodo nodo: afnd.getEstados()){
+                        for(Transicion temp_t: nodo.getTransiciones()){
+                            if(temp_t.getEstadoLlegada()==c){
+                                listToEraser.add(temp_t);
+                                this.groupPaint.getChildren().remove(temp_t.getAnchor());
+                                this.groupPaint.getChildren().remove(temp_t.getCurve());
+                                for(Transicion.Arrow temp_arrow: temp_t.getArrows()){
+                                    this.groupPaint.getChildren().remove(temp_arrow);
+                                }
+                            }
+                        }
+                        for(Transicion temp_t: listToEraser){
+                            nodo.getTransiciones().remove(temp_t);
+                        }
+                    }
+                    if(this.afnd.getEstadoInicial()!=null&&!c.isEsInitial()){
+                        listToEraser= new ArrayList<>();
+                        for(Transicion temp_t: this.afnd.getEstadoInicial().getTransiciones()){
+                            if(temp_t.getEstadoLlegada()==c)
+                                listToEraser.add(temp_t);
+                        }
+                        for (Transicion temp_t: listToEraser) {
+                            afnd.getEstadoInicial().removeThisInTransition(temp_t);
+                            this.groupPaint.getChildren().remove(temp_t.getAnchor());
+                            this.groupPaint.getChildren().remove(temp_t.getCurve());
+                            for(Transicion.Arrow temp_arrow: temp_t.getArrows()){
+                                this.groupPaint.getChildren().remove(temp_arrow);
+                            }
+                        }
+                    }
                     Nodo global = c;
-                    for (Transicion temp : c.getTransiciones()) {
-                        this.groupPaint.getChildren().remove(temp.getAnchor());
-                        this.groupPaint.getChildren().remove(temp.getCurve());
-                        for (Transicion.Arrow arrow : temp.getArrows()) {
-                            this.groupPaint.getChildren().remove(arrow);
+                    //Ahora borramos el nodo y sus transiciones
+                    //borramos la parte grafica
+                    for(Transicion temp_t: c.getTransiciones()){
+                        this.groupPaint.getChildren().remove(temp_t.getAnchor());
+                        this.groupPaint.getChildren().remove(temp_t.getCurve());
+                        for(Transicion.Arrow temp_arrow: temp_t.getArrows()){
+                            this.groupPaint.getChildren().remove(temp_arrow);
                         }
                     }
-
-                    ArrayList<Transicion> toErase3 = new ArrayList<>();
-                    if (this.afnd.getEstadoInicial() != null){
-                        for (Transicion nudes : this.afnd.getEstadoInicial().getTransiciones()){
-                            if (nudes.getEstadoLlegada().equals(c)){
-                                System.out.println("###################");
-                                this.groupPaint.getChildren().remove(nudes.getAnchor());
-                                this.groupPaint.getChildren().remove(nudes.getCurve());
-                                for (Transicion.Arrow arrow : nudes.getArrows()) {
-                                    this.groupPaint.getChildren().remove(arrow);
-                                }
-                                toErase3.add(nudes);
-                            }
-                        }
-                        if (toErase3.size() != 0){
-                            this.afnd.getEstadoInicial().getTransiciones().removeAll(toErase3);
-                        }
-                    }
-
-
-
-
-                    if (!c.isEsInitial()){
-                        ArrayList<Transicion> toErase = new ArrayList<>();
-                        for (Nodo nodoRecorrer : this.afnd.getEstados()) {
-                            for (Transicion transicionBuscada : nodoRecorrer.getTransiciones()) {
-                                if (transicionBuscada.getEstadoLlegada() == c) {
-                                    toErase.add(transicionBuscada);
-                                    this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
-                                    this.groupPaint.getChildren().remove(transicionBuscada.getCurve());
-                                    for (Transicion.Arrow arrow : transicionBuscada.getArrows()) {
-                                        this.groupPaint.getChildren().remove(arrow);
-                                    }
-
-                                }
-                            }
-                        }
-                        if (toErase.size() != 0){
-                            this.afnd.getEstados().removeAll(toErase3);
-                        }
-                    }
-                    if (c.equals(this.afnd.getEstadoInicial())){
-                        ArrayList<Transicion> toErase2 = new ArrayList<>();
-                        for(Transicion transicionBuscada : this.afnd.getEstadoInicial().getTransiciones()){
-                            if(transicionBuscada.getEstadoLlegada() == c){
-                                toErase2.add(transicionBuscada);
-                                this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
-                                this.groupPaint.getChildren().remove(transicionBuscada.getAnchor());
-                                this.groupPaint.getChildren().remove(transicionBuscada.getCurve());
-                                for(Transicion.Arrow arrow: transicionBuscada.getArrows()){
-                                    this.groupPaint.getChildren().remove(arrow);
-                                }
-                            }
-                        }
-                        if (toErase2.size() != 0) {
-                            this.afnd.getEstadoInicial().getTransiciones().removeAll(toErase2);
-                        }
-                    }
-
                     this.groupPaint.getChildren().remove(c);
-                    this.groupPaint.getChildren().remove(c.getForInitial());
+                    if(this.afnd.getEstadoInicial()!=null&&c.isEsInitial())
+                        this.groupPaint.getChildren().remove(c.getForInitial());
+                    //ahora el backend
+                    c.setTransiciones(new ArrayList<>());
+                    if(c.isEsInitial()){
+                        this.afnd.setEstadoInicial(null);
+                    }else{
+                        this.afnd.removeNode(c);
+                    }
 
-                    this.afnd.removeNode(c);
 
                     updateTransitionMatrix();
 
@@ -976,6 +962,11 @@ public class Controller implements Initializable{
                 }
             }
         }
+        return false;
+    }
+
+    private boolean detectCollitionsTransition(Transicion transicion1,Transicion transicion2){
+
         return false;
     }
 
