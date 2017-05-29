@@ -36,10 +36,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Controller implements Initializable{
@@ -51,12 +48,15 @@ public class Controller implements Initializable{
     private @FXML ToggleButton addTransition;
     private @FXML ToggleButton addFinal;
     private @FXML Group groupPaint;
-    private @FXML TreeView treeView;
     private @FXML ListView<String> listView;
     private @FXML Button integrityButton;
     private @FXML Label listViewLabel;
     private @FXML VBox panelDeTransiciones;
     private @FXML Label statusBar;
+    private @FXML Button leftBtn;
+    private @FXML Button rightBtn;
+    private @FXML Button openBtn;
+    private @FXML Button guardarBtn;
 
     private Circle circleInitial,circleN,circleFinal;
     private Nodo previous=null;
@@ -322,74 +322,19 @@ public class Controller implements Initializable{
                 tooltip.hide();
             }
         });
-//
-//        /**
-//         * Agrega un tooltip al nodo inicial
-//         */
-//        Tooltip startNodeTooltip = genericTooltip(
-//                "Agrega un Nodo inicial"
-//        );
-//        addStartNode.setOnMouseEntered(e -> {
-//            startNodeTooltip.show(addStartNode.getScene().getWindow());
-//        });
-//        addStartNode.setOnMouseExited(e -> {
-//            startNodeTooltip.hide();
-//        });
-//
-//        /**
-//         * Agrega un Tooltip a un Nodo generico.
-//         */
-//        Tooltip nodeTooltip = genericTooltip(
-//                "Agrega un Nodo"
-//        );
-//        addNode.setOnMouseEntered(e -> {
-//            nodeTooltip.show(addNode.getScene().getWindow());
-//        });
-//        addNode.setOnMouseExited(e -> {
-//            nodeTooltip.hide();
-//        });
-//
-//        /**
-//         * Agrega un Tooltip al boton de Transicion.
-//         */
-//        Tooltip transitionTooltip = genericTooltip(
-//                "Agrega una transición"
-//        );
-//        addTransition.setOnMouseEntered(e -> {
-//            transitionTooltip.show(addTransition.getScene().getWindow());
-//        });
-//        addTransition.setOnMouseExited(e -> {
-//            transitionTooltip.hide();
-//        });
-//
-//        /**
-//         * Agrega un Tooltip al Nodo final.
-//         */
-//        Tooltip finalNodeTooltip = genericTooltip(
-//                "Agrega un Nodo Final"
-//        );
-//        addFinal.setOnMouseEntered(e -> {
-//            finalNodeTooltip.show(addFinal.getScene().getWindow());
-//        });
-//        addFinal.setOnMouseExited(e -> {
-//            finalNodeTooltip.hide();
-//        });
-//
-//        /**
-//         * Agrega un Tooltip al botón que verifica la integridad.
-//         */
-//        Tooltip integrityTooltip = genericTooltip(
-//                "Verifica la Integridad del Automata dibujado"
-//        );
-//
-//        this.integrityButton.setOnMouseEntered(event -> {
-//            integrityTooltip.show(integrityButton.getScene().getWindow());
-//        });
-//
-//        this.integrityButton.setOnMouseExited(e -> {
-//            integrityTooltip.hide();
-//        });
 
+        addStartNode.setTooltip(new Tooltip("Agrega un Nodo inicial"));
+        addNode.setTooltip(new Tooltip("Agrega un Nodo"));
+        addTransition.setTooltip(new Tooltip("Agrega una Transición entre dos Nodos"));
+        addFinal.setTooltip(new Tooltip("Agrega un Nodo final"));
+        integrityButton.setTooltip(new Tooltip("Verifica la Integridad del Autómata"));
+        readLanguageTextField.setTooltip(new Tooltip("Ingrese un Alfabeto"));
+        inWordTF.setTooltip(new Tooltip("Ingrese una Palabra"));
+        checkWordBtn.setTooltip(new Tooltip("Verifica la validez de una palabra"));
+        openBtn.setTooltip(new Tooltip("Abre un archivo"));
+        guardarBtn.setTooltip(new Tooltip("Guarda un archivo"));
+        leftBtn.setTooltip(new Tooltip("Deshacer"));
+        rightBtn.setTooltip(new Tooltip("Rehacer"));
 
         this.integrityButton.setOnAction(event -> {
             addInitialNodeActivate=false;
@@ -477,8 +422,9 @@ public class Controller implements Initializable{
     private String[] checkAlphabet(String[] alphabet) {
 
         for (String a :alphabet) {
-            if (a.length() > 1){
-                autohideAlert("No es una entrada válida, siga las instrucciones.",2000);
+            if (a.length() > 1) {
+                autohideAlert("No es una entrada válida, siga las instrucciones.", 2000);
+
                 return new String[0];
             }
         }
