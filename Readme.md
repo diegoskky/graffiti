@@ -14,6 +14,7 @@ Herramientas utilizadas
 - IntelliJ IDEA 2017.1.2
 - JRE: 1.8.0_112-release-736-b16 amd64
 - JVM: OpenJDK 64-Bit Server VM by JetBrains s.r.o
+- Git / Github
 
 Ejecutar
 ---------
