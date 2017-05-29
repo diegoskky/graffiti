@@ -471,8 +471,8 @@ public class Controller implements Initializable{
     private String[] checkAlphabet(String[] alphabet) {
 
         for (String a :alphabet) {
-            if (a.length() > 1) {
-                autohideAlert("No es una entrada válida, siga las instrucciones.", 2000);
+            if (a.length() > 1||a.equals(" ")||a.equals("")) {
+                autohideAlert("No es una entrada válida, siga las instrucciones2.", 2000);
 
                 return new String[0];
             }
@@ -619,8 +619,10 @@ public class Controller implements Initializable{
                             "Ingrese el caracter de la Transición",
                             "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+"\n  separe lo caracteres con (,)",
                             "Caracter");
-
-                    System.out.println("Transición: " + nameOfTheTransition);
+                    if(nameOfTheTransition.equals(" ")) {
+                        nameOfTheTransition = null;
+                    }
+                    System.out.println("Transición: |" + nameOfTheTransition+"|");
                     if(nameOfTheTransition!=null){
                         if(checkWordsInTransicion(nameOfTheTransition)){
                             for(Transicion t_temp :previous.getTransiciones()){
@@ -652,6 +654,7 @@ public class Controller implements Initializable{
                             event.consume();
                         }
                     }else{
+                        autohideAlert("No se puede agregar una Transicion vacia",2000);
                         inputOfUser=false;
                         addTransicionActivate=false;
                         addTransition.setSelected(false);
@@ -1080,10 +1083,13 @@ public class Controller implements Initializable{
      * @return un boolean
      */
     public boolean checkWordsInTransicion(String newValue){
+        if(newValue==""|newValue==" ") {
+            return false;
+        }
         String[] alphabet = newValue.split(",");
         String[] alphabetChecked = checkAlphabet(alphabet);
         for (String a :alphabet) {
-            if (a.length() > 1){
+            if (a.length() > 1||a.equals(" ")|a.equals("")||a.length()==0){
                 return false;
             }
         };
