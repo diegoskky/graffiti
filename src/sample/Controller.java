@@ -229,7 +229,7 @@ public class Controller implements Initializable{
                     addNodeActivate = false;
                     addNode.setSelected(false);
                     circleN.setFill(Color.LIGHTGRAY);
-                    if (input != null) {
+                    if (input != null&&!afnd.existeNodo(input)) {
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                         afnd.addEstado(temp_circle); // adds a node to the AFND.
@@ -238,6 +238,8 @@ public class Controller implements Initializable{
 
                         groupPaint.getChildren().addAll(temp_circle);
 
+                    }else if(input != null&&afnd.existeNodo(input)){
+                        autohideAlert("Ya existe un nodo con el nombre: "+input,2000);
                     }
                 } else if(addInitialNodeActivate &&!inn &&!detectCollitionsCircles(temp_circle)){
                     if(afnd.getEstadoInicial()==null) {
@@ -246,7 +248,7 @@ public class Controller implements Initializable{
                         addStartNode.setSelected(false);
                         circleInitial.setFill(Color.LIGHTGRAY);
 
-                        if (input != null) {
+                        if (input != null&&!afnd.existeNodo(input)) {
                             temp_circle.setEstado(input);
                             temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                             temp_circle.setEsInitial(true);
@@ -255,6 +257,8 @@ public class Controller implements Initializable{
                             updateTransitionMatrix(); // Actualiza la matriz de estados
 
                             groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
+                        }else if(input != null&&afnd.existeNodo(input)){
+                            autohideAlert("Ya existe un nodo con el nombre: "+input,2000);
                         }
                         event.consume();
                     } else {
@@ -270,7 +274,7 @@ public class Controller implements Initializable{
                     addFinalNodeActivate=false;
                     circleFinal.setFill(Color.LIGHTGRAY);
                     input= genericAlertInput("Ingrese nombre del Nodo final", null, "Nodo: ");
-                    if (input != null) {
+                    if (input != null&&!afnd.existeNodo(input)) {
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                         groupPaint.getChildren().add(temp_circle);
@@ -280,6 +284,8 @@ public class Controller implements Initializable{
                         updateTransitionMatrix(); // actualiza la matriz de estados.
 
                         event.consume();
+                    }else if(input != null&&afnd.existeNodo(input)){
+                        autohideAlert("Ya existe un nodo con el nombre: "+input,2000);
                     }
                 }else if(detectCollitionsCircles(temp_circle)){
                     if(addFinalNodeActivate|addNodeActivate|addFinalNodeActivate)
@@ -780,7 +786,7 @@ public class Controller implements Initializable{
                 MenuItem erase = new MenuItem("Eliminar Nodo");
                 MenuItem edit = new MenuItem("Editar nombre");
 
-                contextMenu.getItems().addAll(erase);
+                contextMenu.getItems().addAll(erase,edit);
                 contextMenu.setX(t.getSceneX() + orgSceneX);
                 contextMenu.setY( t.getSceneY());
 
@@ -842,10 +848,21 @@ public class Controller implements Initializable{
                     updateTransitionMatrix();
 
                 });
+                edit.setOnAction(e -> {
+                    String input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
 
+                    if (input != null&&!this.afnd.existeNodo(input)) {
+                        c.setEstado(input);
+                        c.setFill(new ImagePattern(textToImage(input, "lightgray")));
+
+                        updateTransitionMatrix(); // actualiza la matriz de estados
+
+                    }else if(input != null&&this.afnd.existeNodo(input)){
+                        autohideAlert("Ya existe un nodo con el nombre: "+input,2000);
+                    }
+
+                });
                 contextMenu.show(c.getScene().getWindow());
-
-                //groupPaint.getChildren().remove(c);
             }
 
         });

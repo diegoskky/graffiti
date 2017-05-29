@@ -373,9 +373,27 @@ public class Afnd {
 
     public boolean removeAll(ArrayList<Transicion> borrarList) {
         for (Transicion transicion : borrarList) {
-            System.out.println("pichuuuuuuuuuuuuuuuuuuuuuuuuuuuula");
             estados.remove(transicion);
         }
         return true;
+    }
+
+    public boolean existeNodo(String nodo){
+        if(nodo==null){
+            return false;
+        }else {
+            nodo= nodo.replace(" ","");
+            nodo= nodo.replace(",","");
+        }
+        if(estadoInicial!=null){
+            if(estadoInicial.getEstado().equalsIgnoreCase(nodo))
+                return true;
+        }
+            for (Nodo temp_nodo: this.getEstados()){
+                if(temp_nodo.getEstado().equalsIgnoreCase(nodo))
+                    return true;
+            }
+
+        return false;
     }
 }
