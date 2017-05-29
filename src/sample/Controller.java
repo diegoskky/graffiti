@@ -7,6 +7,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,14 +31,22 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.awt.SystemColor.window;
 
 public class Controller implements Initializable{
     private @FXML TextField readLanguageTextField;
@@ -375,6 +384,28 @@ public class Controller implements Initializable{
             this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue));
 
         });
+
+
+        openBtn.setOnAction(e -> openFile());
+        guardarBtn.setOnAction(event -> saveFile(afnd));
+
+    }
+
+    private void saveFile(Afnd afnd) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar Configuración AFND");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("NODO files (*.nod)", "*.nod");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File save = fileChooser.showSaveDialog(guardarBtn.getScene().getWindow());
+
+    }
+
+    private void openFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Abrir una configuración de AFND");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("NODO files (*.nod)", "*.nod");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File open = fileChooser.showOpenDialog(openBtn.getScene().getWindow());
 
     }
 
