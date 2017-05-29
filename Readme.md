@@ -17,7 +17,8 @@ Herramientas utilizadas
 
 Ejecutar
 ---------
-```git clone https://github.com/Peel40/GraphDrawer.git
+```
+git clone https://github.com/Peel40/GraphDrawer.git
 cd /GraphDrawer/src/sample
 javac Main.java
 java Main
