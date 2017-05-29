@@ -388,24 +388,36 @@ public class Controller implements Initializable{
 
         openBtn.setOnAction(e -> openFile());
         guardarBtn.setOnAction(event -> saveFile(afnd));
+        leftBtn.setOnAction(e -> undo());
+        rightBtn.setOnAction(e -> redo());
 
     }
 
+    private void redo() {
+        autohideAlert("Esta función aún no esta disponible.", 2000);
+    }
+
+    private void undo() {
+        autohideAlert("Esta función aún no esta disponible.", 2000);
+    }
+
     private void saveFile(Afnd afnd) {
+        autohideAlert("Esta función aún no esta disponible.", 2000);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Guardar Configuración AFND");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("NODO files (*.nod)", "*.nod");
         fileChooser.getExtensionFilters().add(extFilter);
-        File save = fileChooser.showSaveDialog(guardarBtn.getScene().getWindow());
+        //File save = fileChooser.showSaveDialog(guardarBtn.getScene().getWindow());
 
     }
 
     private void openFile() {
+        autohideAlert("Esta función aún no esta disponible.", 2000);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Abrir una configuración de AFND");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("NODO files (*.nod)", "*.nod");
         fileChooser.getExtensionFilters().add(extFilter);
-        File open = fileChooser.showOpenDialog(openBtn.getScene().getWindow());
+        //File open = fileChooser.showOpenDialog(openBtn.getScene().getWindow());
 
     }
 
