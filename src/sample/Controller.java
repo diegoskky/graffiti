@@ -58,6 +58,7 @@ public class Controller implements Initializable{
     private @FXML VBox panelDeTransiciones;
     private @FXML Label statusBar;
 
+    private Circle circleInitial,circleN,circleFinal;
     private Nodo previous=null;
     private Line lineToConect,line=null;
     private Afnd afnd;
@@ -74,11 +75,11 @@ public class Controller implements Initializable{
         String statusBarDefault = statusBar.getText();
 
 
-        Circle circle= new Circle(0,0,20,Color.LIGHTGRAY);
-        circle.setStroke(Color.BLACK);
-        this.addNode.setGraphic(circle);
+        circleN= new Circle(0,0,20,Color.LIGHTGRAY);
+        circleN.setStroke(Color.BLACK);
+        this.addNode.setGraphic(circleN);
 
-        Circle circleInitial= new Circle(32,35,20,Color.LIGHTGRAY);
+        circleInitial= new Circle(32,35,20,Color.LIGHTGRAY);
         circleInitial.setStroke(Color.BLACK);
         Polygon poly= new Polygon(new double[]{(double)(circleInitial.getCenterX()-30),(double)(circleInitial.getCenterY()+10),
                 (double)(circleInitial.getCenterX()-20),(double)(circleInitial.getCenterY()),(double)(circleInitial.getCenterX()-30),(double)(circleInitial.getCenterY()-10)});
@@ -86,7 +87,7 @@ public class Controller implements Initializable{
         graficInitialNode.getChildren().addAll(circleInitial,poly);
         this.addStartNode.setGraphic(graficInitialNode);
 
-        Circle circleFinal= new Circle(0,0,20,Color.LIGHTGRAY);
+        circleFinal= new Circle(0,0,20,Color.LIGHTGRAY);
         circleFinal.setStroke(Color.BLACK);
         circleFinal.setStrokeWidth(3);
         this.addFinal.setGraphic(circleFinal);
@@ -102,7 +103,7 @@ public class Controller implements Initializable{
             public void handle(MouseEvent event) {
                 addNodeActivate=false;
                 addNode.setSelected(false);
-                circle.setFill(Color.LIGHTGRAY);
+                circleN.setFill(Color.LIGHTGRAY);
 
                 addFinal.setSelected(false);
                 addFinalNodeActivate=false;
@@ -142,10 +143,10 @@ public class Controller implements Initializable{
                 previous= null;
                 if(addNodeActivate){
                     addNodeActivate=false;
-                    circle.setFill(Color.LIGHTGRAY);
+                    circleN.setFill(Color.LIGHTGRAY);
                 } else {
                     addNodeActivate=true;
-                    circle.setFill(Color.WHITE);
+                    circleN.setFill(Color.WHITE);
                 }
             }
         });
@@ -159,7 +160,7 @@ public class Controller implements Initializable{
 
                 addNode.setSelected(false);
                 addNodeActivate=false;
-                circle.setFill(Color.LIGHTGRAY);
+                circleN.setFill(Color.LIGHTGRAY);
 
                 addTransicionActivate=false;
                 addTransition.setSelected(false);
@@ -185,7 +186,7 @@ public class Controller implements Initializable{
 
                 addNode.setSelected(false);
                 addNodeActivate=false;
-                circle.setFill(Color.LIGHTGRAY);
+                circleN.setFill(Color.LIGHTGRAY);
 
                 addFinalNodeActivate=false;
                 addFinal.setSelected(false);
@@ -218,7 +219,7 @@ public class Controller implements Initializable{
                     input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
                     addNodeActivate = false;
                     addNode.setSelected(false);
-                    circle.setFill(Color.LIGHTGRAY);
+                    circleN.setFill(Color.LIGHTGRAY);
                     if (input != null) {
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
@@ -271,6 +272,9 @@ public class Controller implements Initializable{
 
                         event.consume();
                     }
+                }else if(detectCollitionsCircles(temp_circle)){
+                    if(addFinalNodeActivate|addNodeActivate|addFinalNodeActivate)
+                        autohideAlert("No hay espacio para insertar un nodo aqui.",2000);
                 }
             }
         });
@@ -394,7 +398,7 @@ public class Controller implements Initializable{
 
             addNode.setSelected(false);
             addNodeActivate=false;
-            circle.setFill(Color.LIGHTGRAY);
+            circleN.setFill(Color.LIGHTGRAY);
 
             addFinalNodeActivate=false;
             addFinal.setSelected(false);
@@ -595,6 +599,22 @@ public class Controller implements Initializable{
             @Override
             public void handle(MouseEvent event) {//coneccion entre ambos nodos
                 boolean inputOfUser= true;
+                if(addInitialNodeActivate){
+                    autohideAlert("No se puede insertar un nodo sobre otro.",2000);
+                    addInitialNodeActivate=false;
+                    circleInitial.setFill(Color.LIGHTGRAY);
+                    addStartNode.setSelected(false);
+                }else if(addNodeActivate) {
+                    autohideAlert("No se puede insertar un nodo sobre otro.",2000);
+                    addNode.setSelected(false);
+                    addNodeActivate = false;
+                    circleN.setFill(Color.LIGHTGRAY);
+                }else if(addFinalNodeActivate){
+                    autohideAlert("No se puede insertar un nodo sobre otro.",2000);
+                    addFinalNodeActivate=false;
+                    addFinal.setSelected(false);
+                    circleFinal.setFill(Color.LIGHTGRAY);
+                }
                 if(previous==null&&addTransicionActivate){//asignar nodo previous
                     previous=circle;
                     event.consume();
@@ -625,8 +645,28 @@ public class Controller implements Initializable{
                                 }
                             }
                         }else{
-                            inputOfUser= false;
+                            inputOfUser=false;
+                            addTransicionActivate=false;
+                            addTransition.setSelected(false);
+                            line.setStartY(0);
+                            line.setStroke(Color.BLACK);
+                            previous.toFront();
+                            circle.toFront();
+                            previous=null;
+                            updateTransitionMatrix();
+                            event.consume();
                         }
+                    }else{
+                        inputOfUser=false;
+                        addTransicionActivate=false;
+                        addTransition.setSelected(false);
+                        line.setStartY(0);
+                        line.setStroke(Color.BLACK);
+                        previous.toFront();
+                        circle.toFront();
+                        previous=null;
+                        updateTransitionMatrix();
+                        event.consume();
                     }
 
                     if (nameOfTheTransition != null && inputOfUser==true) {
@@ -681,7 +721,24 @@ public class Controller implements Initializable{
                             }
                         }else{
                             inputOfUser=false;
+                            addTransicionActivate=false;
+                            addTransition.setSelected(false);
+                            line.setStartY(0);
+                            line.setStroke(Color.BLACK);
+                            previous.toFront();
+                            circle.toFront();
+                            previous=null;
+                            event.consume();
                         }
+                    }else{
+                        addTransicionActivate=false;
+                        addTransition.setSelected(false);
+                        line.setStartY(0);
+                        line.setStroke(Color.BLACK);
+                        previous.toFront();
+                        circle.toFront();
+                        previous=null;
+                        event.consume();
                     }
 
 
@@ -732,6 +789,8 @@ public class Controller implements Initializable{
 
 //                MenuItem rename = new MenuItem("Cambiar Nombre");
                 MenuItem erase = new MenuItem("Eliminar Nodo");
+                MenuItem edit = new MenuItem("Editar nombre");
+
                 contextMenu.getItems().addAll(erase);
                 contextMenu.setX(t.getSceneX() + orgSceneX);
                 contextMenu.setY( t.getSceneY());
