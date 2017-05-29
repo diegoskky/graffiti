@@ -393,7 +393,7 @@ public class Controller implements Initializable{
 
 
         openBtn.setOnAction(e -> openFile());
-        guardarBtn.setOnAction(event -> saveFile(afnd));
+        guardarBtn.setOnAction(e -> saveFile());
         leftBtn.setOnAction(e -> undo());
         rightBtn.setOnAction(e -> redo());
 
@@ -407,7 +407,7 @@ public class Controller implements Initializable{
         autohideAlert("Esta función aún no esta disponible.", 2000);
     }
 
-    private void saveFile(Afnd afnd) {
+    private void saveFile() {
         autohideAlert("Esta función aún no esta disponible.", 2000);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Guardar Configuración AFND");
