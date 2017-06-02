@@ -116,4 +116,17 @@ public class Nodo extends Circle {
             t.updateAllArrows();
         }
     }
+
+    /**
+     * comprueba si el estado tiene transiciones vacias.
+     * @return
+     */
+    public boolean comprobarTransicionVacia(){
+        for(Transicion i : this.transiciones){
+            if(i.getTransiciones().contains('_')){
+                return true;
+            }
+        }
+        return false;
+    }
 }

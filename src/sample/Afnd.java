@@ -15,7 +15,7 @@ public class Afnd {
     private Nodo estadoInicial;
     private ArrayList<Nodo> estados;
 
-    public Afnd(String alfabeto){
+    public Afnd(String alfabeto) {
         this.alfabeto = alfabeto;
         this.estados = new ArrayList<>();
         this.estadoInicial = null;
@@ -48,12 +48,12 @@ public class Afnd {
         this.estadoInicial = estadoInicial;
     }
 
-    public void addEstado(Nodo nuevo){
+    public void addEstado(Nodo nuevo) {
         this.estados.add(nuevo);
     }
 
-    public boolean comprobarAlfabeto(char letra){
-        if(alfabeto.contains(Character.toString(letra))){
+    public boolean comprobarAlfabeto(char letra) {
+        if (alfabeto.contains(Character.toString(letra))) {
             return true;
         }
         return false;
@@ -62,10 +62,11 @@ public class Afnd {
     /**
      * Funcion que consume una palabra y verifica si es valida
      * segun el lenguaje descrito por el automata
+     *
      * @param palabra String con la palabra a verificar
      * @return true si la palabra es valida
      */
-    public boolean comprobarPalabra(String palabra){
+    public boolean comprobarPalabra(String palabra) {
         char letra;
         String aux = palabra;
         Nodo estadoActual = new Nodo();
@@ -73,28 +74,28 @@ public class Afnd {
         letra = palabra.charAt(0);
         aux = aux.substring(1);
 
-        if(comprobarAlfabeto(letra)){
-            if(estadoInicial!=null&&estadoInicial.comprobarTransicion(letra)){
+        if (comprobarAlfabeto(letra)) {
+            if (estadoInicial != null && estadoInicial.comprobarTransicion(letra)) {
                 estadoInicial.getIndiceTransicion(letra);
                 estadoActual = estadoInicial.getEstadoLlegada(letra);
-                System.out.println("esta aqui: "+estadoActual.getEstado());
+                System.out.println("esta aqui: " + estadoActual.getEstado());
 
-                while(!aux.trim().isEmpty()){
+                while (!aux.trim().isEmpty()) {
                     letra = aux.charAt(0);
                     aux = aux.substring(1);
 
-                    if(estadoActual.comprobarTransicion(letra)){
+                    if (estadoActual.comprobarTransicion(letra)) {
                         estadoActual.getIndiceTransicion(letra);
                         estadoActual = estadoActual.getEstadoLlegada(letra);
-                        System.out.println("esta aqui: "+estadoActual.getEstado());
-                    }else{
+                        System.out.println("esta aqui: " + estadoActual.getEstado());
+                    } else {
                         return false;
                     }
                 }
             }
         }
 
-        if(estadoActual.getEsFinal()){
+        if (estadoActual.getEsFinal()) {
             return true;
         }
         return false;
@@ -103,9 +104,12 @@ public class Afnd {
     /**
      * Funcion que consume una palabra y verifica si es valida
      * segun el lenguaje descrito por el automata
+     *
      * @param palabra String con la palabra a verificar
      * @return true si la palabra es valida
      */
+
+    /*
     public boolean comprobarPalabra2(String palabra){
         ArrayList<String> colaPalabras = new ArrayList<>();
         ArrayList<Nodo> colaNodos = new ArrayList<>();
@@ -155,7 +159,117 @@ public class Afnd {
         }
         return false;
     }
+*/
 
+    public boolean comprobarPalabra2(String palabra){
+        ArrayList<Nodo> colaN = new ArrayList<>();
+        ArrayList<Nodo> colaA = new ArrayList<>();
+        ArrayList<String> colaP = new ArrayList<>();
+        ArrayList<Integer> colaC = new ArrayList<>();
+
+        if(!comprobarPalabraVacia(palabra)){
+            for(Transicion i : estadoInicial.getTransiciones()){
+                if(i.getTransiciones().contains('_')){
+                    colaA.add(estadoInicial);
+                    colaN.add(i.getEstadoLlegada());
+                }
+            }
+            while(!colaN.isEmpty()){
+                if(!colaN.isEmpty()) {
+                    for (Transicion i : colaN.get(0).getTransiciones()) {
+                        System.out.println("Estoy en: "+colaN.get(0).getEstado());
+                        if (i.getTransiciones().contains('_')) {
+                            if (!colaA.get(0).getEstado().equals(i.getEstadoLlegada().getEstado())) {
+                                colaA.add(colaN.get(0));
+                                colaN.add(i.getEstadoLlegada());
+                            }
+                        }
+                    }
+                    if (colaN.get(0).getEsFinal() || colaA.get(0).getEsFinal()) {
+                        return true;
+                    }
+                    colaN.remove(0);
+                    colaA.remove(0);
+                }
+            }
+        }else{
+            palabra = palabra.replace("_","");
+            for(Transicion i : estadoInicial.getTransiciones()){
+                if(i.getTransiciones().contains('_')){
+                    colaA.add(estadoInicial);
+                    colaN.add(i.getEstadoLlegada());
+                    colaP.add(palabra);
+                    colaC.add(0);
+                }
+
+                if(i.getTransiciones().contains(palabra.charAt(0))) {
+                    colaA.add(estadoInicial);
+                    colaN.add(i.getEstadoLlegada());
+                    colaP.add(palabra.substring(1));
+                    colaC.add(0);
+                }
+            }
+
+            while(!colaN.isEmpty()){
+                if(!colaN.isEmpty()){
+
+                        for(Transicion i : colaN.get(0).getTransiciones()) {
+                            System.out.println("Estoy en: "+colaN.get(0).getEstado()+" | con: "+colaP.get(0)+" | desde: "+colaA.get(0).getEstado()+" | cont: "+colaC.get(0));
+                            if(i.getTransiciones().contains('_')) {
+                                if(colaA.get(0).getEstado().equals(i.getEstadoLlegada().getEstado())) {
+                                    colaC.set(0, colaC.get(0)+1);
+                                    if(colaC.get(0) < 10) {
+                                        colaA.add(colaN.get(0));
+                                        colaN.add(i.getEstadoLlegada());
+                                        colaP.add(colaP.get(0));
+                                        colaC.add(colaC.get(0));
+                                    }
+                                }else{
+                                    colaA.add(colaN.get(0));
+                                    colaN.add(i.getEstadoLlegada());
+                                    colaP.add(colaP.get(0));
+                                    colaC.add(colaC.get(0));
+                                }
+                            }
+
+                            if(!colaP.get(0).trim().isEmpty()) {
+                                if(i.getTransiciones().contains(colaP.get(0).charAt(0))) {
+                                    colaA.add(colaN.get(0));
+                                    colaN.add(i.getEstadoLlegada());
+                                    colaP.add(colaP.get(0).substring(1));
+                                    colaC.add(colaC.get(0));
+                                }
+                            }
+                        }
+
+                        if(colaP.get(0).isEmpty()){
+                            if(colaN.get(0).getEsFinal()){
+                                return true;
+                            }
+                        }
+                        colaP.remove(0);
+                        colaN.remove(0);
+                        colaA.remove(0);
+                        colaC.remove(0);
+
+                }
+            }
+
+        }
+        return false;
+    }
+
+    /**
+     * verifica si la palabra esta compuesta solamente por '_'
+     * @param palabra
+     * @return
+     */
+    public boolean comprobarPalabraVacia(String palabra){
+        if(palabra.replace("_","").length() > 0){
+            return true;
+        }
+        return false;
+    }
 
     public void printTransiciones(){
         System.out.println(estados.size());
@@ -327,7 +441,7 @@ public class Afnd {
         if (this.estadoInicial != null) {
             for (Transicion i : this.estadoInicial.getTransiciones()) {
                 for(Character j : i.getTransiciones()) {
-                    aux.append("\u03A3"+" ("+this.estadoInicial.getEstado());
+                    aux.append("f"+" ("+this.estadoInicial.getEstado());
                     aux.append("," + j);
                     aux.append(") = " + i.getEstadoLlegada().getEstado());
                     lista.add(aux.toString());
@@ -343,7 +457,7 @@ public class Afnd {
                 for(Transicion j : i.getTransiciones()){
 
                     for(Character k : j.getTransiciones()){
-                        aux.append("\u03A3"+" ("+i.getEstado());
+                        aux.append("f"+" ("+i.getEstado());
                         aux.append("," + k);
                         aux.append(") =  "+j.getEstadoLlegada().getEstado());
                         lista.add(aux.toString());
