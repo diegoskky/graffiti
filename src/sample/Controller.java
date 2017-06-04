@@ -891,6 +891,65 @@ public class Controller implements Initializable{
                         CubicCurve curve = conectTo(previous,circle);
                         Transicion transicion=new Transicion(circle, nameOfTheTransition,curve);
                         Transicion.Anchor anchor= transicion.getAnchor();
+                        anchor.setOnMousePressed(t -> {
+                            orgSceneX = t.getSceneX();
+                            orgSceneY = t.getSceneY();
+
+                            Transicion temp_t = getTransicion((Transicion.Anchor)t.getSource());
+                            Nodo temp_n= getNodoWithTransicion(temp_t);
+                            if (t.isSecondaryButtonDown()) {
+                                ContextMenu contextMenu = new ContextMenu();
+                                MenuItem erase = new MenuItem("Eliminar Transicion");
+                                MenuItem edit = new MenuItem("Editar nombre");
+
+                                contextMenu.getItems().addAll(erase,edit);
+                                contextMenu.setX(t.getSceneX() + orgSceneX);
+                                contextMenu.setY( t.getSceneY());
+
+
+                                erase.setOnAction(e -> {
+                                    groupPaint.getChildren().remove(temp_t.getAnchor());
+                                    groupPaint.getChildren().remove(temp_t.getCurve());
+                                    for(Transicion.Arrow temp_arrow: temp_t.getArrows()){
+                                        groupPaint.getChildren().remove(temp_arrow);
+                                    }
+                                    if(!temp_n.isEsInitial()) {
+                                        for (Nodo nodo : afnd.getEstados())
+                                            if(nodo.getEstado().equals(temp_n.getEstado()))
+                                                nodo.getTransiciones().remove(temp_t);
+                                    }else {
+                                        afnd.getEstadoInicial().removeThisInTransition(temp_t);
+                                    }
+                                    updateTransitionMatrix();
+                                });
+
+                                edit.setOnAction(e -> {
+                                    String defaultValue="";
+                                    for(Character ca: temp_t.getTransiciones()){
+                                        defaultValue+=ca+",";
+                                    }
+                                    String input = genericAlertInput2(
+                                            "Ingrese el caracter de la Transición",
+                                            "Separe lo caracteres con (,)",
+                                            "Caracter",defaultValue);
+                                    if(input!=null&&input.equals(" ")) {
+                                        input = null;
+                                    }
+                                    System.out.println("Transición: |" + input+"|");
+                                    if(input!=null) {
+                                        if (checkWordsInTransicion(input)) {
+                                            temp_t.getTransiciones().clear();
+                                            temp_t.addTransicion(getCharsForTransicion(input));
+                                            temp_t.updateAnchor();
+                                            updateTransitionMatrix();
+                                            event.consume();
+                                        }
+                                    }
+                                });
+
+                                contextMenu.show(((Transicion.Anchor)t.getSource()).getScene().getWindow());
+                            }
+                        });
                         List<Transicion.Arrow> arrows= transicion.getArrows();
                         previous.addTransicion(transicion); // Adds a transition to the a Preview Node.
 
@@ -967,7 +1026,65 @@ public class Controller implements Initializable{
                         CubicCurve curve = conectTo2(previous,circle);
                         Transicion transicion=new Transicion(circle, nameOfTheTransition,curve,true);
                         Transicion.Anchor anchor= transicion.getAnchor();
+                        anchor.setOnMousePressed(t -> {
+                            orgSceneX = t.getSceneX();
+                            orgSceneY = t.getSceneY();
 
+                            Transicion temp_t = getTransicion((Transicion.Anchor)t.getSource());
+                            Nodo temp_n= getNodoWithTransicion(temp_t);
+                            if (t.isSecondaryButtonDown()) {
+                                ContextMenu contextMenu = new ContextMenu();
+                                MenuItem erase = new MenuItem("Eliminar Transicion");
+                                MenuItem edit = new MenuItem("Editar nombre");
+
+                                contextMenu.getItems().addAll(erase,edit);
+                                contextMenu.setX(t.getSceneX() + orgSceneX);
+                                contextMenu.setY( t.getSceneY());
+
+
+                                erase.setOnAction(e -> {
+                                    groupPaint.getChildren().remove(temp_t.getAnchor());
+                                    groupPaint.getChildren().remove(temp_t.getCurve());
+                                    for(Transicion.Arrow temp_arrow: temp_t.getArrows()){
+                                        groupPaint.getChildren().remove(temp_arrow);
+                                    }
+                                    if(!temp_n.isEsInitial()) {
+                                        for (Nodo nodo : afnd.getEstados())
+                                            if(nodo.getEstado().equals(temp_n.getEstado()))
+                                                nodo.getTransiciones().remove(temp_t);
+                                    }else {
+                                        afnd.getEstadoInicial().removeThisInTransition(temp_t);
+                                    }
+                                    updateTransitionMatrix();
+                                });
+
+                                edit.setOnAction(e -> {
+                                    String defaultValue="";
+                                    for(Character ca: temp_t.getTransiciones()){
+                                        defaultValue+=ca+",";
+                                    }
+                                    String input = genericAlertInput2(
+                                            "Ingrese el caracter de la Transición",
+                                            "Separe lo caracteres con (,)",
+                                            "Caracter",defaultValue);
+                                    if(input!=null&&input.equals(" ")) {
+                                        input = null;
+                                    }
+                                    System.out.println("Transición: |" + input+"|");
+                                    if(input!=null) {
+                                        if (checkWordsInTransicion(input)) {
+                                            temp_t.getTransiciones().clear();
+                                            temp_t.addTransicion(getCharsForTransicion(input));
+                                            temp_t.updateAnchor();
+                                            updateTransitionMatrix();
+                                            event.consume();
+                                        }
+                                    }
+                                });
+
+                                contextMenu.show(((Transicion.Anchor)t.getSource()).getScene().getWindow());
+                            }
+                        });
                         List<Transicion.Arrow> arrows= transicion.getArrows();
                         previous.addTransicion(transicion); // Adds a transition to the a Preview Node.
                         groupPaint.getChildren().addAll(curve,anchor);
@@ -1122,6 +1239,21 @@ public class Controller implements Initializable{
      */
     private String genericAlertInput(String title, String header, String contentText) {
         TextInputDialog dialog = new TextInputDialog(null);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(contentText);
+        Optional<String> result = dialog.showAndWait();
+        String[] character = {new String()};
+        // The Java 8 way to get the response value (with lambda expression).
+
+        if (result.isPresent()){
+            return result.get();
+        }
+        return null;
+    }
+
+    private String genericAlertInput2(String title, String header, String contentText,String defaulValue) {
+        TextInputDialog dialog = new TextInputDialog(defaulValue);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(contentText);
