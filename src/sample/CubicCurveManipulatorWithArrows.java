@@ -2,14 +2,20 @@ package sample;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -29,6 +35,8 @@ import javafx.stage.Stage;
 public class CubicCurveManipulatorWithArrows extends Application {
 
     List<Arrow> arrows = new ArrayList<Arrow>();
+    private Button checkCollisions;
+    private Group root;
 
     public static class Arrow extends Polygon {
 
@@ -128,24 +136,106 @@ public class CubicCurveManipulatorWithArrows extends Application {
 
     public static void main(String[] args) throws Exception { launch(args); }
     @Override public void start(final Stage stage) throws Exception {
+        // primera curva
         CubicCurve curve = createStartingCurve(100d,300d,300d,100d);
 
         Anchor start    = new Anchor(Color.PALEGREEN, curve.startXProperty(),    curve.startYProperty());
         Anchor control1 = new Anchor(Color.GOLD,      curve.controlX1Property(), curve.controlY1Property(),curve.controlX2Property(), curve.controlY2Property());
         Anchor end      = new Anchor(Color.TOMATO,    curve.endXProperty(),      curve.endYProperty());
 
-        Group root = new Group();
+        this.root = new Group();
         root.getChildren().addAll(curve, start, control1, end);
 
-        double[] arrowShape = new double[] { 0,0,10,20,-10,20 };//forma de la flechas
+        double[] arrowShape = new double[] { 0,0,3,30,-3,30 };//forma de la flechas
 
-        arrows.add( new Arrow( curve, 0.02f, arrowShape));
-        arrows.add( new Arrow( curve, 0.98f, arrowShape));
+        for(float i= 0.0f;i<=1f;i+=0.01f) {
+            arrows.add(new Arrow(curve, i, arrowShape));
+        }
+
+        //segunda curva
+        CubicCurve curve2 = createStartingCurve(100d,100d,300d,300d);
+
+        Anchor start2   = new Anchor(Color.PALEGREEN, curve2.startXProperty(),    curve2.startYProperty());
+        Anchor control12 = new Anchor(Color.GOLD,      curve2.controlX1Property(), curve2.controlY1Property(),curve2.controlX2Property(), curve2.controlY2Property());
+        Anchor end2      = new Anchor(Color.TOMATO,    curve2.endXProperty(),      curve2.endYProperty());
+
+        root.getChildren().addAll(curve2, start2, control12, end2);
+
+        double[] arrowShape2 = new double[] { 0,0,3,30,-3,30 };//forma de la flechas
+
+        for(float i= 0.0f;i<=1f;i+=0.01f) {
+            arrows.add(new Arrow(curve2, i, arrowShape2));
+        }
         root.getChildren().addAll( arrows);
 
+
+        this.checkCollisions= new Button("check collisions");
+        this.checkCollisions.setOnMouseClicked(event -> {
+            for(CubicCurve curbeA: getCurves()){
+                for(CubicCurve curveB: getCurves()){
+                    if(curbeA!=curveB) {
+                        if (collisionCurves(curbeA, curveB)) {
+                            autohideAlert("they are collisions", 2000);
+                        } else {
+                            autohideAlert("they aren't collisions", 2000);
+                        }
+                    }
+                }
+            }
+        });
+        root.getChildren().add(checkCollisions);
         stage.setTitle("Cubic Curve Manipulation Sample");
         stage.setScene(new Scene( root, 400, 400, Color.ALICEBLUE));
         stage.show();
+    }
+
+    /**
+     * Retorna a forma correcta del poligono que componen la flecha
+     * @return double[] que representa el poligono
+     */
+    public static double[] arrowForm(){
+        return new double[] { 0,0,10,20,-10,20 };
+    }
+
+    public ArrayList<CubicCurve> getCurves(){
+        ArrayList<CubicCurve> curves= new ArrayList<>();
+        for(Node node:root.getChildren()){
+            if(node instanceof CubicCurve){
+                curves.add((CubicCurve)node);
+            }
+        }
+        return curves;
+    }
+
+    public boolean collisionCurves(CubicCurve curveA,CubicCurve curveB){
+        if(curveA==curveB)
+            return false;
+        return curveA.intersects(curveB.getLayoutBounds());
+    }
+
+    public void autohideAlert(String title, int wait){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        //alert.setContentText(content);
+        //ButtonType buttonTypeOne = new ButtonType("Yes");
+        //ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+        //alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
+
+        Thread thread = new Thread(() -> {
+            try {
+                // Wait for 5 secs
+                Thread.sleep(wait);
+                if (alert.isShowing()) {
+                    Platform.runLater(() -> alert.close());
+                }
+            } catch (Exception exp) {
+                exp.printStackTrace();
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+        Optional<ButtonType> result = alert.showAndWait();
     }
 
 
@@ -159,22 +249,16 @@ public class CubicCurveManipulatorWithArrows extends Application {
         double distance= Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y2-y1,2));
         double tetha=Math.toDegrees(Math.asin((Math.sqrt(Math.pow(y2-y1,2))/distance)));
         double hipo= distance/Math.cos(Math.toRadians(45));
-        System.out.println("distance: "+distance+" -tetha: "+tetha+" -hipo: "+hipo);
-        if(x1<=x2 ){ //primer cuadrante
-            curve.setControlX1((hipo * Math.cos(Math.toRadians(45 ))));
-            curve.setControlY1((hipo * Math.sin(Math.toRadians(45 ))));
-            curve.setControlX2((hipo * Math.cos(Math.toRadians(45 ))));
-            curve.setControlY2((hipo * Math.sin(Math.toRadians(45 ))));
-        }else {
-            curve.setControlX1((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
-            curve.setControlY1((Math.sqrt(Math.pow(y2 - y1, 2) / 2)));
-            curve.setControlX2((Math.sqrt(Math.pow(x1 - x2, 2) / 2)));
-            curve.setControlY2((Math.sqrt(Math.pow(y2 - y1, 2) / 2)));
-        }
+        curve.setControlX1((x1+x2)/2);
+        curve.setControlY1((y1+y2)/2);
+        curve.setControlX2((x1+x2)/2);
+        curve.setControlY2((y1+y2)/2);
+
         curve.setStroke(Color.FORESTGREEN);
         curve.setStrokeWidth(4);
         curve.setStrokeLineCap(StrokeLineCap.ROUND);
         curve.setFill(Color.TRANSPARENT);
+        curve.setFocusTraversable(false);
         return curve;
     }
 

@@ -304,6 +304,14 @@ public class Transicion {
         return anchor;
     }
 
+    public void setArrows(List<Arrow> arrows) {
+        this.arrows = arrows;
+    }
+
+    public void setAnchor(Anchor anchor) {
+        this.anchor = anchor;
+    }
+
     public CubicCurve getCurve() {
         return curve;
     }

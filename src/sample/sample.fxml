@@ -87,7 +87,7 @@
       </VBox>
    </top>
    <left>
-      <VBox id="panelBotonesIzq" alignment="TOP_CENTER" fillWidth="false" minWidth="-Infinity" prefWidth="100.0" spacing="10.0">
+      <VBox id="panelBotonesIzq" fx:id="lateralBox" alignment="TOP_CENTER" fillWidth="false" minWidth="-Infinity" prefWidth="100.0" spacing="10.0">
          <children>
             <ToggleButton fx:id="addStartNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" wrapText="true" />
             <ToggleButton fx:id="addNode" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" wrapText="true" />

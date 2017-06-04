@@ -17,6 +17,10 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
@@ -33,6 +37,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,6 +48,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,6 +72,7 @@ public class Controller implements Initializable{
     private @FXML Button rightBtn;
     private @FXML Button openBtn;
     private @FXML Button guardarBtn;
+    private @FXML VBox lateralBox;
 
     private Circle circleInitial,circleN,circleFinal;
     private Nodo previous=null;
@@ -372,7 +379,7 @@ public class Controller implements Initializable{
 
             boolean integrityState = checkIntegrity(this.afnd);
 
-            if (integrityState) {
+            if (integrityState&&this.collisionNodes()==false) {
                 autohideAlert(
                         "El Autómata es Válido.",
                         2000);
@@ -397,6 +404,219 @@ public class Controller implements Initializable{
         leftBtn.setOnAction(e -> undo());
         rightBtn.setOnAction(e -> redo());
 
+    }
+
+    private boolean collisionNodes(){
+        for(Node node1 : this.groupPaint.getChildren()){
+            for(Node node2 : this.groupPaint.getChildren()){
+                if(node1!=node2) {
+                    if (collisions(node1, node2)) {
+                        genericAlert("Automata invalido", "Reordene Nodos y transiciones para que no collsionen.", null, Alert.AlertType.WARNING);
+                        return true;
+                    }
+                }
+            }
+        }
+        System.out.println("Afnd valido");
+        return false;
+    }
+
+    private boolean collisions(Node node1, Node node2){
+        ArrayList<String> collitions= new ArrayList<>();
+        if(node1 instanceof Nodo){
+            if(node2 instanceof Nodo&& node1.getBoundsInParent().intersects(node2.getBoundsInParent())){
+                autohideAlert("¡Collision encontrada!- Nodo: "+((Nodo)node1).getEstado()+", con nodo: "+((Nodo)node2).getEstado()+".",5000);
+                return true;
+            }else if(node2 instanceof Transicion.Anchor &&node1.getBoundsInParent().intersects(node2.getBoundsInParent())){
+                Transicion.Anchor anchor =(Transicion.Anchor) node2;
+                Transicion temp_t= getTransicion(anchor);
+                Nodo temp_n= getNodoWithTransicion(temp_t);
+                autohideAlert("¡Collision encontrada!- Nodo: "+((Nodo)node1).getEstado()+
+                        ", con transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+".",5000);
+                return true;
+            }else if(node2 instanceof CubicCurve){
+                CubicCurve curve =(CubicCurve) node2;
+                Transicion temp_t= getTransicion(curve);
+                Nodo temp_n= getNodoWithTransicion(temp_t);
+                if (temp_t!=null) {
+                    double[] arrowShape = new double[] { 0,0,1,1,-1,1 };//forma de la flechas
+                    ArrayList<Transicion.Arrow> arrows= new ArrayList<>();
+                    for(float i= 0.08f;i<=0.92f;i+=0.001f) {
+                        arrows.add(new Transicion.Arrow(curve, i, arrowShape));
+                    }
+                    //temp_t.setArrows(arrows);
+                    for(Transicion.Arrow arrow: arrows){
+                        if(((node1).getBoundsInParent()).intersects(arrow.getBoundsInParent())&&
+                                !(((Nodo) node1).getEstado()).equals(temp_t.getEstadoLlegada().getEstado())&&
+                                !((Nodo)node1).getEstado().equals(temp_n.getEstado())) {
+
+                            autohideAlert("¡Collision encontrada!- Nodo: "+((Nodo)((Nodo) node1)).getEstado()+
+                                    " ,con transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+".",5000);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }else if(node1 instanceof Transicion.Anchor){
+            if(node2 instanceof Nodo&&node1.getBoundsInParent().intersects(node2.getBoundsInParent())){
+                Transicion.Anchor anchor0 =(Transicion.Anchor) node1;
+                Transicion temp_t0= getTransicion(anchor0);
+                Nodo temp_n0= getNodoWithTransicion(temp_t0);
+                autohideAlert("¡Collision encontrada!- transicion: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+
+                        ", con nodo: "+((Nodo)node2).getEstado()+".",5000);
+                return true;
+            }else if(node2 instanceof Transicion.Anchor&&node1.getBoundsInParent().intersects(node2.getBoundsInParent())){
+                Transicion.Anchor anchor0 =(Transicion.Anchor) node1;
+                Transicion temp_t0= getTransicion(anchor0);
+                Nodo temp_n0= getNodoWithTransicion(temp_t0);
+                Transicion.Anchor anchor =(Transicion.Anchor) node2;
+                Transicion temp_t= getTransicion(anchor);
+                Nodo temp_n= getNodoWithTransicion(temp_t);
+                autohideAlert("¡Collision encontrada!- Transicion: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+
+                        ", con transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+".",5000);
+                return true;
+            }else if(node2 instanceof CubicCurve){
+                CubicCurve curve =(CubicCurve) node2;
+                Transicion temp_t= getTransicion(curve);
+                Nodo temp_n= getNodoWithTransicion(temp_t);
+                if (temp_t!=null) {
+                    double[] arrowShape = new double[] { 0,0,1,1,-1,1 };//forma de la flechas
+                    ArrayList<Transicion.Arrow> arrows= new ArrayList<>();
+                    for(float i= 0.08f;i<=0.92f;i+=0.001f) {
+                        arrows.add(new Transicion.Arrow(curve, i, arrowShape));
+                    }
+                    //temp_t.setArrows(arrows);
+                    for(Transicion.Arrow arrow: arrows){
+                        if(((node1).getBoundsInParent()).intersects(arrow.getBoundsInParent())&&
+                                ((Transicion.Anchor)node1)!=temp_t.getAnchor()) {
+                            Transicion temp_t0= getTransicion((Transicion.Anchor)node1);
+                            Nodo temp_n0= getNodoWithTransicion(temp_t0);
+                            autohideAlert("¡Collision encontrada!- Transicion: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+
+                                    ", con transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+".",5000);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }else if(node1 instanceof CubicCurve){
+            if(node2 instanceof Nodo) {
+                CubicCurve curve0 = (CubicCurve) node1;
+                Transicion temp_t0 = getTransicion(curve0);
+                Nodo temp_n0 = getNodoWithTransicion(temp_t0);
+                if (temp_t0 != null) {
+                    double[] arrowShape = new double[]{0, 0, 1, 1, -1, 1};//forma de la flechas
+                    ArrayList<Transicion.Arrow> arrows = new ArrayList<>();
+                    for (float i = 0.08f; i <= 0.92f; i += 0.001f) {
+                        arrows.add(new Transicion.Arrow(curve0, i, arrowShape));
+                    }
+                    for (Transicion.Arrow arrow : arrows) {
+                        if (((node2).getBoundsInParent()).intersects(arrow.getBoundsInParent()) &&
+                                !(((Nodo) node2).getEstado()).equals(temp_t0.getEstadoLlegada().getEstado()) &&
+                                !((Nodo) node2).getEstado().equals(temp_n0.getEstado())) {
+
+                            autohideAlert("¡Collision encontrada!- Transicion: f(" + temp_n0.getEstado() + "," + temp_t0.getTransiciones().get(0) + ")= " + temp_t0.getEstadoLlegada().getEstado() +
+                                    ", con nodo: "+(((Nodo) node2)).getEstado()+".", 5000);
+                            return true;
+                        }
+                    }
+                }
+            }else if(node2 instanceof Transicion.Anchor){
+                CubicCurve curve =(CubicCurve) node1;
+                Transicion temp_t= getTransicion(curve);
+                Nodo temp_n= getNodoWithTransicion(temp_t);
+                if (temp_t!=null) {
+                    double[] arrowShape = new double[] { 0,0,1,1,-1,1 };//forma de la flechas
+                    ArrayList<Transicion.Arrow> arrows= new ArrayList<>();
+                    for(float i= 0.08f;i<=0.92f;i+=0.001f) {
+                        arrows.add(new Transicion.Arrow(curve, i, arrowShape));
+                    }
+                    //temp_t.setArrows(arrows);
+                    for(Transicion.Arrow arrow: arrows){
+                        if(((node2).getBoundsInParent()).intersects(arrow.getBoundsInParent())&&
+                                ((Transicion.Anchor)node2)!=temp_t.getAnchor()) {
+                            Transicion temp_t0= getTransicion((Transicion.Anchor)node2);
+                            Nodo temp_n0= getNodoWithTransicion(temp_t0);
+                            autohideAlert("¡Collision encontrada!- Transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+
+                                    ", con transicion: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+".",5000);
+                            return true;
+                        }
+                    }
+                }
+            }else if(node2 instanceof CubicCurve){//caso dificil curvas con curvas
+                CubicCurve curve =(CubicCurve) node1;
+                Transicion temp_t= getTransicion(curve);
+                Nodo temp_n= getNodoWithTransicion(temp_t);
+                CubicCurve curve2 =(CubicCurve) node2;
+                Transicion temp_t2= getTransicion(curve2);
+                Nodo temp_n2= getNodoWithTransicion(temp_t2);
+                if(curve!=null&&curve2!=null){
+                    double[] arrowShape = new double[] { 0,0,1,1,-1,1 };//forma de la flechas
+                    ArrayList<Transicion.Arrow> arrows= new ArrayList<>();
+                    ArrayList<Transicion.Arrow> arrows2= new ArrayList<>();
+                    for(float i= 0.08f;i<=0.92f;i+=0.001f) {
+                        arrows.add(new Transicion.Arrow(curve, i, arrowShape));
+                        arrows2.add(new Transicion.Arrow(curve2, i, arrowShape));
+                    }
+                    for(Transicion.Arrow arrow: arrows){
+                        for(Transicion.Arrow arrow2: arrows2){
+                            if(arrow.getBoundsInParent().intersects(arrow2.getBoundsInParent())){
+                                autohideAlert("¡Collision encontrada!- Transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+
+                                        ", con transicion: f("+temp_n2.getEstado()+","+temp_t2.getTransiciones().get(0)+")= "+temp_t2.getEstadoLlegada().getEstado()+".",5000);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private Transicion getTransicion(CubicCurve curve){
+        for(Nodo temp_nodo: this.afnd.getEstados()){
+            for (Transicion temp_t: temp_nodo.getTransiciones()){
+                if (temp_t.getCurve()==curve)
+                    return temp_t;
+
+        }
+        }if(afnd.getEstadoInicial()!=null) {
+            for (Transicion temp_t :afnd.getEstadoInicial().getTransiciones()) {
+                if (temp_t.getCurve()==curve)
+                    return temp_t;
+            }
+        }
+        return null;
+    }
+
+    private Transicion getTransicion(Transicion.Anchor anchor){
+        for(Nodo temp_nodo: this.afnd.getEstados()){
+            for (Transicion temp_t: temp_nodo.getTransiciones()){
+                if (temp_t.getAnchor()==anchor)
+                    return temp_t;
+
+            }
+        }if(afnd.getEstadoInicial()!=null) {
+            for (Transicion temp_t :afnd.getEstadoInicial().getTransiciones()) {
+                if (temp_t.getAnchor()==anchor)
+                    return temp_t;
+            }
+        }
+        return null;
+    }
+
+    private Nodo getNodoWithTransicion(Transicion transicion){
+        for(Nodo temp_nodo: this.afnd.getEstados()) {
+            for (Transicion temp_t : temp_nodo.getTransiciones()) {
+                if (temp_t == transicion)
+                    return temp_nodo;
+            }
+        }if(afnd.getEstadoInicial()!=null) {
+            for (Transicion temp_t :afnd.getEstadoInicial().getTransiciones()) {
+                if (temp_t== transicion)
+                    return afnd.getEstadoInicial();
+            }
+        }
+        return null;
     }
 
     private void redo() {
