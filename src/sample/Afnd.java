@@ -217,8 +217,8 @@ public class Afnd {
                             System.out.println("Estoy en: "+colaN.get(0).getEstado()+" | con: "+colaP.get(0)+" | desde: "+colaA.get(0).getEstado()+" | cont: "+colaC.get(0));
                             if(i.getTransiciones().contains('_')) {
                                 if(colaA.get(0).getEstado().equals(i.getEstadoLlegada().getEstado())) {
-                                    colaC.set(0, colaC.get(0)+1);
-                                    if(colaC.get(0) < 10) {
+                                    if(colaC.get(0) < 5) {
+                                        colaC.set(0, colaC.get(0)+1);
                                         colaA.add(colaN.get(0));
                                         colaN.add(i.getEstadoLlegada());
                                         colaP.add(colaP.get(0));
