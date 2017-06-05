@@ -247,7 +247,7 @@ public class Controller implements Initializable{
                         groupPaint.getChildren().addAll(temp_circle);
 
                     }else if(input != null&&afnd.existeNodo(input)){
-                        autohideAlert("Ya existe un nodo con el nombre: "+input,2000);
+                        autohideAlert("Ya existe un Nodo con el nombre: "+input,2000);
                     }
                 } else if(addInitialNodeActivate &&!inn &&!checkCollisionWithOtherNodes(temp_circle)){
                     if(afnd.getEstadoInicial()==null) {
@@ -266,11 +266,11 @@ public class Controller implements Initializable{
 
                             groupPaint.getChildren().addAll(temp_circle, temp_circle.getForInitial());
                         }else if(input != null&&afnd.existeNodo(input)){
-                            autohideAlert("Ya existe un nodo con el nombre: "+input,2000);
+                            autohideAlert("Ya existe un Nodo con el nombre: "+input,2000);
                         }
                         event.consume();
                     } else {
-                        genericAlert("Accion invalida","Ya existe un nodo incial",null, Alert.AlertType.WARNING);
+                        genericAlert("Acción inválida","Ya existe un Nodo inicial",null, Alert.AlertType.WARNING);
                         addInitialNodeActivate = false;
                         addStartNode.setSelected(false);
                         circleInitial.setFill(Color.LIGHTGRAY);
@@ -281,7 +281,7 @@ public class Controller implements Initializable{
                     addFinal.setSelected(false);
                     addFinalNodeActivate=false;
                     circleFinal.setFill(Color.LIGHTGRAY);
-                    input= genericAlertInput("Ingrese nombre del Nodo final", null, "Nodo: ");
+                    input= genericAlertInput("Ingrese el nombre del Nodo final", null, "Nodo: ");
                     if (input != null&&!afnd.existeNodo(input)) {
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
@@ -293,11 +293,11 @@ public class Controller implements Initializable{
 
                         event.consume();
                     }else if(input != null&&afnd.existeNodo(input)){
-                        autohideAlert("Ya existe un nodo con el nombre: "+input,2000);
+                        autohideAlert("Ya existe un Nodo con el nombre: "+input,2000);
                     }
                 }else if(detectCollitionsCircles(temp_circle)){
                     if(addFinalNodeActivate|addNodeActivate|addFinalNodeActivate)
-                        autohideAlert("No hay espacio para insertar un nodo aqui.",2000);
+                        autohideAlert("No hay espacio para insertar un Nodo aquí.",2000);
                 }
             }
         });
@@ -348,11 +348,11 @@ public class Controller implements Initializable{
 
         addStartNode.setTooltip(new Tooltip("Agrega un Nodo inicial"));
         addNode.setTooltip(new Tooltip("Agrega un Nodo"));
-        addTransition.setTooltip(new Tooltip("Agrega una Transición entre dos Nodos"));
+        addTransition.setTooltip(new Tooltip("Agrega una transición entre dos Nodos"));
         addFinal.setTooltip(new Tooltip("Agrega un Nodo final"));
-        integrityButton.setTooltip(new Tooltip("Verifica la Integridad del Autómata"));
-        readLanguageTextField.setTooltip(new Tooltip("Ingrese un Alfabeto"));
-        inWordTF.setTooltip(new Tooltip("Ingrese una Palabra"));
+        integrityButton.setTooltip(new Tooltip("Verifica la integridad del autómata"));
+        readLanguageTextField.setTooltip(new Tooltip("Ingrese un alfabéto"));
+        inWordTF.setTooltip(new Tooltip("Ingrese una palabra"));
         checkWordBtn.setTooltip(new Tooltip("Verifica la validez de una palabra"));
         openBtn.setTooltip(new Tooltip("Abre un archivo"));
         guardarBtn.setTooltip(new Tooltip("Guarda un archivo"));
@@ -382,11 +382,11 @@ public class Controller implements Initializable{
 
             if (integrityState&&this.collisionNodes()==false) {
                 autohideAlert(
-                        "El Autómata es Válido.",
+                        "El autómata es válido.",
                         2000);
             } else {
                 autohideAlert(
-                        "El Autómata es inválido.",
+                        "El autómata es inválido.",
                         2000);
             }
 
@@ -412,13 +412,13 @@ public class Controller implements Initializable{
             for(Node node2 : this.groupPaint.getChildren()){
                 if(node1!=node2) {
                     if (collisions(node1, node2)) {
-                        genericAlert("Automata invalido", "Reordene Nodos y transiciones para que no collsionen.", null, Alert.AlertType.WARNING);
+                        genericAlert("Autómata inválido", "Reordene los Nodos y transiciones para que no colisión.", null, Alert.AlertType.WARNING);
                         return true;
                     }
                 }
             }
         }
-        System.out.println("Afnd valido");
+        System.out.println("AFND válido");
         return false;
     }
 
@@ -464,13 +464,13 @@ public class Controller implements Initializable{
         ArrayList<String> collitions= new ArrayList<>();
         if(node1 instanceof Nodo){
             if(node2 instanceof Nodo&& node1.getBoundsInParent().intersects(node2.getBoundsInParent())){
-                autohideAlert("¡Collision encontrada!- Nodo: "+((Nodo)node1).getEstado()+", con nodo: "+((Nodo)node2).getEstado()+".",5000);
+                autohideAlert("¡Colisión encontrada!- Nodo: "+((Nodo)node1).getEstado()+", con nodo: "+((Nodo)node2).getEstado()+".",5000);
                 return true;
             }else if(node2 instanceof Transicion.Anchor &&node1.getBoundsInParent().intersects(node2.getBoundsInParent())){
                 Transicion.Anchor anchor =(Transicion.Anchor) node2;
                 Transicion temp_t= getTransicion(anchor);
                 Nodo temp_n= getNodoWithTransicion(temp_t);
-                autohideAlert("¡Collision encontrada!- Nodo: "+((Nodo)node1).getEstado()+
+                autohideAlert("¡Colisión encontrada!- Nodo: "+((Nodo)node1).getEstado()+
                         ", con transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+".",5000);
                 return true;
             }else if(node2 instanceof CubicCurve){
@@ -501,7 +501,7 @@ public class Controller implements Initializable{
                 Transicion.Anchor anchor0 =(Transicion.Anchor) node1;
                 Transicion temp_t0= getTransicion(anchor0);
                 Nodo temp_n0= getNodoWithTransicion(temp_t0);
-                autohideAlert("¡Collision encontrada!- transicion: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+
+                autohideAlert("¡Colisión encontrada!- transición: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+
                         ", con nodo: "+((Nodo)node2).getEstado()+".",5000);
                 return true;
             }else if(node2 instanceof Transicion.Anchor&&node1.getBoundsInParent().intersects(node2.getBoundsInParent())){
@@ -511,7 +511,7 @@ public class Controller implements Initializable{
                 Transicion.Anchor anchor =(Transicion.Anchor) node2;
                 Transicion temp_t= getTransicion(anchor);
                 Nodo temp_n= getNodoWithTransicion(temp_t);
-                autohideAlert("¡Collision encontrada!- Transicion: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+
+                autohideAlert("¡Colisión encontrada!- Transición: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+
                         ", con transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+".",5000);
                 return true;
             }else if(node2 instanceof CubicCurve){
@@ -530,8 +530,8 @@ public class Controller implements Initializable{
                                 ((Transicion.Anchor)node1)!=temp_t.getAnchor()) {
                             Transicion temp_t0= getTransicion((Transicion.Anchor)node1);
                             Nodo temp_n0= getNodoWithTransicion(temp_t0);
-                            autohideAlert("¡Collision encontrada!- Transicion: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+
-                                    ", con transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+".",5000);
+                            autohideAlert("¡Colisión encontrada!- Transicion: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+
+                                    ", con transición: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+".",5000);
                             return true;
                         }
                     }
@@ -553,7 +553,7 @@ public class Controller implements Initializable{
                                 !(((Nodo) node2).getEstado()).equals(temp_t0.getEstadoLlegada().getEstado()) &&
                                 !((Nodo) node2).getEstado().equals(temp_n0.getEstado())) {
 
-                            autohideAlert("¡Collision encontrada!- Transicion: f(" + temp_n0.getEstado() + "," + temp_t0.getTransiciones().get(0) + ")= " + temp_t0.getEstadoLlegada().getEstado() +
+                            autohideAlert("¡Colisión encontrada!- Transición: f(" + temp_n0.getEstado() + "," + temp_t0.getTransiciones().get(0) + ")= " + temp_t0.getEstadoLlegada().getEstado() +
                                     ", con nodo: "+(((Nodo) node2)).getEstado()+".", 5000);
                             return true;
                         }
@@ -575,8 +575,8 @@ public class Controller implements Initializable{
                                 ((Transicion.Anchor)node2)!=temp_t.getAnchor()) {
                             Transicion temp_t0= getTransicion((Transicion.Anchor)node2);
                             Nodo temp_n0= getNodoWithTransicion(temp_t0);
-                            autohideAlert("¡Collision encontrada!- Transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+
-                                    ", con transicion: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+".",5000);
+                            autohideAlert("¡Colisión encontrada!- Transición: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+
+                                    ", con transición: f("+temp_n0.getEstado()+","+temp_t0.getTransiciones().get(0)+")= "+temp_t0.getEstadoLlegada().getEstado()+".",5000);
                             return true;
                         }
                     }
@@ -599,8 +599,8 @@ public class Controller implements Initializable{
                     for(Transicion.Arrow arrow: arrows){
                         for(Transicion.Arrow arrow2: arrows2){
                             if(arrow.getBoundsInParent().intersects(arrow2.getBoundsInParent())){
-                                autohideAlert("¡Collision encontrada!- Transicion: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+
-                                        ", con transicion: f("+temp_n2.getEstado()+","+temp_t2.getTransiciones().get(0)+")= "+temp_t2.getEstadoLlegada().getEstado()+".",5000);
+                                autohideAlert("¡Collision encontrada!- Transición: f("+temp_n.getEstado()+","+temp_t.getTransiciones().get(0)+")= "+temp_t.getEstadoLlegada().getEstado()+
+                                        ", con transición: f("+temp_n2.getEstado()+","+temp_t2.getTransiciones().get(0)+")= "+temp_t2.getEstadoLlegada().getEstado()+".",5000);
                                 return true;
                             }
                         }
@@ -634,7 +634,7 @@ public class Controller implements Initializable{
                     return temp_t;
 
             }
-        }if(afnd.getEstadoInicial()!=null) {
+        }if(afnd.getEstadoInicial() != null) {
             for (Transicion temp_t :afnd.getEstadoInicial().getTransiciones()) {
                 if (temp_t.getAnchor()==anchor)
                     return temp_t;
@@ -659,15 +659,15 @@ public class Controller implements Initializable{
     }
 
     private void redo() {
-        autohideAlert("Esta función aún no esta disponible.", 2000);
+        autohideAlert("Esta función aún no está disponible.", 2000);
     }
 
     private void undo() {
-        autohideAlert("Esta función aún no esta disponible.", 2000);
+        autohideAlert("Esta función aún no está disponible.", 2000);
     }
 
     private void saveFile() {
-        autohideAlert("Esta función aún no esta disponible.", 2000);
+        autohideAlert("Esta función aún no está disponible.", 2000);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Guardar Configuración AFND");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("NODO files (*.nod)", "*.nod");
@@ -677,7 +677,7 @@ public class Controller implements Initializable{
     }
 
     private void openFile() {
-        autohideAlert("Esta función aún no esta disponible.", 2000);
+        autohideAlert("Esta función aún no está disponible.", 2000);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Abrir una configuración de AFND");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("NODO files (*.nod)", "*.nod");
@@ -731,7 +731,7 @@ public class Controller implements Initializable{
 
         for (String a :alphabet) {
             if (a.length() > 1||a.equals(" ")||a.equals("")) {
-                autohideAlert("No es una entrada válida, siga las instrucciones2.", 2000);
+                autohideAlert("No es una entrada válida, siga las instrucciones.", 2000);
 
                 return new String[0];
             }
@@ -784,12 +784,12 @@ public class Controller implements Initializable{
             System.out.println(this.afnd.getAlfabeto());
 
             if (this.afnd.comprobarPalabra2(word)) {
-                genericAlertConfirmation("Palabra Valida", "Palabra Válida", "La palabra ingresada pertenece al lenguaje.");
+                genericAlertConfirmation("Palabra válida", "Palabra válida", "La palabra ingresada pertenece al lenguaje.");
             } else {
-                genericAlert("Palabra invalida", "Palabra Invalida", "La palabra ingresada NO pertenece al autómata.");
+                genericAlert("Palabra inválida", "Palabra inválida", "La palabra ingresada NO pertenece al autómata.");
             }
         }else{
-            genericAlert("Formato Incorrecto", "La palabra ingresada no es valida", "La palabra solo puede contener letras y numeros");
+            genericAlert("Formato incorrecto", "La palabra ingresada no es válida", "La palabra solo puede contener letras y números");
         }
     }
 
@@ -875,9 +875,9 @@ public class Controller implements Initializable{
                 }else if(previous!=null&&addTransicionActivate&&previous!=circle){//agrega una transicion normal entre dos nodos
                     System.out.println(previous.getEstado());
                     String nameOfTheTransition = genericAlertInput(
-                            "Ingrese el caracter de la Transición",
-                            "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+"\n  separe lo caracteres con (,)",
-                            "Caracter");
+                            "Ingrese el carácter de la transición",
+                            "Nodo de inicio: " + previous.getEstado() + " hasta Nodo de llegada: " + circle.getEstado()+"\n  separe lo caracteres con (,)",
+                            "Carácter");
                     if(nameOfTheTransition.equals(" ")) {
                         nameOfTheTransition = null;
                     }
@@ -913,7 +913,7 @@ public class Controller implements Initializable{
                             event.consume();
                         }
                     }else{
-                        autohideAlert("No se puede agregar una Transicion vacia",2000);
+                        autohideAlert("No se puede agregar una transición vacía",2000);
                         inputOfUser=false;
                         addTransicionActivate=false;
                         addTransition.setSelected(false);
@@ -938,7 +938,7 @@ public class Controller implements Initializable{
                             Nodo temp_n= getNodoWithTransicion(temp_t);
                             if (t.isSecondaryButtonDown()) {
                                 ContextMenu contextMenu = new ContextMenu();
-                                MenuItem erase = new MenuItem("Eliminar Transicion");
+                                MenuItem erase = new MenuItem("Eliminar transición");
                                 MenuItem edit = new MenuItem("Editar nombre");
 
                                 contextMenu.getItems().addAll(erase,edit);
@@ -968,9 +968,9 @@ public class Controller implements Initializable{
                                         defaultValue+=ca+",";
                                     }
                                     String input = genericAlertInput2(
-                                            "Ingrese el caracter de la Transición",
+                                            "Ingrese el carácter de la transición",
                                             "Separe lo caracteres con (,)",
-                                            "Caracter",defaultValue);
+                                            "Carácter",defaultValue);
                                     if(input!=null&&input.equals(" ")) {
                                         input = null;
                                     }
@@ -1014,7 +1014,7 @@ public class Controller implements Initializable{
                     nameOfTheTransition = genericAlertInput(
                             "Ingrese los caracteres de la Transición ",
                             "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+ "\n  separe lo caracteres con (,)",
-                            "Caracter");
+                            "Carácter");
                     System.out.println("Transición: " + nameOfTheTransition);
                     //Busco si ya existe la transicion ingresada
                     if(nameOfTheTransition!=null){
@@ -1073,7 +1073,7 @@ public class Controller implements Initializable{
                             Nodo temp_n= getNodoWithTransicion(temp_t);
                             if (t.isSecondaryButtonDown()) {
                                 ContextMenu contextMenu = new ContextMenu();
-                                MenuItem erase = new MenuItem("Eliminar Transicion");
+                                MenuItem erase = new MenuItem("Eliminar transición");
                                 MenuItem edit = new MenuItem("Editar nombre");
 
                                 contextMenu.getItems().addAll(erase,edit);
@@ -1103,9 +1103,9 @@ public class Controller implements Initializable{
                                         defaultValue+=ca+",";
                                     }
                                     String input = genericAlertInput2(
-                                            "Ingrese el caracter de la Transición",
+                                            "Ingrese el carácter de la transición",
                                             "Separe lo caracteres con (,)",
-                                            "Caracter",defaultValue);
+                                            "Carácter",defaultValue);
                                     if(input!=null&&input.equals(" ")) {
                                         input = null;
                                     }
@@ -1155,10 +1155,10 @@ public class Controller implements Initializable{
             if (t.isSecondaryButtonDown()) {
                 ContextMenu contextMenu = new ContextMenu();
 
-                Menu type = new Menu("Cambiar Tipo");
-                MenuItem startNode = new MenuItem("Nodo Inicio");
+                Menu type = new Menu("Cambiar tipo");
+                MenuItem startNode = new MenuItem("Nodo de Inicio");
                 MenuItem node = new MenuItem("Nodo");
-                MenuItem endNode = new MenuItem("Nodo Final");
+                MenuItem endNode = new MenuItem("Nodo final");
                 type.getItems().addAll(startNode, node, endNode);
 
                 MenuItem erase = new MenuItem("Eliminar Nodo");
