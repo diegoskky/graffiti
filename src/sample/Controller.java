@@ -19,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -231,7 +232,7 @@ public class Controller implements Initializable{
                 Nodo temp_circle= createCircle(event.getX(), event.getY(),false,false);
                 String input = ""; // ignore me.
 
-                if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
+                if(addNodeActivate && !inn&&!checkCollisionWithOtherNodes(temp_circle)) {
                     input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
                     addNodeActivate = false;
                     addNode.setSelected(false);
@@ -248,7 +249,7 @@ public class Controller implements Initializable{
                     }else if(input != null&&afnd.existeNodo(input)){
                         autohideAlert("Ya existe un nodo con el nombre: "+input,2000);
                     }
-                } else if(addInitialNodeActivate &&!inn &&!detectCollitionsCircles(temp_circle)){
+                } else if(addInitialNodeActivate &&!inn &&!checkCollisionWithOtherNodes(temp_circle)){
                     if(afnd.getEstadoInicial()==null) {
                         input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
                         addInitialNodeActivate = false;
@@ -274,7 +275,7 @@ public class Controller implements Initializable{
                         addStartNode.setSelected(false);
                         circleInitial.setFill(Color.LIGHTGRAY);
                     }
-                } else if(addFinalNodeActivate&&!inn &&!detectCollitionsCircles(temp_circle)){
+                } else if(addFinalNodeActivate&&!inn &&!checkCollisionWithOtherNodes(temp_circle)){
                     temp_circle.setEsFinal(true);
                     temp_circle.setStrokeWidth(4);
                     addFinal.setSelected(false);
@@ -418,6 +419,44 @@ public class Controller implements Initializable{
             }
         }
         System.out.println("Afnd valido");
+        return false;
+    }
+
+    /**
+     * Toma un nodo y comprueba que no hayan collisiones.
+     * Entregar el Nodo.class como un Node.Class
+     * @param node1 nodo a comprobar
+     * @return true si hay collisiones
+     */
+    private boolean checkCollisionWithOtherNodes(Node node1){
+        for(Node node2: this.groupPaint.getChildren()) {
+            if (node2 instanceof Nodo && node1.getBoundsInParent().intersects(node2.getBoundsInParent())) {
+                return true;
+            } else if (node2 instanceof Transicion.Anchor && node1.getBoundsInParent().intersects(node2.getBoundsInParent())) {
+                Transicion.Anchor anchor = (Transicion.Anchor) node2;
+                Transicion temp_t = getTransicion(anchor);
+                Nodo temp_n = getNodoWithTransicion(temp_t);
+                return true;
+            } else if (node2 instanceof CubicCurve) {
+                CubicCurve curve = (CubicCurve) node2;
+                Transicion temp_t = getTransicion(curve);
+                Nodo temp_n = getNodoWithTransicion(temp_t);
+                if (temp_t != null) {
+                    double[] arrowShape = new double[]{0, 0, 1, 1, -1, 1};//forma de la flechas
+                    ArrayList<Transicion.Arrow> arrows = new ArrayList<>();
+                    for (float i = 0.08f; i <= 0.92f; i += 0.001f) {
+                        arrows.add(new Transicion.Arrow(curve, i, arrowShape));
+                    }
+                    for (Transicion.Arrow arrow : arrows) {
+                        if (((node1).getBoundsInParent()).intersects(arrow.getBoundsInParent()) &&
+                                !(((Nodo) node1).getEstado()).equals(temp_t.getEstadoLlegada().getEstado()) &&
+                                !((Nodo) node1).getEstado().equals(temp_n.getEstado())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
@@ -1116,17 +1155,16 @@ public class Controller implements Initializable{
             if (t.isSecondaryButtonDown()) {
                 ContextMenu contextMenu = new ContextMenu();
 
-//                Menu type = new Menu("Cambiar Tipo");
-//                MenuItem startNode = new MenuItem("Nodo Inicio");
-//                MenuItem node = new MenuItem("Nodo");
-//                MenuItem endNode = new MenuItem("Nodo Final");
-//                type.getItems().addAll(startNode, node, endNode);
+                Menu type = new Menu("Cambiar Tipo");
+                MenuItem startNode = new MenuItem("Nodo Inicio");
+                MenuItem node = new MenuItem("Nodo");
+                MenuItem endNode = new MenuItem("Nodo Final");
+                type.getItems().addAll(startNode, node, endNode);
 
-//                MenuItem rename = new MenuItem("Cambiar Nombre");
                 MenuItem erase = new MenuItem("Eliminar Nodo");
                 MenuItem edit = new MenuItem("Editar nombre");
 
-                contextMenu.getItems().addAll(erase,edit);
+                contextMenu.getItems().addAll(erase,edit,type);
                 contextMenu.setX(t.getSceneX() + orgSceneX);
                 contextMenu.setY( t.getSceneY());
 
@@ -1201,6 +1239,13 @@ public class Controller implements Initializable{
                         autohideAlert("Ya existe un nodo con el nombre: "+input,2000);
                     }
 
+                });
+                node.setOnAction(e -> {
+                    Nodo temp_n=((Nodo)e.getSource());
+                    if(temp_n.isEsInitial() ){
+                        this.groupPaint.getChildren().remove(temp_n.getForInitial());
+                        temp_n.setEsInitial(false);
+                    }
                 });
                 contextMenu.show(c.getScene().getWindow());
             }
@@ -1372,6 +1417,7 @@ public class Controller implements Initializable{
         return curve;
     }
 
+
     private boolean detectCollitionsCircles(Nodo innCircle){
         Nodo temp_circle= null;
         for (Node temp_node: groupPaint.getChildren()) {
@@ -1382,11 +1428,6 @@ public class Controller implements Initializable{
                 }
             }
         }
-        return false;
-    }
-
-    private boolean detectCollitionsTransition(Transicion transicion1,Transicion transicion2){
-
         return false;
     }
 
