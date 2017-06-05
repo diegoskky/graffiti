@@ -39,8 +39,6 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import org.fxmisc.undo.UndoManagerFactory;
-import org.reactfx.EventStream;
 
 import javax.swing.undo.UndoManager;
 import java.awt.*;
