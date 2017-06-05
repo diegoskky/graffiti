@@ -1247,10 +1247,36 @@ public class Controller implements Initializable{
 
                 });
                 node.setOnAction(e -> {
-                    Nodo temp_n=((Nodo)e.getSource());
+                    Nodo temp_n=(Nodo) (t.getSource());
                     if(temp_n.isEsInitial() ){
                         this.groupPaint.getChildren().remove(temp_n.getForInitial());
+                        afnd.setEstadoInicial(null);
                         temp_n.setEsInitial(false);
+                        afnd.addEstado(temp_n);
+                    }
+                    if(temp_n.getEsFinal()){
+                        temp_n.setEsFinal(false);
+                        temp_n.setStrokeWidth(1);
+                    }
+                });
+                endNode.setOnAction(e->{
+                    Nodo temp_n=(Nodo) (t.getSource());
+                    temp_n.setEsFinal(true);
+                    temp_n.setStrokeWidth(4);
+                });
+                startNode.setOnAction(e->{
+                    Nodo temp_n=(Nodo) (t.getSource());
+                    if(afnd.getEstadoInicial()==null){
+                        groupPaint.getChildren().add(temp_n.getForInitial());
+                        temp_n.setEsInitial(true);
+                        afnd.setEstadoInicial(temp_n);
+                        afnd.getEstados().remove(temp_n);
+                    }else{
+                        if(temp_n.isEsInitial()) {
+                            autohideAlert("El nodo ya es un nodo inicial.", 3000);
+                        }else {
+                            autohideAlert("Ya existe un nodo inicial, cambielo por cualquier otro.", 3000);
+                        }
                     }
                 });
                 contextMenu.show(c.getScene().getWindow());
