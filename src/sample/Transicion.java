@@ -95,7 +95,9 @@ public class Transicion {
      */
     public void addTransicion(char[] transiciones){
         for(Character c_temp: transiciones){
-            addTransicion(c_temp);
+            if(!existeTransicion(c_temp)) {
+                addTransicion(c_temp);
+            }
         }
     }
 
@@ -363,7 +365,9 @@ public class Transicion {
         transiciones= transiciones.replace(",","");
         ArrayList<Character> lista = new ArrayList<>();
         for(int i = 0; i < transiciones.length(); i++){
-            lista.add(transiciones.charAt(i));
+            if(!existeTransicion(transiciones.charAt(i))) {
+                lista.add(transiciones.charAt(i));
+            }
         }
         return lista;
     }
