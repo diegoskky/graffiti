@@ -480,7 +480,7 @@ public class Controller implements Initializable{
                 if (temp_t!=null) {
                     double[] arrowShape = new double[] { 0,0,1,1,-1,1 };//forma de la flechas
                     ArrayList<Transicion.Arrow> arrows= new ArrayList<>();
-                    for(float i= 0.08f;i<=0.92f;i+=0.001f) {
+                    for(float i= 0.04f;i<=0.96f;i+=0.001f) {
                         arrows.add(new Transicion.Arrow(curve, i, arrowShape));
                     }
                     //temp_t.setArrows(arrows);
@@ -521,7 +521,7 @@ public class Controller implements Initializable{
                 if (temp_t!=null) {
                     double[] arrowShape = new double[] { 0,0,1,1,-1,1 };//forma de la flechas
                     ArrayList<Transicion.Arrow> arrows= new ArrayList<>();
-                    for(float i= 0.08f;i<=0.92f;i+=0.001f) {
+                    for(float i= 0.04f;i<=0.96f;i+=0.001f) {
                         arrows.add(new Transicion.Arrow(curve, i, arrowShape));
                     }
                     //temp_t.setArrows(arrows);
@@ -878,7 +878,7 @@ public class Controller implements Initializable{
                             "Ingrese el caracter de la Transición",
                             "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+"\n  separe lo caracteres con (,)",
                             "Caracter");
-                    if(nameOfTheTransition.equals(" ")) {
+                    if(nameOfTheTransition!=null&&nameOfTheTransition.equals(" ")) {
                         nameOfTheTransition = null;
                     }
                     System.out.println("Transición: |" + nameOfTheTransition+"|");
@@ -1017,6 +1017,9 @@ public class Controller implements Initializable{
                             "Caracter");
                     System.out.println("Transición: " + nameOfTheTransition);
                     //Busco si ya existe la transicion ingresada
+                    if(nameOfTheTransition!=null&&nameOfTheTransition.equals(" ")) {
+                        nameOfTheTransition = null;
+                    }
                     if(nameOfTheTransition!=null){
                         if(checkWordsInTransicion(nameOfTheTransition)){
                             for(Transicion t_temp :previous.getTransiciones()){
