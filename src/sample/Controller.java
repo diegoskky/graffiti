@@ -1050,6 +1050,7 @@ public class Controller implements Initializable{
                             event.consume();
                         }
                     }else{
+                        autohideAlert("No se puede agregar una transición vacía",2000); // no puede agregar una transción en sí mismo
                         addTransicionActivate=false;
                         addTransition.setSelected(false);
                         line.setStartY(0);

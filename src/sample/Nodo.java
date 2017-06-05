@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Nodo extends Circle {
     private String estado;
     private boolean esFinal;
-    private boolean esInitial;//posiblemente necesario;
+    private boolean esInitial; //posiblemente necesario;
     private Polygon forInitial;
     private ArrayList<Transicion> transiciones;
 
