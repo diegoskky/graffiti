@@ -194,19 +194,21 @@ public class Afnd {
             }
         }else{
             palabra = palabra.replace("_","");
-            for(Transicion i : estadoInicial.getTransiciones()){
-                if(i.getTransiciones().contains('_')){
-                    colaA.add(estadoInicial);
-                    colaN.add(i.getEstadoLlegada());
-                    colaP.add(palabra);
-                    colaC.add(0);
-                }
+            if(estadoInicial!=null) {
+                for (Transicion i : estadoInicial.getTransiciones()) {
+                    if (i.getTransiciones().contains('_')) {
+                        colaA.add(estadoInicial);
+                        colaN.add(i.getEstadoLlegada());
+                        colaP.add(palabra);
+                        colaC.add(0);
+                    }
 
-                if(i.getTransiciones().contains(palabra.charAt(0))) {
-                    colaA.add(estadoInicial);
-                    colaN.add(i.getEstadoLlegada());
-                    colaP.add(palabra.substring(1));
-                    colaC.add(0);
+                    if (i.getTransiciones().contains(palabra.charAt(0))) {
+                        colaA.add(estadoInicial);
+                        colaN.add(i.getEstadoLlegada());
+                        colaP.add(palabra.substring(1));
+                        colaC.add(0);
+                    }
                 }
             }
 
