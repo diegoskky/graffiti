@@ -931,6 +931,9 @@ public class Controller implements Initializable{
                     if (nameOfTheTransition != null && inputOfUser==true) {
                         CubicCurve curve = conectTo(previous,circle);
                         Transicion transicion=new Transicion(circle, nameOfTheTransition,curve);
+                        transicion.setTransiciones(new ArrayList<>());
+                        transicion.addTransicion(getCharsForTransicion(nameOfTheTransition));
+                        transicion.updateAnchor();
                         Transicion.Anchor anchor= transicion.getAnchor();
                         anchor.setOnMousePressed(t -> {
                             orgSceneX = t.getSceneX();
@@ -1026,6 +1029,7 @@ public class Controller implements Initializable{
                         if(checkWordsInTransicion(nameOfTheTransition)){
                             for(Transicion t_temp :previous.getTransiciones()){
                                 if(t_temp.getEstadoLlegada()==previous){
+                                    System.out.println("agrego el char");
                                     t_temp.addTransicion(getCharsForTransicion(nameOfTheTransition));
                                     t_temp.updateAnchor();
                                     updateTransitionMatrix();
@@ -1070,7 +1074,10 @@ public class Controller implements Initializable{
 
                         CubicCurve curve = conectTo2(previous,circle);
                         Transicion transicion=new Transicion(circle, nameOfTheTransition,curve,true);
+                        transicion.setTransiciones(new ArrayList<>());
+                        transicion.addTransicion(getCharsForTransicion(nameOfTheTransition));
                         Transicion.Anchor anchor= transicion.getAnchor();
+                        transicion.updateAnchor();
                         anchor.setOnMousePressed(t -> {
                             orgSceneX = t.getSceneX();
                             orgSceneY = t.getSceneY();
@@ -1537,7 +1544,28 @@ public class Controller implements Initializable{
             arrayOk[index] = temp_str.charAt(0);
             index++;
         }
+        ArrayList<Character> car= new ArrayList<>();
+        for (Character temp_c: arrayOk){
+            if(!existeCharIn(temp_c,car)){
+                car.add(temp_c);
+            }
+        }
+        arrayOk= new char[car.size()];
+        index=0;
+        System.out.println("pase por aqui");
+        for (char c:car){
+            arrayOk[index]=c;
+            index++;
+        }
         return arrayOk;
+    }
+
+    public boolean existeCharIn(char c, ArrayList<Character> lista){
+        for (char temp_c: lista){
+            if(c==temp_c)
+                return true;
+        }
+        return false;
     }
 
 }
