@@ -35,8 +35,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         this.width=800;
         this.height=600;
 
-
-
         primaryStage.setTitle("Graph Drawer");
         primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root, this.width, this.height));
