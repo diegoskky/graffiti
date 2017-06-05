@@ -157,6 +157,7 @@ public class Controller implements Initializable{
                 }
             }
         });
+
         //comentario todo mostrar autohide poppy cuando vas a dibujar un nodo encima de otro, o una transicion con elementos entre medio
         this.addNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
