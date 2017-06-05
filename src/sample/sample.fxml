@@ -120,7 +120,7 @@
                <content>
                   <Group fx:id="groupPaint" autoSizeChildren="false">
                      <children>
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f2f2f200" height="450.0" stroke="#f4f4f4" strokeType="INSIDE" width="450.0" />
+                        <Rectangle fx:id="rect" arcHeight="5.0" arcWidth="5.0" fill="#f2f2f200" height="450.0" stroke="#f4f4f4" strokeType="INSIDE" width="450.0" />
                      </children>
                   </Group>
                </content>

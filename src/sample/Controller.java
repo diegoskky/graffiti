@@ -232,7 +232,7 @@ public class Controller implements Initializable{
                 String input = ""; // ignore me.
 
                 if(addNodeActivate && !inn&&!detectCollitionsCircles(temp_circle)) { // falta agregar restricciones
-                    input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
+                    input= genericAlertInput("Ingrese nombre del nodo", null, "Nodo: ");
                     addNodeActivate = false;
                     addNode.setSelected(false);
                     circleN.setFill(Color.LIGHTGRAY);
@@ -250,7 +250,7 @@ public class Controller implements Initializable{
                     }
                 } else if(addInitialNodeActivate &&!inn &&!detectCollitionsCircles(temp_circle)){
                     if(afnd.getEstadoInicial()==null) {
-                        input= genericAlertInput("Ingrese nombre del Nodo", null, "Nodo: ");
+                        input= genericAlertInput("Ingrese nombre del nodo", null, "Nodo: ");
                         addInitialNodeActivate = false;
                         addStartNode.setSelected(false);
                         circleInitial.setFill(Color.LIGHTGRAY);
@@ -269,7 +269,7 @@ public class Controller implements Initializable{
                         }
                         event.consume();
                     } else {
-                        genericAlert("Accion invalida","Ya existe un nodo incial",null, Alert.AlertType.WARNING);
+                        genericAlert("Acción inválida","Ya existe un nodo inicial",null, Alert.AlertType.WARNING);
                         addInitialNodeActivate = false;
                         addStartNode.setSelected(false);
                         circleInitial.setFill(Color.LIGHTGRAY);
@@ -280,7 +280,7 @@ public class Controller implements Initializable{
                     addFinal.setSelected(false);
                     addFinalNodeActivate=false;
                     circleFinal.setFill(Color.LIGHTGRAY);
-                    input= genericAlertInput("Ingrese nombre del Nodo final", null, "Nodo: ");
+                    input= genericAlertInput("Ingrese nombre del nodo final", null, "Nodo: ");
                     if (input != null&&!afnd.existeNodo(input)) {
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
@@ -296,7 +296,7 @@ public class Controller implements Initializable{
                     }
                 }else if(detectCollitionsCircles(temp_circle)){
                     if(addFinalNodeActivate|addNodeActivate|addFinalNodeActivate)
-                        autohideAlert("No hay espacio para insertar un nodo aqui.",2000);
+                        autohideAlert("No hay espacio para insertar un nodo aquí.",2000);
                 }
             }
         });
@@ -345,13 +345,13 @@ public class Controller implements Initializable{
             }
         });
 
-        addStartNode.setTooltip(new Tooltip("Agrega un Nodo inicial"));
-        addNode.setTooltip(new Tooltip("Agrega un Nodo"));
-        addTransition.setTooltip(new Tooltip("Agrega una Transición entre dos Nodos"));
-        addFinal.setTooltip(new Tooltip("Agrega un Nodo final"));
-        integrityButton.setTooltip(new Tooltip("Verifica la Integridad del Autómata"));
-        readLanguageTextField.setTooltip(new Tooltip("Ingrese un Alfabeto"));
-        inWordTF.setTooltip(new Tooltip("Ingrese una Palabra"));
+        addStartNode.setTooltip(new Tooltip("Agrega un nodo inicial"));
+        addNode.setTooltip(new Tooltip("Agrega un nodo"));
+        addTransition.setTooltip(new Tooltip("Agrega una transición entre dos nodos"));
+        addFinal.setTooltip(new Tooltip("Agrega un nodo final"));
+            integrityButton.setTooltip(new Tooltip("Verifica la integridad del Autómata"));
+        readLanguageTextField.setTooltip(new Tooltip("Ingrese un alfabeto"));
+        inWordTF.setTooltip(new Tooltip("Ingrese una palabra"));
         checkWordBtn.setTooltip(new Tooltip("Verifica la validez de una palabra"));
         openBtn.setTooltip(new Tooltip("Abre un archivo"));
         guardarBtn.setTooltip(new Tooltip("Guarda un archivo"));
@@ -381,11 +381,11 @@ public class Controller implements Initializable{
 
             if (integrityState&&this.collisionNodes()==false) {
                 autohideAlert(
-                        "El Autómata es Válido.",
+                        "El autómata es válida.",
                         2000);
             } else {
                 autohideAlert(
-                        "El Autómata es inválido.",
+                        "El autómata es inválido.",
                         2000);
             }
 
@@ -417,7 +417,7 @@ public class Controller implements Initializable{
                 }
             }
         }
-        System.out.println("Afnd valido");
+        System.out.println("AFND válido");
         return false;
     }
 
@@ -692,7 +692,7 @@ public class Controller implements Initializable{
 
         for (String a :alphabet) {
             if (a.length() > 1||a.equals(" ")||a.equals("")) {
-                autohideAlert("No es una entrada válida, siga las instrucciones2.", 2000);
+                autohideAlert("No es una entrada válida, siga las instrucciones", 2000);
 
                 return new String[0];
             }
