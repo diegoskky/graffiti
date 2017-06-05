@@ -129,4 +129,12 @@ public class Nodo extends Circle {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Nodo{" +
+                "estado='" + estado + '\'' +
+                ", transiciones=" + transiciones +
+                '}';
+    }
 }

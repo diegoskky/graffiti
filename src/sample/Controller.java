@@ -6,7 +6,9 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -37,7 +39,10 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import org.fxmisc.undo.UndoManagerFactory;
+import org.reactfx.EventStream;
 
+import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -50,6 +55,8 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,6 +89,11 @@ public class Controller implements Initializable{
     private double orgSceneX,orgSceneY,previousX,previousY;
     private boolean inn,addNodeActivate,addTransicionActivate,addInitialNodeActivate,addFinalNodeActivate=false;
 
+    private Afnd previousAFND;
+    private Afnd nextAFND;
+    private Group previousGROUP;
+    private Group nextGROUP;
+
 
     private ObservableList<String> observableList = FXCollections.observableArrayList();
 
@@ -91,6 +103,10 @@ public class Controller implements Initializable{
         updateTransitionMatrix();
         String statusBarDefault = statusBar.getText();
 
+        this.previousAFND = new Afnd();
+        this.nextAFND = new Afnd();
+        this.previousGROUP = new Group();
+        this.nextGROUP = new Group();
 
         circleN= new Circle(0,0,20,Color.LIGHTGRAY);
         circleN.setStroke(Color.BLACK);
@@ -411,9 +427,31 @@ public class Controller implements Initializable{
         leftBtn.setOnAction(e -> undo());
         rightBtn.setOnAction(e -> redo());
 
-    }
+        groupPaint.getChildren().addListener((ListChangeListener) (change -> {
 
-    private boolean collisionNodes(){
+
+            while (change.next()) {
+                if (change.wasPermutated()) {
+                    for (int i = change.getFrom(); i < change.getTo(); ++i) {
+                        //permutate
+                    }
+                } else if (change.wasUpdated()) {
+                    //update item
+                } else {
+                    for (Object remitem : change.getRemoved()) {
+                        //remitem.remove(Outer.this);
+                    }
+                    for (Object additem : change.getAddedSubList()) {
+                        //additem.add(Outer.this);
+                    }
+                }
+            }
+
+
+        }));
+
+
+    } private boolean collisionNodes(){
         for(Node node1 : this.groupPaint.getChildren()){
             for(Node node2 : this.groupPaint.getChildren()){
                 if(node1!=node2) {
@@ -665,11 +703,13 @@ public class Controller implements Initializable{
     }
 
     private void redo() {
-        autohideAlert("Esta función aún no está disponible.", 2000);
+        //autohideAlert("Esta función aún no está disponible.", 2000);
+
     }
 
     private void undo() {
-        autohideAlert("Esta función aún no está disponible.", 2000);
+        System.out.println("DESHACER");
+
     }
 
     private void saveFile() {
