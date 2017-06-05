@@ -166,6 +166,7 @@ public class Afnd {
         ArrayList<Nodo> colaA = new ArrayList<>();
         ArrayList<String> colaP = new ArrayList<>();
         ArrayList<Integer> colaC = new ArrayList<>();
+        int cont = 0;
 
         if(!comprobarPalabraVacia(palabra)){
             if(estadoInicial != null) {
@@ -196,6 +197,10 @@ public class Afnd {
                     }
                     colaN.remove(0);
                     colaA.remove(0);
+                    cont++;
+                    if(cont > 10000){
+                        return false;
+                    }
                 }
             }
         }else{
@@ -259,7 +264,11 @@ public class Afnd {
                         colaN.remove(0);
                         colaA.remove(0);
                         colaC.remove(0);
-
+                        cont++;
+                        if(cont > 10000){
+                            return false;
+                        }
+                    System.out.println(cont);
                 }
             }
 
