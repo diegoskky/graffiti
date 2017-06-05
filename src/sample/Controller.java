@@ -268,6 +268,9 @@ public class Controller implements Initializable{
                         }else if(input != null&&afnd.existeNodo(input)){
                             autohideAlert("Ya existe un Nodo con el nombre: "+input,2000);
                         }
+                        else {
+                            genericAlert("Acción inválida","No es posible agregar un nodo sin un nombre",null, Alert.AlertType.WARNING);
+                        }
                         event.consume();
                     } else {
                         genericAlert("Acción inválida","Ya existe un Nodo inicial",null, Alert.AlertType.WARNING);
@@ -294,6 +297,9 @@ public class Controller implements Initializable{
                         event.consume();
                     }else if(input != null&&afnd.existeNodo(input)){
                         autohideAlert("Ya existe un Nodo con el nombre: "+input,2000);
+                    }
+                    else {
+                        genericAlert("Acción inválida","No es posible agregar un nodo sin un nombre",null, Alert.AlertType.WARNING);
                     }
                 }else if(detectCollitionsCircles(temp_circle)){
                     if(addFinalNodeActivate|addNodeActivate|addFinalNodeActivate)
@@ -915,7 +921,7 @@ public class Controller implements Initializable{
                             event.consume();
                         }
                     }else{
-                        autohideAlert("No se puede agregar una transición vacía",2000);
+                        autohideAlert("No es posible agregar una transición vacia",2000);
                         inputOfUser=false;
                         addTransicionActivate=false;
                         addTransition.setSelected(false);
