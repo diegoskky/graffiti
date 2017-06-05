@@ -59,6 +59,25 @@ public class Afnd {
         return false;
     }
 
+    public boolean comprobarAlfabeto2(String palabra){
+        if(!comprobarPalabraVacia(palabra)) {
+            System.out.println("deberia tirar true");
+            return true;
+        }else {
+
+            if (palabra != null && palabra.length() > 0) {
+                for (int i = 0; i < alfabeto.length(); i++) {
+                    if (!alfabeto.contains(Character.toString(palabra.charAt(i)))) {
+                        return false;
+                    }
+                }
+            }
+
+        }
+
+        return true;
+    }
+
     /**
      * Funcion que consume una palabra y verifica si es valida
      * segun el lenguaje descrito por el automata
@@ -451,7 +470,7 @@ public class Afnd {
         ArrayList<Nodo> cola = new ArrayList<>();
         Nodo revisando = new Nodo();
 
-        if(estadoInicial.getEsFinal()){
+        if(estadoInicial !=null&&estadoInicial.getEsFinal()){
             return true;
         }
 

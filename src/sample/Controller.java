@@ -833,15 +833,19 @@ public class Controller implements Initializable{
      */
     private void checkWord( String word ) {
         if(comprobarPalabraIngresada(word)) {
-            if(this.collisionNodes()==false) {
-                System.out.println(word);
-                System.out.println(this.afnd.getAlfabeto());
+            if(afnd.comprobarAlfabeto2(word)) {
+                if (this.collisionNodes() == false) {
+                    System.out.println(word);
+                    System.out.println(this.afnd.getAlfabeto());
 
-                if (word!=null&&this.afnd.comprobarPalabra2(word)) {
-                    genericAlertConfirmation("Palabra válida", "Palabra válida", "La palabra ingresada pertenece al lenguaje.");
-                } else {
-                    genericAlert("Palabra inválida", "Palabra inválida", "La palabra ingresada NO pertenece al autómata.");
+                    if (word != null && this.afnd.comprobarPalabra2(word)) {
+                        genericAlertConfirmation("Palabra válida", "Palabra válida", "La palabra ingresada pertenece al lenguaje.");
+                    } else {
+                        genericAlert("Palabra inválida", "Palabra inválida", "La palabra ingresada NO pertenece al autómata.");
+                    }
                 }
+            }else{
+                genericAlert("Palabra inválida", "Palabra inválida", "Hay caracteres que no existen en el alfabeto.");
             }
         }else{
             genericAlert("Formato incorrecto", "La palabra ingresada no es válida", "La palabra solo puede contener letras y números");
