@@ -168,10 +168,16 @@ public class Afnd {
         ArrayList<Integer> colaC = new ArrayList<>();
 
         if(!comprobarPalabraVacia(palabra)){
-            for(Transicion i : estadoInicial.getTransiciones()){
-                if(i.getTransiciones().contains('_')){
-                    colaA.add(estadoInicial);
-                    colaN.add(i.getEstadoLlegada());
+            if(estadoInicial != null) {
+                if(estadoInicial.getEsFinal()){
+                    return true;
+                }
+
+                for (Transicion i : estadoInicial.getTransiciones()) {
+                    if (i.getTransiciones().contains('_')) {
+                        colaA.add(estadoInicial);
+                        colaN.add(i.getEstadoLlegada());
+                    }
                 }
             }
             while(!colaN.isEmpty()){
@@ -277,6 +283,122 @@ public class Afnd {
         System.out.println(estados.size());
     }
 
+    public String palabraMasCorta (){
+        ArrayList<String> colaP = new ArrayList<>();
+        ArrayList<String> palabras = new ArrayList<>();
+        ArrayList<Nodo> colaN = new ArrayList<>();
+        ArrayList<String> colaA = new ArrayList<>();
+        ArrayList<Integer> colaC = new ArrayList<>();
+        ArrayList<String> visitados = new ArrayList<>();
+        int min = 0;
+
+        if(estadoInicial != null && estadoInicial.getEsFinal()){
+            return " Es la palabra vacia (_).";
+        }
+
+        if(estadoInicial != null && existeFinal()){
+                visitados.add(estadoInicial.getEstado());
+
+                for(Transicion i : estadoInicial.getTransiciones()){
+                    if(!i.getEstadoLlegada().equals(estadoInicial.getEstado())) {
+                        if (i.getTransiciones().contains('_')) {
+                            colaN.add(i.getEstadoLlegada());
+                            colaP.add("");
+                            colaA.add(estadoInicial.getEstado());
+                            colaC.add(0);
+                            visitados.add(i.getEstadoLlegada().getEstado());
+                        } else {
+                            for (Character j : i.getTransiciones()) {
+                                colaN.add(i.getEstadoLlegada());
+                                colaP.add("" + j);
+                                colaA.add(estadoInicial.getEstado());
+                                colaC.add(0);
+                                visitados.add(i.getEstadoLlegada().getEstado());
+                            }
+                        }
+                    }
+                }
+
+                while(!colaN.isEmpty()){
+                    if(!colaN.isEmpty()){
+
+                        if(colaN.get(0).getEsFinal()) {
+                            palabras.add(colaP.get(0));
+                            System.out.println(palabras);
+                            colaN.remove(0);
+                            colaP.remove(0);
+                            colaA.remove(0);
+                            colaC.remove(0);
+                        }else{
+                            for(Transicion i : colaN.get(0).getTransiciones()){
+                                if(!colaA.get(0).equals(i.getEstadoLlegada().getEstado())){
+                                    if(visitados.contains(i.getEstadoLlegada().getEstado())) {
+                                        if(colaC.get(0) < 5) {
+                                            if (i.getTransiciones().contains('_')) {
+                                                colaC.set(0, colaC.get(0)+1);
+                                                colaN.add(i.getEstadoLlegada());
+                                                colaP.add(colaP.get(0));
+                                                colaA.add(colaN.get(0).getEstado());
+                                                colaC.add(colaC.get(0));
+                                            } else {
+                                                for (Character j : i.getTransiciones()) {
+                                                    colaC.set(0, colaC.get(0)+1);
+                                                    colaN.add(i.getEstadoLlegada());
+                                                    colaP.add(colaP.get(0) + j);
+                                                    colaA.add(colaN.get(0).getEstado());
+                                                    colaC.add(colaC.get(0));
+                                                }
+                                            }
+                                        }
+                                    }else{
+                                        if (i.getTransiciones().contains('_')) {
+                                            colaN.add(i.getEstadoLlegada());
+                                            colaP.add(colaP.get(0));
+                                            colaA.add(colaN.get(0).getEstado());
+                                            colaC.add(colaC.get(0));
+                                        } else {
+                                            for (Character j : i.getTransiciones()) {
+                                                colaN.add(i.getEstadoLlegada());
+                                                colaP.add(colaP.get(0) + j);
+                                                colaA.add(colaN.get(0).getEstado());
+                                                colaC.add(colaC.get(0));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            colaN.remove(0);
+                            colaP.remove(0);
+                            colaA.remove(0);
+                            colaC.remove(0);
+                        }
+                    }
+                }
+                min = palabras.get(0).length();
+                for(String i : palabras){
+                    if(i.length() < min){
+                        min = i.length();
+                    }
+                }
+
+                if(min == 0){
+                    return " Es la palabra vacia (_).";
+                }
+
+                for(String i : palabras){
+                    if(i.length() == min){
+                        return i;
+                    }
+                }
+
+        }else{
+            return " El autómata no es válido";
+        }
+
+        return " No existe un camino a un estado final.";
+    }
+
+
     /**
      * Muerstra los nodos y sus transiciones por consola.
      */
@@ -320,6 +442,10 @@ public class Afnd {
         ArrayList<Nodo> cola = new ArrayList<>();
         Nodo revisando = new Nodo();
 
+        if(estadoInicial.getEsFinal()){
+            return true;
+        }
+
         if(estadoInicial != null && existeFinal()){
             cola.add(estadoInicial);
             visitados.add(estadoInicial.getEstado());
@@ -342,8 +468,6 @@ public class Afnd {
 
         return false;
     }
-
-
 
     /**
      * Asigna una un alfabeto de caracteres (de uno en uno) desde una lista de String[]

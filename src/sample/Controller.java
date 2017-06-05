@@ -81,6 +81,7 @@ public class Controller implements Initializable{
     private @FXML Button openBtn;
     private @FXML Button guardarBtn;
     private @FXML VBox lateralBox;
+    private @FXML Button infoBtn;
 
     private Circle circleInitial,circleN,circleFinal;
     private Nodo previous=null;
@@ -426,6 +427,13 @@ public class Controller implements Initializable{
         guardarBtn.setOnAction(e -> saveFile());
         leftBtn.setOnAction(e -> undo());
         rightBtn.setOnAction(e -> redo());
+        infoBtn.setOnAction(e -> {
+            try {
+                genericAlert("Información", "La palabra más corta es: " + afnd.palabraMasCorta(), "", Alert.AlertType.INFORMATION);
+            }catch(OutOfMemoryError error){
+                genericAlert("Error", "No es posible computar la palabra más corta debido a limitaciones de memoria","", Alert.AlertType.ERROR);
+            }
+        });
 
         groupPaint.getChildren().addListener((ListChangeListener) (change -> {
 
