@@ -417,10 +417,12 @@ public class Controller implements Initializable{
         this.inWordTF.textProperty().addListener((observable, oldValue, newValue) -> {
 
             System.out.println("Word: " + newValue);
-            this.checkWordBtn.onActionProperty().setValue(e -> checkWord(newValue));
+            this.checkWordBtn.setOnAction(e -> checkWord(newValue));
+            System.out.println("VERIFICAR");
 
         });
 
+        this.checkWordBtn.setOnAction(e -> checkWord(inWordTF.getText()));
 
         openBtn.setOnAction(e -> openFile());
         guardarBtn.setOnAction(e -> saveFile());
