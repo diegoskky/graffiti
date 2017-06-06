@@ -60,17 +60,22 @@ public class Afnd {
     }
 
     public boolean comprobarAlfabeto2(String palabra){
-        if(!comprobarPalabraVacia(palabra)) {
-            System.out.println("deberia tirar true");
+        palabra = palabra.trim();
+        System.out.println(palabra+"ASDASDAS");
+        if(palabra != null && !comprobarPalabraVacia(palabra)) {
             return true;
         }else {
-
-            if (palabra != null && palabra.length() > 0) {
-                for (int i = 0; i < alfabeto.length(); i++) {
-                    if (!alfabeto.contains(Character.toString(palabra.charAt(i)))) {
-                        return false;
+            if(alfabeto != null && alfabeto.length() != 0) {
+                if (palabra != null && palabra.length() > 0) {
+                    for (int i = 0; i < palabra.length(); i++) {
+                        System.out.println(i);
+                        if (!alfabeto.contains(Character.toString(palabra.charAt(i)))) {
+                            return false;
+                        }
                     }
                 }
+            }else{
+                return false;
             }
 
         }
