@@ -402,7 +402,7 @@ public class Controller implements Initializable{
 
             boolean integrityState = checkIntegrity(this.afnd);
 
-            if (integrityState) {
+            if (integrityState&&checkChars()) {
                 autohideAlert(
                         "El autómata es válido.",
                         2000);
@@ -660,6 +660,50 @@ public class Controller implements Initializable{
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    /**
+     * Revisa todos los caracteres en las transiciones y comprueba
+     * si existen en alfabeto.
+     * @return true si todos los caracteres existe en el alfabeto, false en lo contrario.
+     */
+    public boolean checkChars(){
+        boolean existe= false;
+        //comprobar si el automata es seudo-integro (sabemos que existen nodos y transiciones)
+        if(checkIntegrity(this.afnd)){
+            //comprueba primero en el nodo inicial
+            for(Transicion temp_t: this.afnd.getEstadoInicial().getTransiciones()){
+                for(Character temp_c: temp_t.getTransiciones()){
+                    for(Character cToCheck: this.readLanguageTextField.getText().toCharArray()){
+                        if(cToCheck.equals(temp_c))
+                            existe=true;
+                    }
+                }
+                if(!existe){
+                    autohideAlert("Caracter del alfabeto no encontrado en el automata.",2000);
+                    return false;
+                }
+                existe=false;
+            }
+            //comprueba los demas nodos
+            for (Nodo temp_n: this.afnd.getEstados()){
+                for(Transicion temp_t: temp_n.getTransiciones()){
+                    for(Character temp_c: temp_t.getTransiciones()){
+                        for(Character cToCheck: this.readLanguageTextField.getText().toCharArray()){
+                            if(cToCheck.equals(temp_c))
+                                existe=true;
+                        }
+                    }
+                    if(!existe){
+                        autohideAlert("Caracter del alfabeto no encontrado en el automata.",2000);
+                        return false;
+                    }
+                    existe=false;
+                }
+            }
+            return true;
         }
         return false;
     }
@@ -1630,5 +1674,7 @@ public class Controller implements Initializable{
         }
         return false;
     }
+
+
 
 }
