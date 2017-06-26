@@ -467,7 +467,7 @@ public class Afnd {
     }
 
     /**
-     * Funcion que comprueba la integridad del automata
+     * Funcion que comprueba la integridad del AFND
      * @return retorna true si es que esta correcto
      */
     public boolean comprobarAutomata(){

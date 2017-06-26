@@ -93,7 +93,7 @@ public class Controller implements Initializable{
     private Group previousGROUP;
     private Group nextGROUP;
 
-
+    private SwitchButton switchBtn;
     private ObservableList<String> observableList = FXCollections.observableArrayList();
 
     @Override
@@ -324,8 +324,9 @@ public class Controller implements Initializable{
             }
         });
 
+        this.switchBtn= new SwitchButton();
         this.panelDeTransiciones.setSpacing(5);
-        this.panelDeTransiciones.getChildren().add(new SwitchButton());
+        this.panelDeTransiciones.getChildren().add(switchBtn);
 
         /**
          * Reads dynamically from the language text box.
@@ -401,16 +402,28 @@ public class Controller implements Initializable{
             line.setStroke(Color.BLACK);
             previous= null;
 
-            boolean integrityState = checkIntegrity(this.afnd);
+            if(this.switchBtn.switchOnProperty().get()) {// si es true, esta en AFND
+                boolean integrityState = checkIntegrity(this.afnd);
 
-            if (integrityState&&checkChars()) {
-                autohideAlert(
-                        "El autómata es válido.",
-                        2000);
-            } else {
-                autohideAlert(
-                        "El autómata es inválido.",
-                        2000);
+                if (integrityState && checkChars()) {
+                    autohideAlert(
+                            "El autómata es válido.",
+                            2000);
+                } else {
+                    autohideAlert(
+                            "El autómata es inválido.",
+                            2000);
+                }
+            }else{// en false, esta en AFD
+                if(this.checkIntegrityAFD(this.afnd)&&checkChars()){
+                    autohideAlert(
+                            "El autómata es válido.",
+                            2000);
+                } else {
+                    autohideAlert(
+                            "El autómata es inválido.",
+                            2000);
+                }
             }
 
         });
@@ -459,6 +472,10 @@ public class Controller implements Initializable{
         }));
     }
 
+    /**
+     * Busca collisiones en todos los nodos
+     * @return
+     */
     private boolean collisionNodes(){
         for(Node node1 : this.groupPaint.getChildren()){
             for(Node node2 : this.groupPaint.getChildren()){
@@ -703,11 +720,19 @@ public class Controller implements Initializable{
      * @return true si se entrega el caracter que representa el vacio ('_')
      */
     private boolean existeCharInAlfabeto(char c){
-        if(c == '_') {
-            return true;
-        }else{
-            for(Character cToCheck: this.readLanguageTextField.getText().toCharArray()){
-                if(cToCheck.equals(c))
+        if(this.switchBtn.switchOnProperty().get()) {//caso afnd
+            if (c == '_') {
+                return true;
+            } else {
+                for (Character cToCheck : this.afnd.getAlfabeto().toCharArray()) {
+                    if (cToCheck.equals(c))
+                        return true;
+                }
+                return false;
+            }
+        }else{//caso afd
+            for (Character cToCheck : this.afnd.getAlfabeto().toCharArray()) {
+                if (cToCheck.equals(c))
                     return true;
             }
             return false;
@@ -877,6 +902,60 @@ public class Controller implements Initializable{
      */
     private boolean checkIntegrity(Afnd afnd) {
         return afnd.comprobarAutomata();
+    }
+
+    /**
+     * Check the integrity for any AFD.
+     *
+     * @param afnd an automata finite non-deterministic (AFD).
+     * @return true for a valid automata, false otherwise.
+     */
+    private boolean checkIntegrityAFD(Afnd afnd){
+
+        //comprobar si el automata es seudo-integro (sabemos que existen nodos y transiciones)
+        if(checkIntegrity(this.afnd)){
+            //comprueba primero en el nodo inicial
+            for(Character caracter: this.afnd.getAlfabeto().toCharArray()){
+                if(!realCharInTransicion(caracter,this.afnd.getEstadoInicial()))
+                    return false;
+            }
+
+            //comprueba los demas nodos
+            for (Nodo temp_n: this.afnd.getEstados()){
+                for(Character caracter: this.afnd.getAlfabeto().toCharArray()){
+                    if(!realCharInTransicion(caracter,temp_n))
+                            return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Comprueba si el caracter esta en alguna transicion del nodo entregado,
+     * ademas comprueba si esta repetido.
+     * @param caracter
+     * @param transicion
+     * @param inicio
+     * @return
+     */
+    public boolean realCharInTransicion(char caracter,Nodo inicio){
+        int contador=0;
+        boolean existe=false;
+        for(Transicion temp_t: inicio.getTransiciones()) {
+            for (Character temp_c : temp_t.getTransiciones()) {
+                if (caracter == temp_c) {
+                    existe=true;
+                    contador++;
+                    if(contador>1){// significa que el caracter se repite y se sale.
+                        autohideAlert("El caracter:  '"+caracter+"', se repite en el nodo: "+inicio.getEstado()+".",3000);
+                        return false;
+                    }
+                }
+            }
+        }
+        return existe;
     }
 
     /**
