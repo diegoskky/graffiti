@@ -324,7 +324,8 @@ public class Controller implements Initializable{
             }
         });
 
-
+        this.panelDeTransiciones.setSpacing(5);
+        this.panelDeTransiciones.getChildren().add(new SwitchButton());
 
         /**
          * Reads dynamically from the language text box.
@@ -455,12 +456,10 @@ public class Controller implements Initializable{
                     }
                 }
             }
-
-
         }));
+    }
 
-
-    } private boolean collisionNodes(){
+    private boolean collisionNodes(){
         for(Node node1 : this.groupPaint.getChildren()){
             for(Node node2 : this.groupPaint.getChildren()){
                 if(node1!=node2) {
