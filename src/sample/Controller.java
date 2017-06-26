@@ -670,42 +670,49 @@ public class Controller implements Initializable{
      * @return true si todos los caracteres existe en el alfabeto, false en lo contrario.
      */
     public boolean checkChars(){
-        boolean existe= false;
         //comprobar si el automata es seudo-integro (sabemos que existen nodos y transiciones)
         if(checkIntegrity(this.afnd)){
             //comprueba primero en el nodo inicial
             for(Transicion temp_t: this.afnd.getEstadoInicial().getTransiciones()){
                 for(Character temp_c: temp_t.getTransiciones()){
-                    for(Character cToCheck: this.readLanguageTextField.getText().toCharArray()){
-                        if(cToCheck.equals(temp_c))
-                            existe=true;
+                    if(!existeCharInAlfabeto(temp_c)){
+                        autohideAlert("Caracter del automata no encontrado en el alfabeto.",2000);
+                        return false;
                     }
                 }
-                if(!existe){
-                    autohideAlert("Caracter del alfabeto no encontrado en el automata.",2000);
-                    return false;
-                }
-                existe=false;
             }
             //comprueba los demas nodos
             for (Nodo temp_n: this.afnd.getEstados()){
                 for(Transicion temp_t: temp_n.getTransiciones()){
                     for(Character temp_c: temp_t.getTransiciones()){
-                        for(Character cToCheck: this.readLanguageTextField.getText().toCharArray()){
-                            if(cToCheck.equals(temp_c))
-                                existe=true;
+                        if(!existeCharInAlfabeto(temp_c)){
+                            autohideAlert("Caracter del automata no encontrado en el alfabeto.",2000);
+                            return false;
                         }
                     }
-                    if(!existe){
-                        autohideAlert("Caracter del alfabeto no encontrado en el automata.",2000);
-                        return false;
-                    }
-                    existe=false;
                 }
             }
             return true;
         }
         return false;
+    }
+
+    /**
+     * Comprueba si el char entregado esta en el alfabeto,
+     * funciona con vacio.
+     * @param c
+     * @return true si se entrega el caracter que representa el vacio ('_')
+     */
+    private boolean existeCharInAlfabeto(char c){
+        if(c == '_') {
+            return true;
+        }else{
+            for(Character cToCheck: this.readLanguageTextField.getText().toCharArray()){
+                if(cToCheck.equals(c))
+                    return true;
+            }
+            return false;
+        }
     }
 
     private Transicion getTransicion(CubicCurve curve){

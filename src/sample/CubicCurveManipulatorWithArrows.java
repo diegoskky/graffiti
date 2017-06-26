@@ -257,7 +257,7 @@ public class CubicCurveManipulatorWithArrows extends Application {
         curve.setStroke(Color.FORESTGREEN);
         curve.setStrokeWidth(4);
         curve.setStrokeLineCap(StrokeLineCap.ROUND);
-        curve.setFill(Color.TRANSPARENT);
+        curve.setFill(null);
         curve.setFocusTraversable(false);
         return curve;
     }
