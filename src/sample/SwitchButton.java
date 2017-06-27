@@ -8,12 +8,14 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 
 public class SwitchButton extends Label{
     private SimpleBooleanProperty switchedOn = new SimpleBooleanProperty(true);
+    private Button switchBtn;
 
     public SwitchButton(){
-        Button switchBtn = new Button();
+        switchBtn = new Button();
         switchBtn.setPrefWidth(40);
         switchBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override
@@ -49,4 +51,12 @@ public class SwitchButton extends Label{
     }
 
     public SimpleBooleanProperty switchOnProperty() { return switchedOn; }
+
+    public Button getSwitchBtn() {
+        return switchBtn;
+    }
+
+    public void setSwitchBtn(Button switchBtn) {
+        this.switchBtn = switchBtn;
+    }
 }

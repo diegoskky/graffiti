@@ -14,6 +14,7 @@ public class Nodo extends Circle {
     private String estado;
     private boolean esFinal;
     private boolean esInitial; //posiblemente necesario;
+    private boolean esSumidero=false;
     private Polygon forInitial;
     private ArrayList<Transicion> transiciones;
 
@@ -136,5 +137,13 @@ public class Nodo extends Circle {
                 "estado='" + estado + '\'' +
                 ", transiciones=" + transiciones +
                 '}';
+    }
+
+    public boolean isEsSumidero() {
+        return esSumidero;
+    }
+
+    public void setEsSumidero(boolean esSumidero) {
+        this.esSumidero = esSumidero;
     }
 }

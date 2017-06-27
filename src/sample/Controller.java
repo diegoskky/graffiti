@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -58,6 +59,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.awt.Color.BLACK;
 import static java.awt.SystemColor.window;
 
 public class Controller implements Initializable{
@@ -80,8 +82,9 @@ public class Controller implements Initializable{
     private @FXML Button guardarBtn;
     private @FXML VBox lateralBox;
     private @FXML Button infoBtn;
+    private @FXML ToggleButton sumBtn;
 
-    private Circle circleInitial,circleN,circleFinal;
+    private Circle circleInitial,circleN,circleFinal,circleBlack;
     private Nodo previous=null;
     private Line lineToConect,line=null;
     private Afnd afnd;
@@ -107,11 +110,15 @@ public class Controller implements Initializable{
         this.previousGROUP = new Group();
         this.nextGROUP = new Group();
 
+        circleBlack= new Circle(20,Color.BLACK);
+        this.sumBtn.setGraphic(circleBlack);
+
+
         circleN= new Circle(0,0,20,Color.LIGHTGRAY);
         circleN.setStroke(Color.BLACK);
         this.addNode.setGraphic(circleN);
 
-        circleInitial= new Circle(32,35,20,Color.LIGHTGRAY);
+        circleInitial= new Circle(28,28,20,Color.LIGHTGRAY);
         circleInitial.setStroke(Color.BLACK);
         Polygon poly= new Polygon(new double[]{(double)(circleInitial.getCenterX()-30),(double)(circleInitial.getCenterY()+10),
                 (double)(circleInitial.getCenterX()-20),(double)(circleInitial.getCenterY()),(double)(circleInitial.getCenterX()-30),(double)(circleInitial.getCenterY()-10)});
@@ -136,6 +143,9 @@ public class Controller implements Initializable{
                 addNodeActivate=false;
                 addNode.setSelected(false);
                 circleN.setFill(Color.LIGHTGRAY);
+
+                sumBtn.setSelected(false);
+                circleBlack.setFill(Color.BLACK);
 
                 addFinal.setSelected(false);
                 addFinalNodeActivate=false;
@@ -165,6 +175,9 @@ public class Controller implements Initializable{
                 addStartNode.setSelected(false);
                 circleInitial.setFill(Color.LIGHTGRAY);
 
+                sumBtn.setSelected(false);
+                circleBlack.setFill(Color.BLACK);
+
                 addFinal.setSelected(false);
                 addFinalNodeActivate=false;
                 circleFinal.setFill(Color.LIGHTGRAY);
@@ -191,6 +204,9 @@ public class Controller implements Initializable{
                 addStartNode.setSelected(false);
                 circleInitial.setFill(Color.LIGHTGRAY);
 
+                sumBtn.setSelected(false);
+                circleBlack.setFill(Color.BLACK);
+
                 addNode.setSelected(false);
                 addNodeActivate=false;
                 circleN.setFill(Color.LIGHTGRAY);
@@ -216,6 +232,9 @@ public class Controller implements Initializable{
                 addInitialNodeActivate=false;
                 circleInitial.setFill(Color.LIGHTGRAY);
                 addStartNode.setSelected(false);
+
+                sumBtn.setSelected(false);
+                circleBlack.setFill(Color.BLACK);
 
                 addNode.setSelected(false);
                 addNodeActivate=false;
@@ -294,14 +313,14 @@ public class Controller implements Initializable{
                         addStartNode.setSelected(false);
                         circleInitial.setFill(Color.LIGHTGRAY);
                     }
-                } else if(addFinalNodeActivate&&!inn &&!checkCollisionWithOtherNodes(temp_circle)){
+                } else if(addFinalNodeActivate&&!inn &&!checkCollisionWithOtherNodes(temp_circle)) {
                     temp_circle.setEsFinal(true);
                     temp_circle.setStrokeWidth(4);
                     addFinal.setSelected(false);
-                    addFinalNodeActivate=false;
+                    addFinalNodeActivate = false;
                     circleFinal.setFill(Color.LIGHTGRAY);
-                    input= genericAlertInput("Ingrese el nombre del Nodo final", null, "Nodo: ");
-                    if (input != null&&!afnd.existeNodo(input)) {
+                    input = genericAlertInput("Ingrese el nombre del Nodo final", null, "Nodo: ");
+                    if (input != null && !afnd.existeNodo(input)) {
                         temp_circle.setEstado(input);
                         temp_circle.setFill(new ImagePattern(textToImage(input, "lightgray")));
                         groupPaint.getChildren().add(temp_circle);
@@ -311,12 +330,21 @@ public class Controller implements Initializable{
                         updateTransitionMatrix(); // actualiza la matriz de estados.
 
                         event.consume();
-                    }else if(input != null&&afnd.existeNodo(input)){
-                        autohideAlert("Ya existe un Nodo con el nombre: "+input,2000);
+                    } else if (input != null && afnd.existeNodo(input)) {
+                        autohideAlert("Ya existe un Nodo con el nombre: " + input, 2000);
+                    } else {
+                        genericAlert("Acción inválida", "No es posible agregar un nodo sin un nombre", null, Alert.AlertType.WARNING);
                     }
-                    else {
-                        genericAlert("Acción inválida","No es posible agregar un nodo sin un nombre",null, Alert.AlertType.WARNING);
-                    }
+                }else if(sumBtn.selectedProperty().get()&&!inn&&!checkCollisionWithOtherNodes(temp_circle)){//agregando sumidero
+                    sumBtn.setSelected(false);
+                    circleBlack.setFill(Color.BLACK);
+                    temp_circle.setEstado("SUM");
+                    temp_circle.setEsSumidero(true);
+                    temp_circle.setFill(new ImagePattern(textToImage("SUM","black","white")));
+                    groupPaint.getChildren().add(temp_circle);
+                    afnd.addEstado(temp_circle);
+                    updateTransitionMatrix();
+                    event.consume();
                 }else if(detectCollitionsCircles(temp_circle)){
                     if(addFinalNodeActivate|addNodeActivate|addFinalNodeActivate)
                         autohideAlert("No hay espacio para insertar un Nodo aquí.",2000);
@@ -327,6 +355,16 @@ public class Controller implements Initializable{
         this.switchBtn= new SwitchButton();
         this.panelDeTransiciones.setSpacing(5);
         this.panelDeTransiciones.getChildren().add(switchBtn);
+        this.switchBtn.getSwitchBtn().setOnMouseClicked(event -> {
+            if(switchBtn.switchOnProperty().get()){
+                this.sumBtn.setVisible(false);
+            }else {
+                this.sumBtn.setVisible(true);
+            }
+        });
+
+
+
 
         /**
          * Reads dynamically from the language text box.
@@ -370,6 +408,33 @@ public class Controller implements Initializable{
             }
         });
 
+        this.sumBtn.setOnMouseClicked(event -> {
+            addInitialNodeActivate=false;
+            circleInitial.setFill(Color.LIGHTGRAY);
+            addStartNode.setSelected(false);
+
+            addNode.setSelected(false);
+            addNodeActivate=false;
+            circleN.setFill(Color.LIGHTGRAY);
+
+            addFinalNodeActivate=false;
+            addFinal.setSelected(false);
+            circleFinal.setFill(Color.LIGHTGRAY);
+
+            addTransicionActivate=false;
+            addTransition.setSelected(false);
+            line.setStartY(0);
+            line.setStroke(Color.BLACK);
+            previous= null;
+            if(this.sumBtn.selectedProperty().get()){
+                this.sumBtn.setSelected(true);
+                circleBlack.setFill(Color.GRAY);
+            }else{
+                this.sumBtn.setSelected(false);
+                circleBlack.setFill(Color.BLACK);
+            }
+        });
+
         addStartNode.setTooltip(new Tooltip("Agrega un Nodo inicial"));
         addNode.setTooltip(new Tooltip("Agrega un Nodo"));
         addTransition.setTooltip(new Tooltip("Agrega una transición entre dos Nodos"));
@@ -387,6 +452,9 @@ public class Controller implements Initializable{
             addInitialNodeActivate=false;
             circleInitial.setFill(Color.LIGHTGRAY);
             addStartNode.setSelected(false);
+
+            sumBtn.setSelected(false);
+            circleBlack.setFill(Color.BLACK);
 
             addNode.setSelected(false);
             addNodeActivate=false;
@@ -470,6 +538,9 @@ public class Controller implements Initializable{
                 }
             }
         }));
+        if(switchBtn.switchOnProperty().get()){
+            this.sumBtn.setVisible(false);
+        }
     }
 
     /**
@@ -720,23 +791,28 @@ public class Controller implements Initializable{
      * @return true si se entrega el caracter que representa el vacio ('_')
      */
     private boolean existeCharInAlfabeto(char c){
-        if(this.switchBtn.switchOnProperty().get()) {//caso afnd
-            if (c == '_') {
-                return true;
-            } else {
+        if(this.afnd.getAlfabeto()!=null&&!this.afnd.getAlfabeto().equals("")) {
+            if (this.switchBtn.switchOnProperty().get()) {//caso afnd
+                if (c == '_') {
+                    return true;
+                } else {
+                    for (Character cToCheck : this.afnd.getAlfabeto().toCharArray()) {
+                        if (cToCheck.equals(c))
+                            return true;
+                    }
+                    return false;
+                }
+            } else {//caso afd
                 for (Character cToCheck : this.afnd.getAlfabeto().toCharArray()) {
                     if (cToCheck.equals(c))
                         return true;
                 }
                 return false;
             }
-        }else{//caso afd
-            for (Character cToCheck : this.afnd.getAlfabeto().toCharArray()) {
-                if (cToCheck.equals(c))
-                    return true;
-            }
-            return false;
+        }else {
+            autohideAlert("No hay alfabeto.", 3000);
         }
+        return false;
     }
 
     private Transicion getTransicion(CubicCurve curve){
@@ -913,21 +989,27 @@ public class Controller implements Initializable{
     private boolean checkIntegrityAFD(Afnd afnd){
 
         //comprobar si el automata es seudo-integro (sabemos que existen nodos y transiciones)
-        if(checkIntegrity(this.afnd)){
+        if(checkIntegrity(this.afnd)&&this.afnd.getAlfabeto()!=null&&!this.afnd.getAlfabeto().equals("")){
             //comprueba primero en el nodo inicial
             for(Character caracter: this.afnd.getAlfabeto().toCharArray()){
-                if(!realCharInTransicion(caracter,this.afnd.getEstadoInicial()))
+                if(!realCharInTransicion(caracter,this.afnd.getEstadoInicial())) {
+                    autohideAlert("El caracter: '"+caracter+"', no se encuentra en el nodo: "+this.afnd.getEstadoInicial().getEstado()+".", 3000);
                     return false;
+                }
             }
 
             //comprueba los demas nodos
             for (Nodo temp_n: this.afnd.getEstados()){
                 for(Character caracter: this.afnd.getAlfabeto().toCharArray()){
-                    if(!realCharInTransicion(caracter,temp_n))
-                            return false;
+                    if(!realCharInTransicion(caracter,temp_n)) {
+                        autohideAlert("El caracter: '"+caracter+"', no se encuentra en el nodo: "+temp_n.getEstado()+".", 3000);
+                        return false;
+                    }
                 }
             }
             return true;
+        }else {
+            autohideAlert("No ha ingresado el alfabeto.",3000);
         }
         return false;
     }
@@ -1029,16 +1111,24 @@ public class Controller implements Initializable{
         circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                circle.setFill(new ImagePattern(textToImage(circle.getEstado(),"white")));
-                inn=true;
+                if(!circle.getEstado().equals("SUM")) {
+                    circle.setFill(new ImagePattern(textToImage(circle.getEstado(), "white")));
+                }else{
+                    circle.setFill(new ImagePattern(textToImage(circle.getEstado(), "white","black")));
+                }
+                inn = true;
                 event.consume();
             }
         });
         circle.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                circle.setFill(new ImagePattern(textToImage(circle.getEstado(),"lightgray")));
-                inn=false;
+                if(!circle.getEstado().equals("SUM")) {
+                    circle.setFill(new ImagePattern(textToImage(circle.getEstado(), "lightgray")));
+                }else{
+                    circle.setFill(new ImagePattern(textToImage(circle.getEstado(), "black","white")));
+                }
+                inn = false;
                 event.consume();
             }
         });
@@ -1062,6 +1152,10 @@ public class Controller implements Initializable{
                     addFinalNodeActivate=false;
                     addFinal.setSelected(false);
                     circleFinal.setFill(Color.LIGHTGRAY);
+                }else if(sumBtn.selectedProperty().get()){
+                    autohideAlert("No se puede insertar un nodo sobre otro.",2000);
+                    sumBtn.setSelected(false);
+                    circleBlack.setFill(Color.BLACK);
                 }
                 if(previous==null&&addTransicionActivate){//asignar nodo previous
                     previous=circle;
@@ -1357,7 +1451,7 @@ public class Controller implements Initializable{
             Nodo c = (Nodo) (t.getSource());
             c.toFront();
 
-            if (t.isSecondaryButtonDown()) {
+            if (t.isSecondaryButtonDown()&&!c.getEstado().equals("SUM")) {
                 ContextMenu contextMenu = new ContextMenu();
 
                 Menu type = new Menu("Cambiar tipo");
@@ -1480,7 +1574,75 @@ public class Controller implements Initializable{
                 });
                 contextMenu.show(c.getScene().getWindow());
             }
+            if(t.isSecondaryButtonDown()&&c.getEstado().equals("SUM")){
+                ContextMenu contextMenu = new ContextMenu();
 
+                MenuItem erase = new MenuItem("Eliminar Nodo");
+
+                contextMenu.getItems().addAll(erase);
+                contextMenu.setX(t.getSceneX() + orgSceneX);
+                contextMenu.setY( t.getSceneY());
+
+                erase.setOnAction(e -> {
+                    //Buscamos las transiciones que apunten al nodo seleccionado
+                    ArrayList<Transicion> listToEraser= new ArrayList();
+                    for (Nodo nodo: afnd.getEstados()){
+                        for(Transicion temp_t: nodo.getTransiciones()){
+                            if(temp_t.getEstadoLlegada()==c){
+                                listToEraser.add(temp_t);
+                                this.groupPaint.getChildren().remove(temp_t.getAnchor());
+                                this.groupPaint.getChildren().remove(temp_t.getCurve());
+                                for(Transicion.Arrow temp_arrow: temp_t.getArrows()){
+                                    this.groupPaint.getChildren().remove(temp_arrow);
+                                }
+                            }
+                        }
+                        for(Transicion temp_t: listToEraser){
+                            nodo.getTransiciones().remove(temp_t);
+                        }
+                    }
+                    if(this.afnd.getEstadoInicial()!=null&&!c.isEsInitial()){
+                        listToEraser= new ArrayList<>();
+                        for(Transicion temp_t: this.afnd.getEstadoInicial().getTransiciones()){
+                            if(temp_t.getEstadoLlegada()==c)
+                                listToEraser.add(temp_t);
+                        }
+                        for (Transicion temp_t: listToEraser) {
+                            afnd.getEstadoInicial().removeThisInTransition(temp_t);
+                            this.groupPaint.getChildren().remove(temp_t.getAnchor());
+                            this.groupPaint.getChildren().remove(temp_t.getCurve());
+                            for(Transicion.Arrow temp_arrow: temp_t.getArrows()){
+                                this.groupPaint.getChildren().remove(temp_arrow);
+                            }
+                        }
+                    }
+                    Nodo global = c;
+                    //Ahora borramos el nodo y sus transiciones
+                    //borramos la parte grafica
+                    for(Transicion temp_t: c.getTransiciones()){
+                        this.groupPaint.getChildren().remove(temp_t.getAnchor());
+                        this.groupPaint.getChildren().remove(temp_t.getCurve());
+                        for(Transicion.Arrow temp_arrow: temp_t.getArrows()){
+                            this.groupPaint.getChildren().remove(temp_arrow);
+                        }
+                    }
+                    this.groupPaint.getChildren().remove(c);
+                    if(this.afnd.getEstadoInicial()!=null&&c.isEsInitial())
+                        this.groupPaint.getChildren().remove(c.getForInitial());
+                    //ahora el backend
+                    c.setTransiciones(new ArrayList<>());
+                    if(c.isEsInitial()){
+                        this.afnd.setEstadoInicial(null);
+                    }else{
+                        this.afnd.removeNode(c);
+                    }
+
+
+                    updateTransitionMatrix();
+
+                });
+                contextMenu.show(c.getScene().getWindow());
+            }
         });
 
         circle.setOnMouseDragged((t) -> {
@@ -1612,7 +1774,7 @@ public class Controller implements Initializable{
         curve.setStroke(Color.GRAY);
         curve.setStrokeWidth(3);
         //curve.setStrokeLineCap(StrokeLineCap.SQUARE);
-        curve.setFill(Color.TRANSPARENT);
+        curve.setFill(null);
         //curve.getStrokeDashArray().setAll(5.0, 5.0);
         return curve;
     }
@@ -1643,7 +1805,7 @@ public class Controller implements Initializable{
         curve.setStroke(Color.GRAY);
         curve.setStrokeWidth(3);
         //curve.setStrokeLineCap(StrokeLineCap.SQUARE);
-        curve.setFill(Color.TRANSPARENT);
+        curve.setFill(null);
         //curve.getStrokeDashArray().setAll(5.0, 5.0);
         return curve;
     }
@@ -1670,6 +1832,20 @@ public class Controller implements Initializable{
         label.setMaxSize(30, 30);
         label.setPrefSize(30, 30);
         label.setStyle("-fx-background-color: "+color+"; -fx-text-fill:black;");
+        label.setWrapText(true);
+        Scene scene = new Scene(new Group(label));
+        WritableImage img = new WritableImage(30, 30) ;
+        scene.snapshot(img);
+        return img ;
+    }
+
+    private Image textToImage(String text, String color, String colorTexto) {
+        Label label = new Label(text);
+        label.setAlignment(Pos.CENTER);
+        label.setMinSize(30, 30);
+        label.setMaxSize(30, 30);
+        label.setPrefSize(30, 30);
+        label.setStyle("-fx-background-color: "+color+"; -fx-text-fill:"+colorTexto+";");
         label.setWrapText(true);
         Scene scene = new Scene(new Group(label));
         WritableImage img = new WritableImage(30, 30) ;
