@@ -1133,6 +1133,7 @@ public class Controller implements Initializable{
             }
         });
 
+
         circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {//coneccion entre ambos nodos
