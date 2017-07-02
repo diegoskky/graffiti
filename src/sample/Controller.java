@@ -1054,8 +1054,10 @@ public class Controller implements Initializable{
 
                         if (word != null && this.afnd.comprobarPalabra2(word)) {
                             genericAlertConfirmation("Palabra válida", "Palabra válida", "La palabra ingresada pertenece al lenguaje.");
+                            afnd.printRecorrido();
                         } else {
                             genericAlert("Palabra inválida", "Palabra inválida", "La palabra ingresada NO pertenece al autómata.");
+                            afnd.printRecorrido();
                         }
                     }
                 }else{

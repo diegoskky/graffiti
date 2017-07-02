@@ -14,17 +14,31 @@ public class Afnd {
     private String alfabeto;
     private Nodo estadoInicial;
     private ArrayList<Nodo> estados;
+    private ArrayList<Recorrido> recorrido;
+    private boolean esAfd;
 
     public Afnd(String alfabeto) {
         this.alfabeto = alfabeto;
         this.estados = new ArrayList<>();
         this.estadoInicial = null;
+        this.recorrido = new ArrayList<>();
+        this.esAfd = false;
     }
 
     public Afnd() {
         //this.alfabeto = alfabeto;
         this.estados = new ArrayList<>();
         this.estadoInicial = null;
+        this.recorrido = new ArrayList<>();
+        this.esAfd = false;
+    }
+
+    public boolean getAfd() {
+        return esAfd;
+    }
+
+    public void setAfd(boolean esAfd) {
+        this.esAfd = esAfd;
     }
 
     public void setEstados(ArrayList<Nodo> estados) {
@@ -192,6 +206,10 @@ public class Afnd {
         ArrayList<Integer> colaC = new ArrayList<>();
         int cont = 0;
 
+        if(recorrido != null && !recorrido.isEmpty()) {
+            recorrido.clear();
+        }
+
         if(!comprobarPalabraVacia(palabra)){
             if(estadoInicial != null) {
                 if(estadoInicial.getEsFinal()){
@@ -243,6 +261,7 @@ public class Afnd {
                         colaN.add(i.getEstadoLlegada());
                         colaP.add(palabra.substring(1));
                         colaC.add(0);
+                        recorrido.add(new Recorrido(estadoInicial,i.getEstadoLlegada(),palabra.charAt(0)));
                     }
                 }
             }
@@ -275,6 +294,7 @@ public class Afnd {
                                     colaN.add(i.getEstadoLlegada());
                                     colaP.add(colaP.get(0).substring(1));
                                     colaC.add(colaC.get(0));
+                                    recorrido.add(new Recorrido(colaN.get(0),i.getEstadoLlegada(),colaP.get(0).charAt(0)));
                                 }
                             }
                         }
@@ -668,5 +688,13 @@ public class Afnd {
             }
 
         return false;
+    }
+
+    public void printRecorrido(){
+        if(recorrido!=null){
+            for (Recorrido i : recorrido){
+                System.out.println(i.getInicio().getEstado()+" | "+i.getLlegada().getEstado()+"  |  con: "+i.getTransicion());
+            }
+        }
     }
 }
