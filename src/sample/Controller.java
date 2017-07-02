@@ -40,9 +40,11 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import javax.swing.undo.UndoManager;
 import java.awt.*;
+import java.awt.ScrollPane;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -341,6 +343,20 @@ public class Controller implements Initializable{
                     temp_circle.setEstado("SUM");
                     temp_circle.setEsSumidero(true);
                     temp_circle.setFill(new ImagePattern(textToImage("SUM","black","white")));
+                    if(afnd.getAlfabeto()!=null&&!afnd.getAlfabeto().equals("")) {
+
+                        CubicCurve curve = conectTo2(temp_circle, temp_circle);
+                        Transicion temp_t = new Transicion(temp_circle, afnd.getAlfabeto(), curve, true);
+                        Transicion.Anchor anchor = temp_t.getAnchor();
+
+                        temp_circle.addTransicion(temp_t);
+                        List<Transicion.Arrow> arrows = temp_t.getArrows();
+                        groupPaint.getChildren().addAll(curve, anchor);
+
+                        for (Transicion.Arrow temp_value : arrows) {
+                            groupPaint.getChildren().add(temp_value);
+                        }
+                    }
                     groupPaint.getChildren().add(temp_circle);
                     afnd.addEstado(temp_circle);
                     updateTransitionMatrix();
@@ -358,8 +374,10 @@ public class Controller implements Initializable{
         this.switchBtn.getSwitchBtn().setOnMouseClicked(event -> {
             if(switchBtn.switchOnProperty().get()){
                 this.sumBtn.setVisible(false);
+                this.afnd.setAfd(false);
             }else {
                 this.sumBtn.setVisible(true);
+                this.afnd.setAfd(true);
             }
         });
 
@@ -1055,9 +1073,12 @@ public class Controller implements Initializable{
                         if (word != null && this.afnd.comprobarPalabra2(word)) {
                             genericAlertConfirmation("Palabra válida", "Palabra válida", "La palabra ingresada pertenece al lenguaje.");
                             afnd.printRecorrido();
+                            showScreen();
+
                         } else {
                             genericAlert("Palabra inválida", "Palabra inválida", "La palabra ingresada NO pertenece al autómata.");
                             afnd.printRecorrido();
+                            showScreen();
                         }
                     }
                 }else{
@@ -1069,6 +1090,34 @@ public class Controller implements Initializable{
         }else{
             genericAlert("Formato incorrecto", "La palabra ingresada no es válida", "La palabra solo puede contener letras y números");
         }
+    }
+
+    private void showScreen(){
+        VBox vbox= new VBox();
+        vbox.setSpacing(10);
+        vbox.setStyle("-fx-background-color: black;");
+        String linea;
+        Label label;
+        int cont= 1;
+        for(Recorrido temp_r: this.afnd.getRecorrido()){
+            linea= cont+".    f("+temp_r.getInicio().getEstado()+","+temp_r.getTransicion()+")="+temp_r.getLlegada().getEstado();
+            label= new Label(linea);
+            label.setFont(Font.font(18));
+            label.setAlignment(Pos.CENTER);
+            label.setTextFill(Color.WHITE);
+            label.setStyle("-fx-font-family: Mint Spirit;");
+
+            vbox.getChildren().add(label);
+            vbox.setAlignment(Pos.TOP_CENTER);
+            cont++;
+        }
+        Scene scene = new Scene(vbox,200,300);
+
+        Stage stage= new Stage();
+        stage.setTitle("Recorrido");
+        stage.getIcons().add(new Image("/resources/icon.png"));
+        stage.setScene(scene);
+        stage.show();
     }
 
     private void genericAlertConfirmation(String title, String header, String contentText) {
@@ -1318,7 +1367,6 @@ public class Controller implements Initializable{
                         if(checkWordsInTransicion(nameOfTheTransition)){
                             for(Transicion t_temp :previous.getTransiciones()){
                                 if(t_temp.getEstadoLlegada()==previous){
-                                    System.out.println("agrego el char");
                                     t_temp.addTransicion(getCharsForTransicion(nameOfTheTransition));
                                     t_temp.updateAnchor();
                                     updateTransitionMatrix();
