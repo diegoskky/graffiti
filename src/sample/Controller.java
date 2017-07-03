@@ -1017,7 +1017,7 @@ public class Controller implements Initializable{
     private boolean checkIntegrityAFD(Afnd afnd){
 
         //comprobar si el automata es seudo-integro (sabemos que existen nodos y transiciones)
-        if(checkIntegrity(this.afnd)&&this.afnd.getAlfabeto()!=null&&!this.afnd.getAlfabeto().equals("")){
+        if(checkIntegrity(this.afnd)&&this.afnd.getAlfabeto()!=null&&!this.afnd.getAlfabeto().equals("")&&!this.afnd.getAlfabeto().contains("_")){
             //comprueba primero en el nodo inicial
             for(Character caracter: this.afnd.getAlfabeto().toCharArray()){
                 if(!realCharInTransicion(caracter,this.afnd.getEstadoInicial())) {
@@ -1055,13 +1055,16 @@ public class Controller implements Initializable{
         boolean existe=false;
         for(Transicion temp_t: inicio.getTransiciones()) {
             for (Character temp_c : temp_t.getTransiciones()) {
-                if (caracter == temp_c) {
+                if (caracter == temp_c&&!temp_c.equals('_')) {
                     existe=true;
                     contador++;
                     if(contador>1){// significa que el caracter se repite y se sale.
                         autohideAlert("El caracter:  '"+caracter+"', se repite en el nodo: "+inicio.getEstado()+".",3000);
                         return false;
                     }
+                }else if(temp_c.equals('_')){
+                    autohideAlert("El vacio no puede estar en una transicion de AFD",3000);
+                    return false;
                 }
             }
         }
@@ -1129,6 +1132,7 @@ public class Controller implements Initializable{
 
         Stage stage= new Stage();
         stage.setTitle("Recorrido");
+        stage.setResizable(false);
         stage.getIcons().add(new Image("/resources/icon.png"));
         stage.setScene(scene);
         stage.show();
