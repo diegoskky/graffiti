@@ -24,6 +24,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
@@ -44,7 +45,6 @@ import javafx.stage.Stage;
 
 import javax.swing.undo.UndoManager;
 import java.awt.*;
-import java.awt.ScrollPane;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -346,7 +346,17 @@ public class Controller implements Initializable{
                     if(afnd.getAlfabeto()!=null&&!afnd.getAlfabeto().equals("")) {
 
                         CubicCurve curve = conectTo2(temp_circle, temp_circle);
-                        Transicion temp_t = new Transicion(temp_circle, afnd.getAlfabeto(), curve, true);
+                        String alf= "";
+                        int i=0;
+                        for(Character temp_c: afnd.getAlfabeto().toCharArray()){
+                            if(i==afnd.getAlfabeto().toCharArray().length-1){
+                                alf+=temp_c;
+                                break;
+                            }
+                            alf+=temp_c+",";
+                            i++;
+                        }
+                        Transicion temp_t = new Transicion(temp_circle, alf, curve, true);
                         Transicion.Anchor anchor = temp_t.getAnchor();
 
                         temp_circle.addTransicion(temp_t);
@@ -1109,9 +1119,13 @@ public class Controller implements Initializable{
 
             vbox.getChildren().add(label);
             vbox.setAlignment(Pos.TOP_CENTER);
+            vbox.setPrefSize(180,300);
             cont++;
         }
-        Scene scene = new Scene(vbox,200,300);
+        ScrollPane root = new ScrollPane(vbox);
+        root.setStyle("-fx-background-color: black;");
+        root.setPrefSize(180,300);
+        Scene scene = new Scene(root,200,300);
 
         Stage stage= new Stage();
         stage.setTitle("Recorrido");
@@ -1213,7 +1227,7 @@ public class Controller implements Initializable{
                     previous=circle;
                     event.consume();
                 }else if(previous!=null&&addTransicionActivate&&previous!=circle){//agrega una transicion normal entre dos nodos
-                    System.out.println(previous.getEstado());
+
                     String nameOfTheTransition = genericAlertInput(
                             "Ingrese el caracter de la Transición",
                             "Nodo Inicio: " + previous.getEstado() + " to Nodo llegada: " + circle.getEstado()+"\n  separe lo caracteres con (,)",
@@ -1221,7 +1235,10 @@ public class Controller implements Initializable{
                     if(nameOfTheTransition!=null&&nameOfTheTransition.equals(" ")) {
                         nameOfTheTransition = null;
                     }
-                    System.out.println("Transición: |" + nameOfTheTransition+"|");
+                    if(previous.getEstado().equals("SUM")){
+                        autohideAlert("No es posible agregar transiciones desde un sumidero",3000);
+                        nameOfTheTransition= null;
+                    }
                     if(nameOfTheTransition!=null){
                         if(checkWordsInTransicion(nameOfTheTransition)){
                             for(Transicion t_temp :previous.getTransiciones()){
@@ -1253,7 +1270,10 @@ public class Controller implements Initializable{
                             event.consume();
                         }
                     }else{
-                        autohideAlert("No es posible agregar una transición vacia",2000);
+                        if (!previous.getEstado().equals("SUM")) {
+                            autohideAlert("No es posible agregar una transición vacia",2000);
+                        }
+
                         inputOfUser=false;
                         addTransicionActivate=false;
                         addTransition.setSelected(false);
@@ -1350,7 +1370,7 @@ public class Controller implements Initializable{
                         previous=null;
                         event.consume();
                     }
-                }else if(previous!=null&&addTransicionActivate&&previous==circle){//agrega una transicion ciclica
+                }else if(previous!=null&&addTransicionActivate&&previous==circle){ //agrega una transicion ciclica
                     inputOfUser= true;
                     System.out.println(previous.getEstado());
                     String nameOfTheTransition;
