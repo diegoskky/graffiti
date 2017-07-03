@@ -697,4 +697,8 @@ public class Afnd {
             }
         }
     }
+
+    public ArrayList<Recorrido> getRecorrido() {
+        return recorrido;
+    }
 }
