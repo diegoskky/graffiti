@@ -75,7 +75,6 @@ public class Afnd {
 
     public boolean comprobarAlfabeto2(String palabra){
         palabra = palabra.trim();
-        System.out.println(palabra+"ASDASDAS");
         if(palabra != null && !comprobarPalabraVacia(palabra)) {
             return true;
         }else {

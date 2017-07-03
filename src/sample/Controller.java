@@ -1078,24 +1078,46 @@ public class Controller implements Initializable{
     private void checkWord( String word ) {
         if(comprobarPalabraIngresada(word)) {
             if(afnd.comprobarAlfabeto2(word)) {
-                if(afnd.comprobarAutomata()) {
-                    if (this.collisionNodes() == false) {
-                        System.out.println(word);
-                        System.out.println(this.afnd.getAlfabeto());
+                if(switchBtn.switchOnProperty().get()) {
+                    if (afnd.comprobarAutomata()) {
+                        if (this.collisionNodes() == false) {
+                            System.out.println(word);
+                            System.out.println(this.afnd.getAlfabeto());
 
-                        if (word != null && this.afnd.comprobarPalabra2(word)) {
-                            genericAlertConfirmation("Palabra válida", "Palabra válida", "La palabra ingresada pertenece al lenguaje.");
-                            afnd.printRecorrido();
-                            showScreen();
+                            if (word != null && this.afnd.comprobarPalabra2(word)) {
+                                genericAlertConfirmation("Palabra válida", "Palabra válida", "La palabra ingresada pertenece al lenguaje.");
+                                afnd.printRecorrido();
+                                showScreen();
 
-                        } else {
-                            genericAlert("Palabra inválida", "Palabra inválida", "La palabra ingresada NO pertenece al autómata.");
-                            afnd.printRecorrido();
-                            showScreen();
+                            } else {
+                                genericAlert("Palabra inválida", "Palabra inválida", "La palabra ingresada NO pertenece al autómata.");
+                                afnd.printRecorrido();
+                                showScreen();
+                            }
                         }
+                    } else {
+                        genericAlert("Autómata inválido", "Autómata inválido", "La integridad del autómata no es correcta, no se puede verificar la palabra");
                     }
-                }else{
-                    genericAlert("Autómata inválido", "Autómata inválido", "La integridad del autómata no es correcta, no se puede verificar la palabra");
+                }else{ // caso afd
+                    if(checkIntegrityAFD(this.afnd)) {
+                        if (this.collisionNodes() == false) {
+                            System.out.println(word);
+                            System.out.println(this.afnd.getAlfabeto());
+
+                            if (word != null && this.afnd.comprobarPalabra2(word)) {
+                                genericAlertConfirmation("Palabra válida", "Palabra válida", "La palabra ingresada pertenece al lenguaje.");
+                                afnd.printRecorrido();
+                                showScreen();
+
+                            } else {
+                                genericAlert("Palabra inválida", "Palabra inválida", "La palabra ingresada NO pertenece al autómata.");
+                                afnd.printRecorrido();
+                                showScreen();
+                            }
+                        }
+                    }else{
+                        genericAlert("Autómata inválido", "Autómata inválido", "La integridad del autómata no es correcta, no se puede verificar la palabra");
+                    }
                 }
             }else{
                 genericAlert("Palabra inválida", "Palabra inválida", "Hay caracteres que no existen en el alfabeto.");
@@ -1122,12 +1144,12 @@ public class Controller implements Initializable{
 
             vbox.getChildren().add(label);
             vbox.setAlignment(Pos.TOP_CENTER);
-            vbox.setPrefSize(180,300);
+            vbox.setPrefSize(195,300);
             cont++;
         }
         ScrollPane root = new ScrollPane(vbox);
         root.setStyle("-fx-background-color: black;");
-        root.setPrefSize(180,300);
+        root.setPrefSize(195,300);
         Scene scene = new Scene(root,200,300);
 
         Stage stage= new Stage();
