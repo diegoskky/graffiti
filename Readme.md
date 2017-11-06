@@ -28,5 +28,5 @@ java -jar GraphDrawer.jar
 
 #### Integrantes
 - Carlos Arias (@Dark7Zero)
-- Omar Olivares (@peel40)
+- Omar Olivares (@ofou)
 - Miguel Garrido (@m1k1saur1o)
