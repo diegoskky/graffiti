@@ -8,7 +8,6 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
 
 public class SwitchButton extends Label{
     private SimpleBooleanProperty switchedOn = new SimpleBooleanProperty(true);
